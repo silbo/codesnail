@@ -1,0 +1,10 @@
+{
+  "name": "codebuddy",
+  "description": "A website where users learn to code while competing against each other",
+  "version": "0.0.1",
+  "private": false,
+  "dependencies": {
+    "express": "3.4.4"
+  }
+}
+
