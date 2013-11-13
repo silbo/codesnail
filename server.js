@@ -1,6 +1,16 @@
 /* Global variables */
-var databaseUrl = "mydb";
 var collections = ["users", "reports"];
+var host = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || "localhost";
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000;
+var databaseUrl = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "codebuddy";
+/* For Openshift */
+if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
+	databaseUrl = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" + 
+	process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
+	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
+	process.env.OPENSHIFT_APP_NAME;
+}
 
 /* Add libraries */
 var express = require('express');
@@ -15,6 +25,7 @@ app.use(express.logger());
 app.use(express.urlencoded());
 app.use(express.json());
 app.use(express.cookieParser());
+app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 app.use(express.session({
   secret: "aslkdsalkdjLKLKSJDL3423432"
 }));
@@ -26,7 +37,7 @@ var oa = new oauth(
   "enter-key",
   "enter-secret",
   "1.0A",
-  "http://localhost:82/auth/twitter/callback",
+  "http://" + host + ":" + port + "/auth/twitter/callback",
   "HMAC-SHA1");
 
 /* Twitter URLs */
@@ -37,7 +48,7 @@ app.get('/sessions/connect', function(req, res) {
     } else {
       req.session.oauthRequestToken = oauthToken;
       req.session.oauthRequestTokenSecret = oauthTokenSecret;
-      res.redirect("https://twitter.com/oauth/authenticate?oauth_token="+req.session.oauthRequestToken);
+      res.redirect("https://twitter.com/oauth/authenticate?oauth_token=" + req.session.oauthRequestToken);
     }
   });
 });
@@ -48,7 +59,7 @@ app.get('/auth/twitter/callback', function(req, res) {
   sys.puts(">>"+req.query.oauth_verifier);
   oa.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
     if (error) {
-      res.send("Error getting OAuth access token : " + sys.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+sys.inspect(results)+"]", 500);
+      res.send("Error getting OAuth access token : " + sys.inspect(error) + "[" + oauthAccessToken + "]" + "[" + oauthAccessTokenSecret + "]" + "[" + sys.inspect(results) + "]", 500);
     } else {
       console.log(results);
       req.session.user_id = results.id;
@@ -121,7 +132,7 @@ app.post('/post/status', function(req, res) {
 /* Google URLs */
 function require_google_login(req, res, next) {
   if (!req.session.oauth_access_token) {
-    res.redirect("/google_login?action="+querystring.escape(req.originalUrl));
+    res.redirect("/google_login?action=" + querystring.escape(req.originalUrl));
     return;
   }
   next();
@@ -136,12 +147,12 @@ app.get('/google_login', function(req, res) {
     querystring.escape("https://www.google.com/m8/feeds/"),
     querystring.escape("https://www.google.com/calendar/feeds/")];
   
-  var oa = new oauth(getRequestTokenUrl+"?scope="+gdataScopes.join('+'),
+  var oa = new oauth(getRequestTokenUrl + "?scope=" + gdataScopes.join('+'),
     "https://www.google.com/accounts/OAuthGetAccessToken",
     "anonymous",
     "anonymous",
     "1.0",
-    "http://localhost:3000/google_cb"+( req.param('action') && req.param('action') != "" ? "?action="+querystring.escape(req.param('action')) : "" ),
+    "http://" + host + ":" + port + "/google_cb" + ( req.param('action') && req.param('action') != "" ? "?action=" + querystring.escape(req.param('action')) : "" ),
     "HMAC-SHA1");
 
   oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
@@ -156,7 +167,7 @@ app.get('/google_login', function(req, res) {
 	    req.session.oauth_token_secret = oauth_token_secret;
 
 	    /* Redirect the user to authorize the token */
-	    res.redirect("https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token="+oauth_token);
+	    res.redirect("https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token=" + oauth_token);
     }
   })
 });
@@ -265,12 +276,6 @@ app.get('/', function(req, res) {
 	  res.redirect("/google_contacts");
 });
 
-/* Add error handling */
-app.use(function(err, req, res, next) {
-  console.error(err.stack);
-  res.send(500, 'Sum Ting Wong');
-});
-
 /* Start the app */
-app.listen(3000);
-console.log('Listening on port 3000');
+app.listen(port);
+console.log('Listening on port ' + port);
