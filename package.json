@@ -20,7 +20,8 @@
     "express": "3.4.4",
     "mongojs": "0.9.6",
     "oauth": "0.9.10",
-    "util": "0.4.9"
+    "util": "0.4.9",
+    "ejs": "0.8.4"
   },
 
   "private": true,
