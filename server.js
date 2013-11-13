@@ -1,8 +1,8 @@
 #!/bin/env node
 /* Global variables */
 var collections = ["users", "reports"];
-var host = process.env.IP || process.env.OPENSHIFT_INTERNAL_IP || "localhost";
-var port = process.env.PORT || process.env.OPENSHIFT_INTERNAL_PORT || 3000;
+var host = process.env.OPENSHIFT_NODEJS_IP || process.env.OPENSHIFT_INTERNAL_IP || process.env.IP || "localhost";
+var port = process.env.OPENSHIFT_NODEJS_PORT ||  process.env.OPENSHIFT_INTERNAL_PORT || process.env.PORT || 3000;
 var databaseUrl = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "codebuddy";
 /* For Openshift */
 if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
