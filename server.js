@@ -4,6 +4,7 @@ var collections = ["users", "reports"];
 var host = process.env.OPENSHIFT_NODEJS_IP || process.env.OPENSHIFT_INTERNAL_IP || process.env.IP || "localhost";
 var port = process.env.OPENSHIFT_NODEJS_PORT ||  process.env.OPENSHIFT_INTERNAL_PORT || process.env.PORT || 3000;
 var databaseUrl = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "codebuddy";
+var googleAuthUrl = "http://" + host + ":" + port;
 /* For Openshift */
 if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	databaseUrl = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" + 
@@ -11,6 +12,7 @@ if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
 	process.env.OPENSHIFT_APP_NAME;
+	googleAuthUrl = "https://codebuddy-students.rhcloud.com";
 }
 
 /* Add libraries */
@@ -153,7 +155,7 @@ app.get('/google_login', function(req, res) {
     "anonymous",
     "anonymous",
     "1.0",
-    "http://" + host + ":" + port + "/google_cb" + ( req.param('action') && req.param('action') != "" ? "?action=" + querystring.escape(req.param('action')) : "" ),
+    googleAuthUrl + "/google_cb" + ( req.param('action') && req.param('action') != "" ? "?action=" + querystring.escape(req.param('action')) : "" ),
     "HMAC-SHA1");
 
   oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
