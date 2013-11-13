@@ -1,11 +1,16 @@
 {
-  "name": "codebuddy",
+  "name" : "codebuddy",
   "description": "A website where users learn to code while competing against each other",
-  "version": "0.0.1",
-  "private": false,
-  "dependencies": {
-    "express": "3.4.4",
-    "redis": "*"
+  "version" : "0.0.1",
+  "private" : false,
+  "repository" : {
+    "type" : "git",
+    "url" : "http://github.com/silps/codebuddy.git"
+  },
+  "dependencies" : {
+    "express" : "3.4.4",
+    "mongojs" : "0.9.6",
+    "oauth" : "0.9.10",
+    "util" : "0.4.9"
   }
 }
-
