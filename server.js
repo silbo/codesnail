@@ -278,5 +278,5 @@ app.get('/', function(req, res) {
 });
 
 /* Start the app */
-app.listen(port);
+app.listen(port, host);
 console.log('Listening on port ' + port);
