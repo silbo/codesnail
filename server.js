@@ -1,10 +1,11 @@
 #!/bin/env node
+
 /* Global variables */
 var collections = ["users", "reports"];
 var host = process.env.OPENSHIFT_NODEJS_IP || process.env.OPENSHIFT_INTERNAL_IP || process.env.IP || "localhost";
 var port = process.env.OPENSHIFT_NODEJS_PORT ||  process.env.OPENSHIFT_INTERNAL_PORT || process.env.PORT || 3000;
 var databaseUrl = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "codebuddy";
-var googleAuthUrl = "http://" + host + ":" + port;
+var oAuthUrl = "http://" + host + ":" + port;
 /* For Openshift */
 if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	databaseUrl = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" + 
@@ -12,7 +13,7 @@ if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
 	process.env.OPENSHIFT_APP_NAME;
-	googleAuthUrl = "https://codebuddy-students.rhcloud.com";
+	oAuthUrl = "https://codebuddy-students.rhcloud.com";
 }
 
 /* Add libraries */
@@ -21,6 +22,7 @@ var app = express();
 var db = require("mongojs").connect(databaseUrl, collections);
 var oauth = require('oauth').OAuth;
 var querystring = require('querystring');
+var crypto = require('crypto');
 
 /* Set app properties */
 app.set('title', 'CodeBuddy');
@@ -37,8 +39,8 @@ app.use(express.session({
 var oa = new oauth(
   "https://api.twitter.com/oauth/request_token",
   "https://api.twitter.com/oauth/access_token",
-  "enter-key",
-  "enter-secret",
+  "anonymous",
+  "anonymous",
   "1.0A",
   "http://" + host + ":" + port + "/auth/twitter/callback",
   "HMAC-SHA1");
@@ -147,15 +149,16 @@ app.get('/google_login', function(req, res) {
   
   /* GData specifid: scopes that wa want access to */
   var gdataScopes = [
-    querystring.escape("https://www.google.com/m8/feeds/"),
-    querystring.escape("https://www.google.com/calendar/feeds/")];
+    querystring.escape("https://www.googleapis.com/auth/userinfo.email"),
+    querystring.escape("https://www.googleapis.com/auth/userinfo.profile")];
   
-  var oa = new oauth(getRequestTokenUrl + "?scope=" + gdataScopes.join('+'),
+  var oa = new oauth(
+  	getRequestTokenUrl + "?scope=" + gdataScopes.join('+'),
     "https://www.google.com/accounts/OAuthGetAccessToken",
     "anonymous",
     "anonymous",
-    "1.0",
-    googleAuthUrl + "/google_cb" + ( req.param('action') && req.param('action') != "" ? "?action=" + querystring.escape(req.param('action')) : "" ),
+    "2.0",
+    oAuthUrl + "/google_cb" + ( req.param('action') && req.param('action') != "" ? "?action=" + querystring.escape(req.param('action')) : "" ),
     "HMAC-SHA1");
 
   oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
@@ -200,12 +203,12 @@ app.get('/google_cb', function(req, res) {
         /* Store the access token in the session */
         req.session.oauth_access_token = oauth_access_token;
         req.session.oauth_access_token_secret = oauth_access_token_secret;
-        res.redirect((req.param('action') && req.param('action') != "") ? req.param('action') : "/google_contacts");
+        res.redirect((req.param('action') && req.param('action') != "") ? req.param('action') : "/google_user");
      	}
   	});   
 });
 
-app.get('/google_contacts', require_google_login, function(req, res) {
+app.get('/google_user', require_google_login, function(req, res) {
   var oa = new oauth(req.session.oa._requestUrl,
     req.session.oa._accessUrl,
     req.session.oa._consumerKey,
@@ -213,46 +216,23 @@ app.get('/google_contacts', require_google_login, function(req, res) {
     req.session.oa._version,
     req.session.oa._authorize_callback,
     req.session.oa._signatureMethod);
-  console.log(oa);
-
-	/* Example using GData API v3 */
-	/* GData Specific Header */
-	oa._headers['GData-Version'] = '3.0'; 
-
-	oa.getProtectedResource(
-    "https://www.google.com/m8/feeds/contacts/default/full?alt=json", 
-    "GET", 
-    req.session.oauth_access_token, 
-    req.session.oauth_access_token_secret,
-    function (error, data, response) {
-      var feed = JSON.parse(data);
-      res.render('google_contacts.ejs', {
-        locals: { feed: feed }
-      });
-    });
-});
-
-app.get('/google_calendars', require_google_login, function(req, res) {
-  var oa = new oauth(req.session.oa._requestUrl,
-    req.session.oa._accessUrl,
-    req.session.oa._consumerKey,
-    req.session.oa._consumerSecret,
-    req.session.oa._version,
-    req.session.oa._authorize_callback,
-    req.session.oa._signatureMethod);
-  /* Example using GData API v2 */
+  /* Example using GData API v3 */
   /* GData Specific Header */
-  oa._headers['GData-Version'] = '2'; 
-  
+  oa._headers['GData-Version'] = '3';
+
   oa.getProtectedResource(
-	  "https://www.google.com/calendar/feeds/default/allcalendars/full?alt=jsonc", 
-	  "GET", 
+	  "https://www.googleapis.com/userinfo/v2/me",
+	  "GET",
 	  req.session.oauth_access_token, 
 	  req.session.oauth_access_token_secret,
 	  function (error, data, response) {      
 	    var feed = JSON.parse(data);
-	    res.render('google_calendars.ejs', {
-	      locals: { feed: feed }
+
+	    var shasum = crypto.createHash('md5');
+	    shasum.update(feed['email']);
+
+	    res.render('google_user.ejs', {
+	      locals: { feed: feed, gravatar: shasum.digest('hex') }
 	    });
   	});
 });
@@ -268,7 +248,7 @@ db.users.find({sex: "female"}, function(err, users) {
   if( err || !users) console.log("No female users found");
   else users.forEach( function(femaleUser) {
     console.log(femaleUser);
-  } );
+  });
 });
 
 /* Homepage */
@@ -276,7 +256,7 @@ app.get('/', function(req, res) {
 	if(typeof req.session.oauth_access_token === "undefined")
   	res.redirect("/google_login");
 	else
-	  res.redirect("/google_contacts");
+	  res.redirect("/google_user");
 });
 
 /* Start the app */
