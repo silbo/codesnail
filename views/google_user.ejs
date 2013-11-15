@@ -1,0 +1,29 @@
+<style>
+  #header {
+  	position: fixed;
+  	right: 5;
+  	top: 5;
+  }
+  #footer {
+
+  }
+	.mugshot {
+		-webkit-border-radius: 50%;
+		border-radius: 50%;
+		display: block;
+	}
+	.mugshot-link {
+		text-decoration: none;
+		color: black;
+		font-weight: bold;
+	}
+</style>
+<!--<img class="mugshot" src="http://www.gravatar.com/avatar/<%= gravatar %>" alt="mugshot" width="80" height="80" /><br>-->
+<div id="header">
+	<a class="mugshot-link" href="<%= feed['link'] %>">
+		<img class="mugshot" src="<%= feed['picture'] %>" alt="mugshot" width="80" height="80" />
+		<%= feed['name'] %>
+	</a>
+</div>
+<h1>Welcome to CodeBuddy</h1>
+<p>Learn new skills while completing exiting challenges.</p>
