@@ -18,10 +18,13 @@
 		font-weight: bold;
 	}
 </style>
-<!--<img class="mugshot" src="http://www.gravatar.com/avatar/<%= gravatar %>" alt="mugshot" width="80" height="80" /><br>-->
 <div id="header">
 	<a class="mugshot-link" href="<%= feed['link'] %>">
-		<img class="mugshot" src="<%= feed['picture'] %>" alt="mugshot" width="80" height="80" />
+		<% if (typeof feed['picture'] !== "undefined" ) { %>
+			<img class="mugshot" src="<%= feed['picture'] %>" alt="mugshot" width="80" height="80" />
+		<% } else { %>
+			<img class="mugshot" src="http://www.gravatar.com/avatar/<%= gravatar %>" alt="mugshot" width="80" height="80" />
+		<% } %>
 		<%= feed['name'] %>
 	</a>
 </div>

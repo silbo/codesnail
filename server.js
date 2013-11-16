@@ -42,7 +42,7 @@ var oa = new oauth(
   "anonymous",
   "anonymous",
   "1.0A",
-  "http://" + host + ":" + port + "/auth/twitter/callback",
+  oAuthUrl + "/auth/twitter/callback",
   "HMAC-SHA1");
 
 /* Twitter URLs */
