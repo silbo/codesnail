@@ -1,6 +1,18 @@
 #!/bin/env node
 
 /* Global variables */
+/* URLs */
+var gravatarMugshotUrl = "http://www.gravatar.com/avatar/";
+var gravatarProfileUrl = "http://www.gravatar.com/";
+var googleRedirectUrl = "https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token=";
+var googleUserInfoUrl = "https://www.googleapis.com/userinfo/v2/me";
+var twitterRedirectUrl = "https://twitter.com/oauth/authenticate?oauth_token=";
+var twitterUserInfoUrl = "https://api.twitter.com/1.1/users/show.json";
+var facebookRedirectUr = "undefined";
+var facebookUserInfoUrl = "undefined";
+var oauthRedirectUrl = "undefined";
+var oauthUserInfoUrl = "undefined";
+/* Development, Testing and Production */
 var collections = ["users", "reports"];
 var host = process.env.OPENSHIFT_NODEJS_IP || process.env.OPENSHIFT_INTERNAL_IP || process.env.IP || "localhost";
 var port = process.env.OPENSHIFT_NODEJS_PORT ||  process.env.OPENSHIFT_INTERNAL_PORT || process.env.PORT || 3000;
@@ -8,7 +20,7 @@ var databaseUrl = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "codebu
 var oAuthUrl = "http://" + host + ":" + port;
 /* For Openshift */
 if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
-	databaseUrl = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" + 
+	databaseUrl = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
 	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
@@ -35,204 +47,145 @@ app.use(express.session({
   secret: "aslkdsalkdjLKLKSJDL3423432"
 }));
 
-/* Twitter OAuth */
-var oa = new oauth(
-  "https://api.twitter.com/oauth/request_token",
-  "https://api.twitter.com/oauth/access_token",
-  "anonymous",
-  "anonymous",
-  "1.0A",
-  oAuthUrl + "/auth/twitter/callback",
-  "HMAC-SHA1");
-
-/* Twitter URLs */
-app.get('/sessions/connect', function(req, res) {
-  oa.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results) {
-    if (error) {
-      res.send("Error getting OAuth request token : " + error.toString(), 500);
-    } else {
-      req.session.oauthRequestToken = oauthToken;
-      req.session.oauthRequestTokenSecret = oauthTokenSecret;
-      res.redirect("https://twitter.com/oauth/authenticate?oauth_token=" + req.session.oauthRequestToken);
-    }
-  });
-});
- 
-app.get('/auth/twitter/callback', function(req, res) {
-  sys.puts(">>"+req.session.oauthRequestToken);
-  sys.puts(">>"+req.session.oauthRequestTokenSecret);
-  sys.puts(">>"+req.query.oauth_verifier);
-  oa.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
-    if (error) {
-      res.send("Error getting OAuth access token : " + sys.inspect(error) + "[" + oauthAccessToken + "]" + "[" + oauthAccessTokenSecret + "]" + "[" + sys.inspect(results) + "]", 500);
-    } else {
-      console.log(results);
-      req.session.user_id = results.id;
-      req.session.screen_name = results.screen_name;
-      req.session.oauthAccessToken = oauthAccessToken;
-      req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;
-      
-      var hash = crypto.createHash('sha1');
-      hash.update(oauthAccessToken);
-      /* Session storage */
-      client.set(hash.digest('hex'), oauthAccessToken.toString(), redis.print);
- 
-      var hash = crypto.createHash('sha1');
-      hash.update(oauthAccessTokenSecret);
-      /* Session storage */
-      client.set(hash.digest('hex'), oauthAccessTokenSecret.toString(), redis.print);
-      /* Right here is where we would write out some nice user stuff */
-      oa.get("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=daemonfire", req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function (error, data, response) {
-        if (error) {
-          res.send("Error getting twitter screen name : " + sys.inspect(error), 500);
-        } else {
-          console.log(data);
-          req.session.twitterScreenName = data["screen_name"];
-          res.json(data);
-        }
-      });
-    }
-  });
-});
- 
-app.get('/timeline', function(req, res) {
-  oa.get("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=daemonfire", req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function (error, data, response) {
-    if (error) {
-      res.send("Error getting twitter timeline for screen name : daemonfire " + sys.inspect(error), 500);
-    } else {
-      console.log(data);
-      req.session.twitterScreenName = data["screen_name"];
-      res.json(JSON.parse(data));
-    }
-  });
-});
- 
-app.get('/searchapi', function(req, res) {
-  oa.get('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURIComponent('#SEARCHTEARM'), req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function (error, data, response) {
-    if (error) {
-      res.send("Error getting twitter timeline for screen name : " + sys.inspect(error), 500);
-    } else {
-      console.log(data);
-      res.json(JSON.parse(data));
-    }
-  });
-});
- 
-app.post('/post/status', function(req, res) {
-  var matches = true;
-  if (matches !== null) {
-    oa.post(
-      "http://api.twitter.com/1.1/statuses/update.json",
-      req.session.oauthAccessToken, req.session.oauthAccessTokenSecret,
-      { "status": req.body.status },
-      function(error, data) {
-        if(error)
-          console.log(require('sys').inspect(error));
-        else
-          console.log(data);
-      });
-  }
-});
-
 /* Google URLs */
-function require_google_login(req, res, next) {
-  if (!req.session.oauth_access_token) {
-    res.redirect("/google_login?action=" + querystring.escape(req.originalUrl));
+function requireLogin(req, res, next) {
+  if (typeof req.session.oauthToken === "undefined") {
+    res.redirect("/login?action=" + querystring.escape(req.originalUrl));
     return;
   }
   next();
 };
 
 /* Request an OAuth Request Token, and redirects the user to authorize it */
-app.get('/google_login', function(req, res) {
-  var getRequestTokenUrl = "https://www.google.com/accounts/OAuthGetRequestToken";
+app.get('/login', function(req, res) {
+  var googleRequestTokenUrl = "https://www.google.com/accounts/OAuthGetRequestToken";
   
   /* GData specifid: scopes that wa want access to */
   var gdataScopes = [
     querystring.escape("https://www.googleapis.com/auth/userinfo.email"),
     querystring.escape("https://www.googleapis.com/auth/userinfo.profile")];
   
-  var oa = new oauth(
-  	getRequestTokenUrl + "?scope=" + gdataScopes.join('+'),
-    "https://www.google.com/accounts/OAuthGetAccessToken",
-    "anonymous",
-    "anonymous",
-    "2.0",
-    oAuthUrl + "/google_cb" + ( req.param('action') && req.param('action') != "" ? "?action=" + querystring.escape(req.param('action')) : "" ),
-    "HMAC-SHA1");
+  console.log("DEBUG", "oauth method:", req.param('oauth'));
+  var oa = "undefined";
+  if (req.param('oauth') == "google") {
+  	console.log("DEBUG", "logging in with google");
+  	oauthRedirectUrl = googleRedirectUrl;
+  	oauthUserInfoUrl = googleUserInfoUrl;
+	  /* Google OAuth */
+	  oa = new oauth(
+	  	googleRequestTokenUrl + "?scope=" + gdataScopes.join('+'),
+	    "https://www.google.com/accounts/OAuthGetAccessToken",
+	    "anonymous",
+	    "anonymous",
+	    "2.0",
+	    oAuthUrl + "/callback",
+	    "HMAC-SHA1");
+	} else if (req.param('oauth') == "twitter") {
+		console.log("DEBUG", "logging in with twitter");
+		oauthRedirectUrl = twitterRedirectUrl;
+		oauthUserInfoUrl = twitterUserInfoUrl;
+	  /* Twitter OAuth */
+		oa = new oauth(
+		  "https://api.twitter.com/oauth/request_token",
+		  "https://api.twitter.com/oauth/access_token",
+		  "anonymous",
+		  "anonymous",
+		  "1.0A",
+		  oAuthUrl + "/callback",
+		  "HMAC-SHA1");
+	} else if (req.param('oauth') == "facebook") {
+		console.log("DEBUG", "logging in with facebook");
+		oauthRedirectUrl = facebookRedirectUr;
+		oauthUserInfoUrl = facebookUserInfoUrl;
+		res.json({ error: "no_facebook_login_yet" });
+		return;
+	} else {
+		/* No such login action, render login again */
+		res.render("login.ejs");
+	}
 
-  oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
+  oa.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results){
     if (error) {
-      console.log('error');
-      console.log(error);
-    }
-    else { 
+      console.log("ERROR", "getting OAuth request token:", error);
+    } else { 
 	    /* Store the tokens in the session */
 	    req.session.oa = oa;
-	    req.session.oauth_token = oauth_token;
-	    req.session.oauth_token_secret = oauth_token_secret;
-
+	    req.session.oauthToken = oauthToken;
+	    req.session.oauthTokenSecret = oauthTokenSecret;
 	    /* Redirect the user to authorize the token */
-	    res.redirect("https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token=" + oauth_token);
+	    res.redirect(oauthRedirectUrl + oauthToken);
     }
   })
 });
 
 /* Callback for the authorization page */
-app.get('/google_cb', function(req, res) {
+app.get('/callback', function(req, res) {
   /* Get the OAuth access token with the 'oauth_verifier' that we received */
-  var oa = new oauth(req.session.oa._requestUrl,
-    req.session.oa._accessUrl,
-    req.session.oa._consumerKey,
-    req.session.oa._consumerSecret,
-    req.session.oa._version,
-    req.session.oa._authorize_callback,
-    req.session.oa._signatureMethod);      
-  console.log(oa);
-        
-  oa.getOAuthAccessToken(
-    req.session.oauth_token, 
-    req.session.oauth_token_secret, 
-    req.param('oauth_verifier'), 
-    function(error, oauth_access_token, oauth_access_token_secret, results2) {           
-	    if (error) {
-	            console.log('error');
-	            console.log(error);
-	     }
-	     else {
-        /* Store the access token in the session */
-        req.session.oauth_access_token = oauth_access_token;
-        req.session.oauth_access_token_secret = oauth_access_token_secret;
-        res.redirect((req.param('action') && req.param('action') != "") ? req.param('action') : "/google_user");
-     	}
-  	});   
-});
-
-app.get('/google_user', require_google_login, function(req, res) {
-  var oa = new oauth(req.session.oa._requestUrl,
+  var oa = new oauth(
+  	req.session.oa._requestUrl,
     req.session.oa._accessUrl,
     req.session.oa._consumerKey,
     req.session.oa._consumerSecret,
     req.session.oa._version,
     req.session.oa._authorize_callback,
     req.session.oa._signatureMethod);
+  console.log(oa);
+        
+  oa.getOAuthAccessToken(
+    req.session.oauthToken,
+    req.session.oauthTokenSecret, 
+    req.param('oauth_verifier'),
+    function(error, oauthToken, oauthTokenSecret, results) {           
+	    if (error) {
+	      console.log("ERROR", "getting OAuth access token:", error);
+	     } else {
+	     	/* For Twitter */
+	     	req.session.username = results.screen_name;
+        /* Store the access token in the session */
+        req.session.oauthToken = oauthToken;
+        req.session.oauthTokenSecret = oauthTokenSecret;
+        res.redirect("/main");
+     	}
+  	});
+});
+
+app.get('/main', requireLogin, function(req, res) {
+	var oa = new oauth(
+		req.session.oa._requestUrl,
+    req.session.oa._accessUrl,
+    req.session.oa._consumerKey,
+    req.session.oa._consumerSecret,
+    req.session.oa._version,
+    req.session.oa._authorize_callback,
+    req.session.oa._signatureMethod);
+	console.log(oa);
+
   /* Example using GData API v3 */
   /* GData Specific Header */
   oa._headers['GData-Version'] = '3';
 
   oa.getProtectedResource(
-	  "https://www.googleapis.com/userinfo/v2/me",
+	  oauthUserInfoUrl + "?screen_name=" + req.session.username,
 	  "GET",
-	  req.session.oauth_access_token, 
-	  req.session.oauth_access_token_secret,
-	  function (error, data, response) {      
+	  req.session.oauthToken, 
+	  req.session.oauthTokenSecret,
+	  function (error, data, response) {
 	    var feed = JSON.parse(data);
 
-	    var shasum = crypto.createHash('md5');
-	    shasum.update(feed['email']);
-
-	    res.render('google_user.ejs', {
-	      locals: { feed: feed, gravatar: shasum.digest('hex') }
+	    /* Calculate gravatar hash */
+	    var gravatarHash = "";
+    	if (typeof feed['email'] !== "undefined") {
+    		var shasum = crypto.createHash('md5');
+   			shasum.update(feed['email']);
+   			gravatarHash = shasum.digest('hex');
+	    }
+	    /* Define the mugshot image (google, twitter, gravatar) */
+	    feed['mugshot_src'] = feed['picture'] || feed['profile_image_url'] || gravatarMugshotUrl + gravatarHash;
+	    feed['profile_name'] = feed['name'] || feed['screen_name'] || "Anonymous";
+	    feed['profile_url'] = feed['link'] || feed['url'] || gravatarProfileUrl + gravatarHash;
+	    /* Render the response */
+	    res.render('main.ejs', {
+	      locals: { feed: feed }
 	    });
   	});
 });
@@ -254,9 +207,9 @@ db.users.find({sex: "female"}, function(err, users) {
 /* Homepage */
 app.get('/', function(req, res) {
 	if(typeof req.session.oauth_access_token === "undefined")
-  	res.redirect("/google_login");
+  	res.render("login.ejs");
 	else
-	  res.redirect("/google_user");
+	  res.redirect("/main");
 });
 
 /* Start the app */
