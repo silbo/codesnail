@@ -35,6 +35,10 @@ app.get("/login", function(req, res) {
   });
 });
 
+app.get("/register", function(req, res) {
+	res.redirect("/login");
+});
+
 app.post("/register", function(req, res) {
   // Save to db
   db.User.findOne({ email: req.body.email }, function (err, user) {
@@ -120,9 +124,9 @@ app.get("/profile", auth.ensureAuthenticated, function(req, res) {
 	var feed = {};
 	feed.name = req.user.name;
 	feed.email = req.user.email;
-	feed.mugshot_src = config.gravatar.mugshot + auth.calculateHash("md5", req.user.email);
+	feed.mugshot_src = req.user.mugshot || config.gravatar.mugshot + auth.calculateHash("md5", req.user.email);
 	feed.profile_name = req.user.name;
-	feed.profile_url = config.gravatar.profile + auth.calculateHash("md5", req.user.email);
+	feed.profile_url = req.user.link || config.gravatar.profile + auth.calculateHash("md5", req.user.email);
 	/* Render the response */
   res.render("profile.jade", {
     feed: feed
