@@ -1,6 +1,23 @@
-<h1>Login with:</h1>
-<div id="logins">
-	<a href="<%= feed['google_auth'] %>">Google+</a><br>
-	<a href="<%= feed['twitter_auth'] %>">Twitter</a><br>
-	<a href="<%= feed['facebook_auth'] %>">Facebook</a><br>
-</div>
+extends layout
+
+block content
+	p Login
+	div#login
+		form(name="login", action="/login", method="post")
+			input(type="email", name="username", placeholder="Email")
+			input(type="password", name="password", placeholder="Password")
+			input(type="submit", value="Login")
+	p Register
+	div#register
+		form(name="register", action="/register", method="post")
+			input(type="text", name="name", placeholder="Full name")
+			input(type="text", name="email", placeholder="Email")
+			input(type="password", name="password", placeholder="Password")
+			input(type="submit", value="Register")
+	p Login with OAuth/OAuth2
+	div#oauths
+		a(href="#{feed.google_auth}") Google+
+		br
+		a(href="#{feed.twitter_auth}") Twitter
+		br
+		a(href="#{feed.facebook_auth}") Facebook

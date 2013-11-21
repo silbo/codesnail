@@ -1,33 +1,9 @@
-<style>
-	#header {
-	position: fixed;
-	right: 5;
-	top: 5;
-	}
-	#footer {
-	
-	}
-	.mugshot {
-		-webkit-border-radius: 50%;
-		border-radius: 50%;
-		display: block;
-	}
-	.mugshot-link {
-		text-decoration: none;
-		color: black;
-		font-weight: bold;
-		font-size: 0.6em;
-	}
-</style>
+extends layout
 
-<div id="header">
-	<a class="mugshot-link" href="<%= feed['profile_url'] %>" title="profile">
-		<img class="mugshot" src="<%= feed['mugshot_src'] %>" alt="mugshot" width="50" height="50" />
-		<%= feed['profile_name'] %>
-	</a>
-	<br>
-	<a href="/logout">Logout</a>
-</div>
-
-<h1>Welcome to CodeBuddy</h1>
-<p>Learn new skills while completing exiting challenges.</p>
+block content
+	div#header
+		a(class="mugshot-link", href="#{feed.profile_url}", title="profile")
+			img(class="mugshot", src="#{feed.mugshot_src}", alt="mugshot")
+			feed.profile_name
+		a(href="/logout") Logout
+	a(href="/profile") Profile
