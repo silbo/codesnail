@@ -1,4 +1,4 @@
-/* Configuration stuff */
+/* Configuration */
 var config = require("./config");
 
 /* Connect to database */
@@ -13,8 +13,10 @@ var Schema = mongoose.Schema,
 /* Database schemas */
 var UserSchema = new Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
+  verified: { type: Boolean, required: true },
+  verification_hash: { type: String, required: true, unique: true },
   providers: [{ name: String, mugshot_src: String, profile_name: String, profile_url: String }],
   badges: [{ name: String, date: Date }]
 });
