@@ -52,12 +52,12 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
   	process.nextTick(function () {
+      console.log("INFO", profile);
       var user = {};
       user.mugshot = profile._json.picture || profile._json.profile_image_url;
       user.name = profile.displayName || "Anonymous";
       user.link = profile._json.link || profile._json.url || profile.profileUrl;
-      if (typeof profile.emails !== "undefined") user.email = profile.emails[0].value;
-      user.email = "";
+      user.email = profile._json.email || "";
 	    return done(null, user);
 	  });
   }
@@ -70,12 +70,12 @@ passport.use(new TwitterStrategy({
   },
   function(token, tokenSecret, profile, done) {
     process.nextTick(function () {
+      console.log("INFO", profile);
       var user = {};
       user.mugshot = profile._json.picture || profile._json.profile_image_url;
       user.name = profile.displayName || "Anonymous";
       user.link = profile._json.link || profile._json.url || profile.profileUrl;
-      if (typeof profile.emails !== "undefined") user.email = profile.emails[0].value;
-      else user.email = "";
+      user.email = profile._json.email || "";
 	    return done(null, user);
 	  });
   }
@@ -88,12 +88,12 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
   	process.nextTick(function () {
+      console.log("INFO", profile);
       var user = {};
       user.mugshot = profile._json.picture || profile._json.profile_image_url;
       user.name = profile.displayName || "Anonymous";
       user.link = profile._json.link || profile._json.url || profile.profileUrl;
-      if (typeof profile.emails !== "undefined") user.email = profile.emails[0].value;
-      user.email = "";
+      user.email = profile._json.email || "";
     	return done(null, user);
   	});
   }
