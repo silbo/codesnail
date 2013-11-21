@@ -1,13 +1,23 @@
-/* Configuration stuff */
-var config = require("./config");
+/* Configuration, database and crypto */
+var config = require("./config"),
+  db = require("./database"),
+  crypto = require('crypto');
 
 /* OAuth stuff */
 var passport = require('passport'),
+  LocalStrategy = require('passport-local').Strategy,
 	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
 	TwitterStrategy = require('passport-twitter').Strategy,
 	FacebookStrategy = require('passport-facebook').Strategy;
 
-// Simple route middleware to ensure user is authenticated.  Otherwise send to login page.
+/* Hashing function */
+exports.calculateHash = function calculateHash(type, text) {
+  var shasum = crypto.createHash(type);
+  shasum.update(text);
+  return shasum.digest("hex");
+}
+
+/* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect('/login');
@@ -21,6 +31,20 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    process.nextTick(function () {
+      /* So the user can also write the first part of the email, example@email.com can be also example */
+      db.User.findOne({ email: new RegExp("(^" + username + "@|^" + username + "$)", "i") }, function (err, user) {
+        if (err) return done(err);
+        if (!user) return done(null, false);
+        if (user.password != exports.calculateHash("sha1", password)) return done(null, false);
+        return done(null, user);
+      });
+    });
+  }
+));
+
 passport.use(new GoogleStrategy({
     clientID: config.google.consumer_key,
     clientSecret: config.google.consumer_secret,
@@ -28,7 +52,13 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
   	process.nextTick(function () {
-	    return done(null, profile);
+      var user = {};
+      user.mugshot = profile._json.picture || profile._json.profile_image_url;
+      user.name = profile.displayName || "Anonymous";
+      user.link = profile._json.link || profile._json.url || profile.profileUrl;
+      if (typeof profile.emails !== "undefined") user.email = profile.emails[0].value;
+      user.email = "";
+	    return done(null, user);
 	  });
   }
 ));
@@ -40,7 +70,13 @@ passport.use(new TwitterStrategy({
   },
   function(token, tokenSecret, profile, done) {
     process.nextTick(function () {
-	    return done(null, profile);
+      var user = {};
+      user.mugshot = profile._json.picture || profile._json.profile_image_url;
+      user.name = profile.displayName || "Anonymous";
+      user.link = profile._json.link || profile._json.url || profile.profileUrl;
+      if (typeof profile.emails !== "undefined") user.email = profile.emails[0].value;
+      else user.email = "";
+	    return done(null, user);
 	  });
   }
 ));
@@ -52,7 +88,13 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
   	process.nextTick(function () {
-    	return done(null, profile);
+      var user = {};
+      user.mugshot = profile._json.picture || profile._json.profile_image_url;
+      user.name = profile.displayName || "Anonymous";
+      user.link = profile._json.link || profile._json.url || profile.profileUrl;
+      if (typeof profile.emails !== "undefined") user.email = profile.emails[0].value;
+      user.email = "";
+    	return done(null, user);
   	});
   }
 ));
