@@ -4,7 +4,7 @@ block content
 	div#header
 		a(class="mugshot-link", href="#{feed.profile_url}", title="profile")
 			img(class="mugshot", src="#{feed.mugshot_src}", alt="mugshot")
-			feed.profile_name
+			p #{feed.profile_name}
 		a(href="/logout") Logout
 	a(href="/") Index
 	p Name: #{feed.name}
