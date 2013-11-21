@@ -1,11 +1,13 @@
-var config = {}
+var config = {};
 
+config.smtp = {};
 config.gravatar = {};
 config.google = {};
 config.twitter = {};
 config.facebook = {};
 
 /* App hostname and port */
+config.hostname = "http://localhost:3000";
 config.host = process.env.OPENSHIFT_NODEJS_IP || process.env.OPENSHIFT_INTERNAL_IP || process.env.IP || "localhost";
 config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || process.env.PORT || 3000;
 
@@ -18,7 +20,12 @@ if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
 	process.env.OPENSHIFT_APP_NAME;
+	config.hostname = "https://codebuddy-students.rhcloud.com";
 }
+
+/* Email SMTP */
+config.smtp.username = "anonymous";
+config.smtp.password = "anonymous";
 
 /* Gravatar */
 config.gravatar.mugshot = "http://www.gravatar.com/avatar/";
