@@ -1,0 +1,38 @@
+#header {
+	border-bottom: 1px solid gray;
+	width: 98%;
+	top: 5px;
+	text-align: center;
+}
+#user {
+	position: fixed;
+	top: 5px;
+	right: 5px;
+}
+#footer {
+	border-top: 1px solid gray;
+	position: fixed;
+	width: 98%;
+	bottom: 5px;
+	text-align: center;
+}
+.mugshot {
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	display: block;
+	width: 50px;
+	height: 50px;
+}
+.mugshot-link {
+	text-decoration: none;
+	color: black;
+	font-weight: bold;
+	font-size: 0.6em;
+}
+.messages {
+	color: green;
+}
+
+.errors {
+	color: red;
+}
