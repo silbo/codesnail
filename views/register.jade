@@ -1,0 +1,19 @@
+extends layout
+
+block content
+	p Register or 
+		a(href="/login") Login
+	div#register
+		each error in errors
+			p.errors #{error.msg}
+		p.messages #{messages}
+		form(name="register", action="/register", method="post")
+			input(type="text", name="name", value="#{name}", placeholder="Full name")
+			br
+			input(type="email", name="email", value="#{email}", placeholder="Email")
+			br
+			input(type="password", name="password", placeholder="Password")
+			br
+			input(type="password", name="passwordConfirm", placeholder="Repeat Password")
+			br
+			input(type="submit", name="register", value="Register")
