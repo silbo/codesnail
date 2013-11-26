@@ -1,9 +1,4 @@
 extends layout
 
 block content
-	div#header
-		a(class="mugshot-link", href="#{feed.profile_url}", title="profile")
-			img(class="mugshot", src="#{feed.mugshot_src}", alt="mugshot")
-			p #{feed.profile_name}
-		a(href="/logout") Logout
 	a(href="/profile") Profile
