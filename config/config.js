@@ -13,6 +13,7 @@ config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNA
 
 /* Database URL */
 config.database_url = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "localhost";
+
 /* For Openshift */
 if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	config.database_url = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
@@ -52,5 +53,12 @@ config.facebook.consumer_key = "anonymous";
 config.facebook.consumer_secret = "anonymous";
 config.facebook.auth = "/auth/facebook";
 config.facebook.callback = "/auth/facebook/callback";
+
+/* OAuth logins */
+config.logins = {
+	"Google+": config.google.auth,
+	"Twitter": config.twitter.auth,
+	"Facebook": config.facebook.auth
+};
 
 module.exports = config;
