@@ -1,23 +1,19 @@
 extends layout
 
 block content
-	p Login
+	p Login or 
+		a(href="/register") Register
 	div#login
+		each error in errors
+			p.errors #{error}
 		form(name="login", action="/login", method="post")
 			input(type="email", name="username", placeholder="Email")
+			br
 			input(type="password", name="password", placeholder="Password")
-			input(type="submit", value="Login")
-	p Register
-	div#register
-		form(name="register", action="/register", method="post")
-			input(type="text", name="name", placeholder="Full name")
-			input(type="text", name="email", placeholder="Email")
-			input(type="password", name="password", placeholder="Password")
-			input(type="submit", value="Register")
+			br
+			input(type="submit", name="login", value="Login")
 	p Login with OAuth/OAuth2
 	div#oauths
-		a(href="#{feed.google_auth}") Google+
-		br
-		a(href="#{feed.twitter_auth}") Twitter
-		br
-		a(href="#{feed.facebook_auth}") Facebook
+		each value, key in logins
+			a(href="#{value}") #{key}
+			br
