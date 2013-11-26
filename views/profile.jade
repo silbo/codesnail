@@ -1,13 +1,28 @@
 extends layout
 
 block content
-	div#header
-		a(class="mugshot-link", href="#{feed.profile_url}", title="profile")
-			img(class="mugshot", src="#{feed.mugshot_src}", alt="mugshot")
-			p #{feed.profile_name}
-		a(href="/logout") Logout
 	a(href="/") Index
-	p Name: #{feed.name}
-	p Email: #{feed.email}
-	p Bio:
-	textarea(type="text", name="bio")
+	div#profile
+		form(name="profile", action="/profile", method="post")
+			div Name:
+				input(type="text", name="name", value="#{user.name}")
+			div Email:
+				input(type="email", name="email", value="#{user.email}")
+			div Description:
+			textarea(type="text", name="bio", placeholder="personal info")
+				| #{user.profile.description}
+			div Location:
+				input(type="text", name="location", placeholder="location", value="#{user.profile.location}")
+			div Website:
+				input(type="text", name="website", placeholder="website", value="#{user.profile.website}")
+			div Other account:
+				each provider in user.profile.providers
+					div 
+						img(class="mugshot", src="#{provider.mugshot}", alt="mugshot") 
+						div #{provider.name} #{provider.display_name}
+			p Old password and New password:
+			input(type="password", name="passwordOld" placeholder="old")
+			input(type="password" name="password" placeholder="new")
+			input(type="password" name="passwordConfirm" placeholder="new again")
+			div #{profile}
+			input(type="submit", value="Save")
