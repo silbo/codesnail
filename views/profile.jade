@@ -3,26 +3,37 @@ extends layout
 block content
 	a(href="/") Index
 	div#profile
-		form(name="profile", action="/profile", method="post")
+		form(name="profile", action="/profile/update", method="post")
+			div Email: #{user.email} (ask admin to change email xD)
+			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
+			div Points: #{user.profile.points}
 			div Name:
 				input(type="text", name="name", value="#{user.name}")
-			div Email:
-				input(type="email", name="email", value="#{user.email}")
 			div Description:
-			textarea(type="text", name="bio", placeholder="personal info")
+			textarea(type="text", name="description", placeholder="personal info")
 				| #{user.profile.description}
 			div Location:
 				input(type="text", name="location", placeholder="location", value="#{user.profile.location}")
 			div Website:
 				input(type="text", name="website", placeholder="website", value="#{user.profile.website}")
-			div Other account:
+			div Other accounts:
 				each provider in user.profile.providers
-					div 
-						img(class="mugshot", src="#{provider.mugshot}", alt="mugshot") 
-						div #{provider.name} #{provider.display_name}
-			p Old password and New password:
-			input(type="password", name="passwordOld" placeholder="old")
-			input(type="password" name="password" placeholder="new")
-			input(type="password" name="passwordConfirm" placeholder="new again")
-			div #{profile}
+					div
+						img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
+						div #{provider.name} 
+							a(href="#{provider.url}") #{provider.display_name}
+							&nbsp;
+							a(href="/profile/remove/#{provider.name}") disconnect
+				div#oauths
+					each login in logins
+						| #{login[0]} 
+						a(href="#{login[1]}") connect
+						br
+			p Change password:
+			input(type="password", name="passwordOld" placeholder="Old password")
+			br
+			input(type="password" name="password" placeholder="New password")
+			br
+			input(type="password" name="passwordConfirm" placeholder="Repeat new password")
+			br
 			input(type="submit", value="Save")
