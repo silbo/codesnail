@@ -1,7 +1,6 @@
 #header {
 	border-bottom: 1px solid gray;
 	width: 98%;
-	top: 5px;
 	text-align: center;
 }
 #user {
@@ -11,10 +10,9 @@
 }
 #footer {
 	border-top: 1px solid gray;
-	position: fixed;
 	width: 98%;
-	bottom: 5px;
 	text-align: center;
+	margin-top: 5%;
 }
 .mugshot {
 	-webkit-border-radius: 50%;
