@@ -34,21 +34,20 @@ if ('development' == app.get('env')) {
 }
 
 app.get("/login", user.login);
-app.get("/register", user.register);
-app.post("/register", user.register);
+app.all("/register", user.register);
 app.get("/register/:id", user.verify);
 
-app.post("/login", passport.authenticate("local", { successRedirect: "/", failureRedirect: "/login", failureMessage: "Invalid username or password" }));
+app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Invalid username or password" }));
 
 app.get(config.google.auth, passport.authenticate("google", { scope: config.google.gdata_scopes }));
-app.get(config.google.callback, passport.authenticate("google", { successRedirect: "/", failureRedirect: "/login" }));
+app.get(config.google.callback, passport.authenticate("google", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Failed to authenticate with google" }));
 
 app.get(config.twitter.auth, passport.authenticate("twitter"));
-app.get(config.twitter.callback, passport.authenticate("twitter", { successRedirect: "/", failureRedirect: "/login" }));
+app.get(config.twitter.callback, passport.authenticate("twitter", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Failed to authenticate with twitter" }));
 
-/* Known bug: Facebook callback appends #_=_ to the URL */
+/* Facebook Oauth2 bug appends #_=_ to the callback URL */
 app.get(config.facebook.auth, passport.authenticate("facebook", { scope: ['email'] }));
-app.get(config.facebook.callback, passport.authenticate("facebook", { successRedirect: "/", failureRedirect: "/login" }));
+app.get(config.facebook.callback, passport.authenticate("facebook", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Failed to authenticate with facebok" }));
 
 app.get("/logout", user.logout);
 
@@ -57,18 +56,32 @@ app.get("/", auth.ensureAuthenticated, routes.index);
 
 /* Profile page */
 app.get("/profile", auth.ensureAuthenticated, user.profile);
+app.post("/profile/update", auth.ensureAuthenticated, user.profileUpdate);
+app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
 
-if (true) {
-	db.User.remove(function (err, users) {
-	  if (err) console.log("ERROR", "fetching users:", err);
+/* Delete all the users and providers */
+if (false) {
+	db.User.remove(function (err, removed) {
+	  if (err) console.log("ERROR", "deleting all users:", err);
 	  else console.log("INFO", "successfully removed all users");
+	});
+	db.Provider.remove(function (err, removed) {
+	  if (err) console.log("ERROR", "deleting all providers:", err);
+	  else console.log("INFO", "successfully removed all providers");
 	});
 }
 
+/* Show all the users and providers */
 db.User.find(function (err, users) {
-  if (err) console.log("ERROR", "fetching users:", err);
+  if (err) console.log("ERROR", "fetching all users:", err);
   else users.forEach(function(user) {
   	console.log("INFO", "user info:", user);
+  });
+});
+db.Provider.find(function (err, providers) {
+  if (err) console.log("ERROR", "fetching all providers:", err);
+  else providers.forEach(function(provider) {
+  	console.log("INFO", "provider info:", provider);
   });
 });
 
