@@ -63,7 +63,64 @@ exports.verify = function(req, res) {
 
 /* User profile page */
 exports.profile = function(req, res) {
-	res.render("profile", { user: req.user, profile: JSON.stringify(req.user.profile) });
+	/* Check which providers have been connected */
+	var logins = [];
+	var providers = req.user.profile.providers.map(function(elem) { return elem.name; }).join(",");
+	for(var index = 0; index < config.logins.length; index++) {
+    if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
+    	logins.push(config.logins[index]);
+  }
+	res.render("profile", { logins: logins, user: req.user });
+};
+
+/* Update user profile */
+exports.profileUpdate = function(req, res) {
+	/* Validate the field */
+
+	/* Find the user by email */
+	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
+		if (err) { console.log("ERROR", "finding user:", err); return res.redirect("/profile"); }
+		/* Update the user fields */
+		user.name = req.body.name
+		user.profile.description = req.body.description;
+		user.profile.location = req.body.location;
+		user.profile.website = req.body.website;
+		user.save();
+
+		/* Update the user object in the session */
+		req.session.passport.user = user;
+		res.redirect("/profile");
+	});
+};
+
+/* Remove provider */
+exports.providerRemove = function(req, res) {
+	/* Find the user by email */
+	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
+		if (err || !user) return res.redirect("/profile");
+		console.log("INFO", "providers before:", user.profile.providers);
+		/* Check which provider to remove */
+		for(var index = 0; index < user.profile.providers.length; index++) {
+			/* When the correct provider was found */
+			if (user.profile.providers[index].name == req.params.name) {
+				/* Find the provider in the database */
+				db.Provider.findOne({ _id: user.profile.providers[index]._id }, function(err, provider) {
+					if (err) { console.log("ERROR", "error finding provider:", err); return res.redirect("/profile"); }
+					/* Remove the provider */
+					provider.remove();
+					console.log("INFO", "successfully removed provider:", req.params.name);
+					/* Remove the provider also from the user object */
+					user.profile.providers.splice(index, 1);
+					user.save();
+					/* Update the user in the session */
+					console.log("INFO", "user now:", user);
+					req.session.passport.user = user;
+					return res.redirect("/profile");
+				});
+				break;
+			}
+		}
+	});
 };
 
 /* All users page */
