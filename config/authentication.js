@@ -23,6 +23,41 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
   res.redirect('/login');
 }
 
+/* Signup for a user */
+var registerUser = function registerUser(name, email, provider_name, mugshot, link, done) {
+  /* Find user by email */
+  db.User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
+    if (err) return done(err);
+    /* When the user with the email was found and the provider is registered */
+    else if (user && user.profile.providers.map(function(elem) { return elem.name; }).join(",").indexOf(provider_name) > -1) return done(null, user);
+
+    /* Register a new provider */
+    var provider = new db.Provider({ name: provider_name, mugshot: mugshot, display_name: name, url: link });
+    provider.save(function(err) {
+      if (err) console.log("ERROR", "error saving provider:", err);
+      else console.log("INFO", "provider saved:", provider.name);
+    });
+    /* When no user under this email was found */
+    if (!user) {
+      var user = new db.User({ name: name, email: email });
+      user.profile.mugshot = mugshot;
+      user.profile.website = link;
+    }
+    /* Register this provider for the user */
+    user.profile.providers.push(provider);
+    user.save(function(err) {
+      if (err) console.log("ERROR", "error saving user:", err);
+      else {
+        console.log("INFO", "user saved:", user.email);
+        /* Fetch the information again, for the new provider information */
+        db.User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
+          return done(null, user);
+        });
+      }
+    });
+  });
+};
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -52,31 +87,8 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
   	process.nextTick(function () {
-      //console.log("INFO", "google user info:", accessToken);
-      db.User.findOne({ email: profile._json.email }).populate('profile.providers').exec(function (err, user) {
-        if (err) return done(err);
-        /* When the user was found and the provider is registered */
-        else if (user && user.profile.providers.map(function(elem) { return elem.name; }).join(",").indexOf(profile.provider) > -1) return done(null, user);
-
-        var provider = new db.Provider({ name: profile.provider, mugshot: profile._json.picture, display_name: profile._json.name, url: profile._json.link });
-        provider.save(function(err) {
-          if (err) console.log("ERROR", "error saving provider:", err);
-          else console.log("INFO", "provider saved:", provider.name);
-        });
-        var user = new db.User({ name: profile._json.name, email: profile._json.email });
-        user.profile.mugshot = profile._json.picture;
-        user.profile.website = profile._json.link;
-        user.profile.providers.push(provider);
-        user.save(function(err) {
-          if (err) console.log("ERROR", "error saving user:", err);
-          else {
-            console.log("INFO", "user saved:", user.email);
-            db.User.findOne({ email: profile._json.email }).populate('profile.providers').exec(function (err, user) {
-              return done(null, user);
-            });
-          }
-        });
-      });
+      console.log("INFO", "google user info:", profile);
+      registerUser(profile._json.name, profile._json.email, profile.provider, profile._json.picture, profile._json.link, done);
 	  });
   }
 ));
@@ -88,13 +100,14 @@ passport.use(new TwitterStrategy({
   },
   function(token, tokenSecret, profile, done) {
     process.nextTick(function () {
-      console.log("INFO", profile);
-      var user = {};
-      user.mugshot = profile._json.profile_image_url;
-      user.name = profile.displayName;
-      user.website = profile._json.url;
-      user.profile = profile;
-	    return done(null, user);
+      console.log("INFO", "twitter user info:", profile);
+      db.User.findOne({ name: new RegExp("^" + profile.displayName + "$", "i") }).populate('profile.providers').exec(function (err, user) {
+        if (err) done(err);
+        /* No user with this display name was found */
+        else if (!user) done(null, false);
+        /* The user was found */
+        else registerUser(user.name, user.email, profile.provider, profile._json.profile_image_url, profile._json.url, done);
+      });
 	  });
   }
 ));
@@ -107,29 +120,8 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      //console.log("INFO", "facebook user info:", profile);
-      db.User.findOne({ email: profile._json.email }).populate('profile.providers').exec(function (err, user) {
-        if (err) return done(null, false);
-        /* When the user was found and the provider is registered */
-        else if (user && user.profile.providers.map(function(elem) { return elem.name; }).join(",").indexOf(profile.provider) > -1) return done(null, user);
-
-        var provider = new db.Provider({ name: profile.provider, mugshot: profile._json.picture, display_name: profile._json.name, url: profile._json.link });
-        provider.save(function(err) {
-          if (err) console.log("ERROR", "error saving provider:", err);
-          else console.log("INFO", "provider saved:", provider.name);
-        });
-        var user = new db.User({ name: profile._json.name, email: profile._json.email });
-        user.profile.mugshot = profile._json.picture.data.url;
-        user.profile.website = profile._json.link;
-        user.profile.providers.push(provider);
-        user.save(function(err) {
-          if (err) console.log("ERROR", "error saving user:", err);
-          else {
-            console.log("INFO", "user saved:", user.email);
-            return done(null, user);
-          }
-        });
-      });
+      console.log("INFO", "facebook user info:", profile);
+      registerUser(profile._json.name, profile._json.email, profile.provider, profile._json.picture.data.url, profile._json.link, done);
     });
   }
 ));
