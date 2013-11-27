@@ -58,6 +58,7 @@ var UserSchema = new Schema({
 
 /* Predave for user */
 UserSchema.pre('save', function(next) {
+	/* When the user logs in with a provider first time */
 	if (this.password == "default") {
 		/* Send the user his default password */
 		this.password = auth.calculateHash("md5", this.email + Date.now);
@@ -67,10 +68,12 @@ UserSchema.pre('save', function(next) {
 		/* Set user as verified */
 		this.verification.verified = true;
 		this.verification.verification_hash = auth.calculateHash("sha1", this.email + Date.now);
-		return next();
 	}
-	/* When the verification_hash has default value */
-	if (this.verification.verification_hash == "default") {
+	/* When the user registers first time */
+	else if (this.verification.verification_hash == "default") {
+		/* Set the mugshot and website from gravatar */
+		this.profile.mugshot = config.gravatar.mugshot + auth.calculateHash("md5", this.email);
+		this.profile.website = config.gravatar.profile + auth.calculateHash("md5", this.email);
 		/* Calculate the password hash */
 		this.password = auth.calculateHash("sha1", this.password);
 		/* Calculate the verification hash */
