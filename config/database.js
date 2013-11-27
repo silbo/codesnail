@@ -61,13 +61,13 @@ UserSchema.pre('save', function(next) {
 	/* When the user logs in with a provider first time */
 	if (this.password == "default") {
 		/* Send the user his default password */
-		this.password = auth.calculateHash("md5", this.email + Date.now);
+		this.password = auth.calculateHash("sha1", this.email + new Date());
 		email.sendLoginEmail(this.name, this.email, this.password);
 		/* Calculate the password hash */
 		this.password = auth.calculateHash("sha1", this.password);
 		/* Set user as verified */
 		this.verification.verified = true;
-		this.verification.verification_hash = auth.calculateHash("sha1", this.email + Date.now);
+		this.verification.verification_hash = auth.calculateHash("sha1", this.email + new Date());
 	}
 	/* When the user registers first time */
 	else if (this.verification.verification_hash == "default") {
@@ -77,7 +77,7 @@ UserSchema.pre('save', function(next) {
 		/* Calculate the password hash */
 		this.password = auth.calculateHash("sha1", this.password);
 		/* Calculate the verification hash */
-	  this.verification.verification_hash = auth.calculateHash("sha1", this.email + Date.now);
+	  this.verification.verification_hash = auth.calculateHash("sha1", this.email + new Date());
 	  /* Send the user the verification email */
 	  email.sendRegistrationEmail(this.name, this.email, this.verification.verification_hash);
 	}
