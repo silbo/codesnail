@@ -55,10 +55,10 @@ config.facebook.auth = "/auth/facebook";
 config.facebook.callback = "/auth/facebook/callback";
 
 /* OAuth logins */
-config.logins = {
-	"Google+": config.google.auth,
-	"Twitter": config.twitter.auth,
-	"Facebook": config.facebook.auth
-};
+config.logins = [
+	["Google", config.google.auth],
+	["Twitter", config.twitter.auth],
+	["Facebook", config.facebook.auth]
+];
 
 module.exports = config;
