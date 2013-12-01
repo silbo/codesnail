@@ -5,6 +5,7 @@ var express = require('express'),
 	expressValidator = require('express-validator'),
 	app = express(),
 	jade = require('jade'),
+	flash = require('connect-flash'),
 	passport = require('passport'),
 	auth = require("./config/authentication"),
 	db = require("./config/database"),
@@ -24,6 +25,7 @@ app.use(express.logger('dev'));
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({ secret: "super-secret-u-will-never-guess" }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
@@ -37,17 +39,17 @@ app.get("/login", user.login);
 app.all("/register", user.register);
 app.get("/register/:id", user.verify);
 
-app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Invalid username or password" }));
+app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
 app.get(config.google.auth, passport.authenticate("google", { scope: config.google.gdata_scopes }));
-app.get(config.google.callback, passport.authenticate("google", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Failed to authenticate with google" }));
+app.get(config.google.callback, passport.authenticate("google", { successRedirect: "/profile" failureRedirect: "/login", failureFlash: true }));
 
 app.get(config.twitter.auth, passport.authenticate("twitter"));
-app.get(config.twitter.callback, passport.authenticate("twitter", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Failed to authenticate with twitter" }));
+app.get(config.twitter.callback, passport.authenticate("twitter", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
 /* Facebook Oauth2 bug appends #_=_ to the callback URL */
 app.get(config.facebook.auth, passport.authenticate("facebook", { scope: ['email'] }));
-app.get(config.facebook.callback, passport.authenticate("facebook", { successRedirect: "/profile", failureRedirect: "/login", failureMessage: "Failed to authenticate with facebok" }));
+app.get(config.facebook.callback, passport.authenticate("facebook", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
 app.get("/logout", user.logout);
 
