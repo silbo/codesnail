@@ -72,8 +72,8 @@ passport.use(new LocalStrategy(
       /* So the user can also write the first part of the email, example@email.com can be also example */
       db.User.findOne({ email: new RegExp("(^" + username + "@|^" + username + "$)", "i") }).populate('profile.providers').exec(function (err, user) {
         if (err) return done(err);
-        if (!user) return done(null, false);
-        if (user.password != exports.calculateHash("sha1", password)) return done(null, false);
+        if (!user) return done(null, false, { message: "Wrong username or password" });
+        if (user.password != exports.calculateHash("sha1", password)) return done(null, false, { message: "Wrong username or password" });
         return done(null, user);
       });
     });
@@ -101,10 +101,10 @@ passport.use(new TwitterStrategy({
   function(token, tokenSecret, profile, done) {
     process.nextTick(function () {
       console.log("INFO", "twitter user info:", profile);
-      db.User.findOne({ name: new RegExp("^" + profile.displayName + "$", "i") }).populate('profile.providers').exec(function (err, user) {
+      db.User.findOne({ name: new RegExp("^" + profile.displayName, "i") }).populate('profile.providers').exec(function (err, user) {
         if (err) done(err);
         /* No user with this display name was found */
-        else if (!user) done(null, false);
+        else if (!user) done(null, false, { message: "Twitter username must match your profiles: " + profile.displayName });
         /* The user was found */
         else registerUser(user.name, user.email, profile.provider, profile._json.profile_image_url, profile._json.url, done);
       });
