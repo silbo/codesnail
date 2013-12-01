@@ -60,6 +60,9 @@ var UserSchema = new Schema({
 UserSchema.pre('save', function(next) {
 	/* When the user logs in with a provider first time */
 	if (this.password == "default") {
+		/* Set the mugshot and website from gravatar */
+		this.profile.mugshot = this.profile.mugshot || config.gravatar.mugshot + auth.calculateHash("md5", this.email);
+		this.profile.website = this.profile.website || config.gravatar.profile + auth.calculateHash("md5", this.email);
 		/* Send the user his default password */
 		this.password = auth.calculateHash("sha1", this.email + new Date());
 		email.sendLoginEmail(this.name, this.email, this.password);
@@ -71,9 +74,6 @@ UserSchema.pre('save', function(next) {
 	}
 	/* When the user registers first time */
 	else if (this.verification.verification_hash == "default") {
-		/* Set the mugshot and website from gravatar */
-		this.profile.mugshot = config.gravatar.mugshot + auth.calculateHash("md5", this.email);
-		this.profile.website = config.gravatar.profile + auth.calculateHash("md5", this.email);
 		/* Calculate the password hash */
 		this.password = auth.calculateHash("sha1", this.password);
 		/* Calculate the verification hash */
