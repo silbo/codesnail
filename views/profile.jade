@@ -3,6 +3,8 @@ extends layout
 block content
 	a(href="/") Index
 	div#profile
+		each error in errors
+			p.errors #{error}
 		form(name="profile", action="/profile/update", method="post")
 			div Email: #{user.email} (ask admin to change email xD)
 			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
