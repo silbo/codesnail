@@ -6,7 +6,7 @@ var config = require("../config/config"),
 /* Login page */
 exports.login = function(req, res) {
 	if (req.isAuthenticated(req, res)) return res.redirect("/profile");
-	res.render("login", { logins: config.logins, errors: req.flash('error') || [], email: "" });
+	res.render("login", { logins: config.logins, errors: req.flash('error') || [] });
 };
 
 /* User registration */
