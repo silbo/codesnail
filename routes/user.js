@@ -1,11 +1,12 @@
 /* Add modules */
 var config = require("../config/config"),
-	db = require("../config/database");
+	db = require("../config/database"),
+	flash = require('connect-flash');
 
 /* Login page */
 exports.login = function(req, res) {
-	res.render("login", { logins: config.logins, errors: req.session.messages || [] });
-	req.session.messages = [];
+	if (req.isAuthenticated(req, res)) return res.redirect("/profile");
+	res.render("login", { logins: config.logins, errors: req.flash('error') || [], email: "" });
 };
 
 /* User registration */
@@ -70,7 +71,7 @@ exports.profile = function(req, res) {
     if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
     	logins.push(config.logins[index]);
   }
-	res.render("profile", { logins: logins, user: req.user });
+	res.render("profile", { logins: logins, user: req.user, errors: req.flash('error') || [] });
 };
 
 /* Update user profile */
