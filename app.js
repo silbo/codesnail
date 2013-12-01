@@ -42,7 +42,7 @@ app.get("/register/:id", user.verify);
 app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
 app.get(config.google.auth, passport.authenticate("google", { scope: config.google.gdata_scopes }));
-app.get(config.google.callback, passport.authenticate("google", { successRedirect: "/profile" failureRedirect: "/login", failureFlash: true }));
+app.get(config.google.callback, passport.authenticate("google", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
 app.get(config.twitter.auth, passport.authenticate("twitter"));
 app.get(config.twitter.callback, passport.authenticate("twitter", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
