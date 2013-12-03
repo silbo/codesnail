@@ -52,6 +52,12 @@ app.get(config.twitter.callback, passport.authenticate("twitter", { successRedir
 app.get(config.facebook.auth, passport.authenticate("facebook", { scope: ['email'] }));
 app.get(config.facebook.callback, passport.authenticate("facebook", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
+app.get(config.linkedin.auth, passport.authenticate("linkedin", { scope: ['r_basicprofile', 'r_emailaddress'] }));
+app.get(config.linkedin.callback, passport.authenticate("linkedin", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
+
+app.get(config.github.auth, passport.authenticate("github"));
+app.get(config.github.callback, passport.authenticate("github", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
+
 app.get("/logout", user.logout);
 
 /* Homepage */

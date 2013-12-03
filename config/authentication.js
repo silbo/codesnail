@@ -8,7 +8,9 @@ var passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy,
 	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
 	TwitterStrategy = require('passport-twitter').Strategy,
-	FacebookStrategy = require('passport-facebook').Strategy;
+	FacebookStrategy = require('passport-facebook').Strategy,
+  LinkedInStrategy = require('passport-linkedin').Strategy,
+  GitHubStrategy = require('passport-github').Strategy;
 
 /* Hashing function */
 exports.calculateHash = function calculateHash(type, text) {
@@ -119,6 +121,33 @@ passport.use(new FacebookStrategy({
     process.nextTick(function () {
       console.log("INFO", "facebook user info:", profile);
       registerUser(profile._json.name, profile._json.email, profile.provider, profile._json.picture.data.url, profile._json.link, done);
+    });
+  }
+));
+
+passport.use(new LinkedInStrategy({
+    consumerKey: config.linkedin.consumer_key,
+    consumerSecret: config.linkedin.consumer_secret,
+    callbackURL: config.linkedin.callback,
+    profileFields: ['id', 'first-name', 'last-name', 'email-address', 'picture-url', 'public-profile-url']
+  },
+  function(accessToken, refreshToken, profile, done) {
+    process.nextTick(function () {
+      console.log("INFO", "linkedin user info:", profile);
+      registerUser(profile.displayName, profile._json.emailAddress, profile.provider, profile._json.pictureUrl, profile._json.publicProfileUrl, done);
+    });
+  }
+));
+
+passport.use(new GitHubStrategy({
+    clientID: config.github.consumer_key,
+    clientSecret: config.github.consumer_secret,
+    callbackURL: config.github.callback
+  },
+  function(accessToken, refreshToken, profile, done) {
+    process.nextTick(function () {
+      console.log("INFO", "github user info:", profile);
+      registerUser(profile._json.name, profile._json.email, profile.provider, profile._json.avatar_url, profile._json.url, done);
     });
   }
 ));
