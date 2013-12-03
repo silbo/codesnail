@@ -44,9 +44,13 @@ exports.register = function(req, res) {
 };
 
 exports.forgotPassword = function(req, res) {
+	/* When the form was not submitted */
+	if (req.body.reset != "Submit") return res.render("forgot", { errors: [], messages: "", email: "" });
+
 	/* Check for form errors */
 	req.assert("email", "A valid email is required").isEmail();
 	var errors = req.validationErrors();
+	var message = "";
 	/* Cehck if fields are valid and email is defined */
 	if (!errors) {
 		db.User.findOne({ email: req.body.email }, function (err, user) {
@@ -59,10 +63,10 @@ exports.forgotPassword = function(req, res) {
 				user.save();
 			}
 		});
-		message = "Email with new password sent to: " + req.body.email;
+		message = "Successfully signed up, check your inbox";
 		req.body.email = "";
 	}
-	res.render("forgot", { errors: [], email: req.body.email || "" });
+	res.render("forgot", { errors: errors || [], message: message, email: req.body.email || "" });
 };
 
 exports.verify = function(req, res) {
@@ -70,7 +74,8 @@ exports.verify = function(req, res) {
 		if (err || !user) {
 			console.log("ERROR", "error finding user:", err);
 			return res.redirect("/login");
-		}
+		/* When the user is already verified */
+		} else if (user.verification.verified) return res.redirect("/login");
   	db.User.update({ 'verification.verification_hash': req.params.id }, { $set: { 'verification.verified': true } }, {upsert: true}, function(err) {
 	    if (err) {
 	    	console.log("ERROR", "error verifing user:", err);
