@@ -3,6 +3,7 @@ extends layout
 block content
 	a(href="/") Index
 	div#profile
+		h3 Change profile:
 		each error in errors
 			p.errors #{error}
 		form(name="profile", action="/profile/update", method="post")
@@ -31,7 +32,9 @@ block content
 						| #{login[0]} 
 						a(href="#{login[1]}") connect
 						br
-			p Change password:
+			input(type="submit", value="Save")
+		h3 Change password:
+		form(name="password", action="/profile/password", method="post")
 			input(type="password", name="passwordOld" placeholder="Old password")
 			br
 			input(type="password" name="password" placeholder="New password")
