@@ -80,7 +80,7 @@ UserSchema.pre('save', function(next) {
 	}
 	/* Set the mugshot and website from gravatar */
 	this.profile.mugshot = this.profile.mugshot || config.gravatar.mugshot + auth.calculateHash("md5", this.email) + "?d=identicon";
-	this.profile.website = this.profile.website || config.gravatar.profile + auth.calculateHash("md5", this.email) + "?d=identicon";
+	this.profile.website = this.profile.website || config.gravatar.profile + auth.calculateHash("md5", this.email);
   next();
 });
 
