@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	p
+		a(href="/login") Login 
+		| or 
+		a(href="/register") Register 
+		| or Forgot password
+	div#forgot
+		each error in errors
+			p.errors #{error.msg}
+		form(name="forgot", action="/forgot", method="post")
+			input(type="email", name="email", value="#{email}", placeholder="Email")
+			br
+			input(type="submit", name="reset", value="Submit")
