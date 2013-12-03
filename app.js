@@ -38,6 +38,7 @@ if ('development' == app.get('env')) {
 app.get("/login", user.login);
 app.all("/register", user.register);
 app.get("/register/:id", user.verify);
+app.all("/forgot", user.forgotPassword);
 
 app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
@@ -59,6 +60,7 @@ app.get("/", auth.ensureAuthenticated, routes.index);
 /* Profile page */
 app.get("/profile", auth.ensureAuthenticated, user.profile);
 app.post("/profile/update", auth.ensureAuthenticated, user.profileUpdate);
+app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate)
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
 
 /* Delete all the users and providers */
