@@ -1,10 +1,15 @@
-var config = {};
-
-config.smtp = {};
-config.gravatar = {};
-config.google = {};
-config.twitter = {};
-config.facebook = {};
+var config = {
+	smtp: {},
+	gravatar: {},
+	google: {},
+	twitter: {},
+	facebook: {},
+	linkedin: {},
+	github: {},
+	paypal: {},
+	instagram: {},
+	dropbox: {}
+};
 
 /* App hostname and port */
 config.hostname = "http://localhost:3000";
@@ -54,11 +59,25 @@ config.facebook.consumer_secret = "anonymous";
 config.facebook.auth = "/auth/facebook";
 config.facebook.callback = "/auth/facebook/callback";
 
+/* Linkedin OAuth */
+config.linkedin.consumer_key = "anonymous";
+config.linkedin.consumer_secret = "anonymous";
+config.linkedin.auth = "/auth/linkedin";
+config.linkedin.callback = "/auth/linkedin/callback";
+
+/* GitHub OAuth2 */
+config.github.consumer_key = "anonymous";
+config.github.consumer_secret = "anonymous";
+config.github.auth = "/auth/github";
+config.github.callback = "/auth/github/callback";
+
 /* OAuth logins */
 config.logins = [
 	["Google", config.google.auth],
 	["Twitter", config.twitter.auth],
-	["Facebook", config.facebook.auth]
+	["Facebook", config.facebook.auth],
+	["LinkedIn", config.linkedin.auth],
+	["GitHub", config.github.auth]
 ];
 
 module.exports = config;
