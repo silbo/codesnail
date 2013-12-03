@@ -33,10 +33,7 @@ var registerUser = function registerUser(name, email, provider_name, mugshot, li
 
     /* Register a new provider */
     var provider = new db.Provider({ name: provider_name, mugshot: mugshot, display_name: name, url: link });
-    provider.save(function(err) {
-      if (err) console.log("ERROR", "error saving provider:", err);
-      else console.log("INFO", "provider saved:", provider.name);
-    });
+    provider.save();
     /* When no user under this email was found */
     if (!user) {
       var user = new db.User({ name: name, email: email });
