@@ -1,6 +1,8 @@
 /* Add modules */
 var config = require("../config/config"),
 	db = require("../config/database"),
+	email = require("../config/email"),
+	auth = require("../config/authentication"),
 	flash = require('connect-flash');
 
 /* Login page */
@@ -39,6 +41,28 @@ exports.register = function(req, res) {
 		  }
 		});
 	});
+};
+
+exports.forgotPassword = function(req, res) {
+	/* Check for form errors */
+	req.assert("email", "A valid email is required").isEmail();
+	var errors = req.validationErrors();
+	/* Cehck if fields are valid and email is defined */
+	if (!errors) {
+		db.User.findOne({ email: req.body.email }, function (err, user) {
+			if (err) console.log("ERROR", "finding user:", err);
+			else if (!user) console.log("INFO", "user not found:", req.body.email);
+			else {
+				user.password = auth.calculateHash("sha1", user.email + new Date())
+				email.sendForgotPassword(user.name, user.email, user.password);
+				user.password = auth.calculateHash("sha1", user.password);
+				user.save();
+			}
+		});
+		message = "Email with new password sent to: " + req.body.email;
+		req.body.email = "";
+	}
+	res.render("forgot", { errors: [], email: req.body.email || "" });
 };
 
 exports.verify = function(req, res) {
@@ -90,6 +114,23 @@ exports.profileUpdate = function(req, res) {
 
 		/* Update the user object in the session */
 		req.session.passport.user = user;
+		res.redirect("/profile");
+	});
+};
+
+/* Update user password */
+exports.passwordUpdate = function(req, res) {
+	/* Validate the field */
+	req.assert("password", "A valid password of at least 8 characters is required").len(8, 50);
+	req.assert("passwordConfirm", "Passwords entered do not match").equals(req.body.password);
+
+	/* Find the user by email */
+	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
+		if (err) { console.log("ERROR", "finding user:", err); return res.redirect("/profile"); }
+		/* Update the user fields */
+		user.password = auth.calculateHash("sha1", req.body.password);
+		user.save();
+		/* TODO: Set success message */
 		res.redirect("/profile");
 	});
 };
