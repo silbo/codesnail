@@ -2,7 +2,9 @@ extends layout
 
 block content
 	p Login or 
-		a(href="/register") Register
+		a(href="/register") Register 
+		| or 
+		a(href="/forgot") Forgot password
 	div#login
 		each error in errors
 			p.errors #{error}

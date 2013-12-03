@@ -3,7 +3,8 @@ extends layout
 block content
 	p 
 		a(href="/login") Login
-		|  or Register
+		|  or Register or 
+		a(href="/forgot") Forgot password
 	div#register
 		each error in errors
 			p.errors #{error.msg}
