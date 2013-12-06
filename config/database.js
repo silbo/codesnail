@@ -45,7 +45,7 @@ var UserSchema = new Schema({
 	},
 	profile: {
 		joined_date: { type: Date, required: true, default: Date.now },
-		points: { type: Number, default: 1 },
+		points: { type: Number, default: 0 },
 		location: { type: String, default: "" },
 		mugshot: { type: String, default: "" },
 		website: { type: String, default: "" },
