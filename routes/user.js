@@ -3,7 +3,8 @@ var config = require("../config/config"),
 	db = require("../config/database"),
 	email = require("../config/email"),
 	auth = require("../config/authentication"),
-	flash = require('connect-flash');
+	flash = require('connect-flash'),
+	fs = require('fs');
 
 /* Login page */
 exports.login = function(req, res) {
@@ -100,12 +101,24 @@ exports.profile = function(req, res) {
     if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
     	logins.push(config.logins[index]);
   }
-	res.render("profile", { logins: logins, user: req.user, errors: req.flash('error') || [] });
+	res.render("profile", { logins: logins, user: req.user, messages: req.flash('message'), errors: req.flash('error') || [] });
 };
 
 /* Update user profile */
 exports.profileUpdate = function(req, res) {
 	/* Validate the field */
+
+	/* When a mugshot was given, upload it */
+	if (req.files.mugshot.originalFilename != "") {
+		var localPath = __dirname + "/../public";
+		var remotePath = "/images/" + auth.calculateHash("md5", req.user.email) + req.files.mugshot.name;
+		localPath += remotePath;
+		fs.readFile(req.files.mugshot.path, function (err, data) {
+			fs.writeFile(localPath, data, function(err) {
+				console.log("INFO", "upload finished:", localPath);
+			});
+		});
+	}
 
 	/* Find the user by email */
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
@@ -115,6 +128,25 @@ exports.profileUpdate = function(req, res) {
 		user.profile.description = req.body.description;
 		user.profile.location = req.body.location;
 		user.profile.website = req.body.website;
+		/* When a mugshot was specified */
+		if (typeof remotePath !== "undefined") user.profile.mugshot = remotePath;
+		user.save();
+
+		/* Update the user object in the session */
+		req.session.passport.user = user;
+		res.redirect("/profile");
+	});
+};
+
+/* Update user profile */
+exports.mugshotUpdate = function(req, res) {
+	/* Find the user by email */
+	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
+		if (err) { console.log("ERROR", "finding user:", err); return res.redirect("/profile"); }
+		/* Update the user mugshot */
+		for (var i = 0; i < user.profile.providers.length; i++)
+			if (user.profile.providers[i].name == req.params.provider)
+				user.profile.mugshot = user.profile.providers[i].mugshot;
 		user.save();
 
 		/* Update the user object in the session */
@@ -128,6 +160,9 @@ exports.passwordUpdate = function(req, res) {
 	/* Validate the field */
 	req.assert("password", "A valid password of at least 8 characters is required").len(8, 50);
 	req.assert("passwordConfirm", "Passwords entered do not match").equals(req.body.password);
+	var errors = req.validationErrors();
+	req.flash('error', errors);
+	if (errors) return res.redirect("/profile");
 
 	/* Find the user by email */
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
@@ -135,7 +170,7 @@ exports.passwordUpdate = function(req, res) {
 		/* Update the user fields */
 		user.password = auth.calculateHash("sha1", req.body.password);
 		user.save();
-		/* TODO: Set success message */
+		req.flash('message', "Successfully changed password");
 		res.redirect("/profile");
 	});
 };
@@ -152,7 +187,10 @@ exports.providerRemove = function(req, res) {
 			if (user.profile.providers[index].name == req.params.name) {
 				/* Find the provider in the database */
 				db.Provider.findOne({ _id: user.profile.providers[index]._id }, function(err, provider) {
-					if (err) { console.log("ERROR", "error finding provider:", err); return res.redirect("/profile"); }
+					if (err) { 
+						console.log("ERROR", "error finding provider:", err); 
+						return res.redirect("/profile");
+					}
 					/* Remove the provider */
 					provider.remove();
 					console.log("INFO", "successfully removed provider:", req.params.name);

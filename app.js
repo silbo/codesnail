@@ -19,6 +19,7 @@ app.set('title', "CodeBuddy");
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
+app.use(express.multipart());
 app.use(express.urlencoded());
 app.use(expressValidator());
 app.use(express.logger('dev'));
@@ -66,7 +67,8 @@ app.get("/", auth.ensureAuthenticated, routes.index);
 /* Profile page */
 app.get("/profile", auth.ensureAuthenticated, user.profile);
 app.post("/profile/update", auth.ensureAuthenticated, user.profileUpdate);
-app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate)
+app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate);
+app.get("/profile/mugshot/:provider", auth.ensureAuthenticated, user.mugshotUpdate);
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
 
 /* Delete all the users and providers */
