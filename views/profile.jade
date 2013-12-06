@@ -5,11 +5,14 @@ block content
 	div#profile
 		h3 Change profile:
 		each error in errors
-			p.errors #{error}
-		form(name="profile", action="/profile/update", method="post")
+			p.errors #{error.msg}
+		form(name="profile", action="/profile/update", method="post", enctype="multipart/form-data")
 			div Email: #{user.email} (ask admin to change email xD)
 			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
 			div Points: #{user.profile.points}
+			div Mugshot:
+				img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+				input(type="file", name="mugshot")
 			div Name:
 				input(type="text", name="name", value="#{user.name}")
 			div Description:
@@ -25,6 +28,8 @@ block content
 						img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
 						div #{provider.name} 
 							a(href="#{provider.url}") #{provider.display_name}
+							&nbsp;
+							a(href="/profile/mugshot/#{provider.name}") set as mugshot
 							&nbsp;
 							a(href="/profile/remove/#{provider.name}") disconnect
 				div#oauths
