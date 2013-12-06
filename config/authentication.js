@@ -68,8 +68,8 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new LocalStrategy(
   function(username, password, done) {
     process.nextTick(function () {
-      /* So the user can also write the first part of the email, example@email.com can be also example */
-      db.User.findOne({ email: new RegExp("(^" + username + "@|^" + username + "$)", "i") }).populate('profile.providers').exec(function (err, user) {
+      /* Escape some characters before using regular expression matching */
+      db.User.findOne({ email: new RegExp("(^" + username.replace(/([+])/g, "\\$1") + "$)", "i") }).populate('profile.providers').exec(function (err, user) {
         if (err) return done(err);
         if (!user) return done(null, false, { message: "Wrong username or password" });
         if (user.password != exports.calculateHash("sha1", password)) return done(null, false, { message: "Wrong username or password" });
@@ -147,7 +147,7 @@ passport.use(new GitHubStrategy({
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
       console.log("INFO", "github user info:", profile);
-      registerUser(profile._json.name, profile._json.email, profile.provider, profile._json.avatar_url, profile._json.url, done);
+      registerUser(profile._json.name, profile._json.email, profile.provider, profile._json.avatar_url, profile._json.html_url, done);
     });
   }
 ));
