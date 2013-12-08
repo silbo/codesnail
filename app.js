@@ -16,7 +16,7 @@ var express = require('express'),
 	routes = require('./routes'),
 	user = require('./routes/user');
 
-var SessionStore = new MongoStore({ db: config.database_url });
+var SessionStore = new MongoStore({ db: config.database_name });
 /* Set app properties */
 app.set('title', "CodeBuddy");
 app.set('view engine', 'jade');
@@ -104,7 +104,7 @@ db.Provider.find(function (err, providers) {
 });
 
 /* Start the app */
-var server = http.createServer(app).listen(config.port, function(){
+var server = http.createServer(app).listen(config.port, config.host, function() {
   console.log("INFO", "express server listening on port:", config.port);
 });
 
@@ -139,16 +139,19 @@ io.sockets.on('connection', function (socket) {
 			description: socket.handshake.user.profile.description
 		}
 	};
+	/* Update the online users for all users */
+	io.sockets.emit("users", onlineUsers);
 
 	/* Send the users all the users */
   socket.on("users", function (data) {
-  	if ( Object.keys(onlineUsers).join(",") != data.join(",") )
-    	io.sockets.emit("users", onlineUsers);
+  	io.sockets.emit("users", onlineUsers);
   });
 
   /* Delete user from online users */
   socket.on('disconnect', function() {
   	console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
   	delete onlineUsers[socket.handshake.user.email];
+  	/* Update the online users for all users */
+  	io.sockets.emit("users", onlineUsers);
 	});
 });
