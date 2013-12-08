@@ -12,12 +12,12 @@ var config = {
 };
 
 /* App hostname and port */
-config.hostname = "http://localhost:3000";
-config.host = process.env.OPENSHIFT_NODEJS_IP || process.env.OPENSHIFT_INTERNAL_IP || process.env.IP || "localhost";
-config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || process.env.PORT || 3000;
+config.host = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "localhost";
+config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;
 
-/* Database URL */
-config.database_url = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "localhost";
+/* Database */
+config.database_url = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "localhost:27017/codebuddy";
+config.database_name = process.env.OPENSHIFT_APP_NAME || process.env.APP_NAME || "codebuddy";
 
 /* For Openshift */
 if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
@@ -26,12 +26,11 @@ if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
 	process.env.OPENSHIFT_APP_NAME;
-	config.hostname = "https://codebuddy-students.rhcloud.com";
 }
 
 /* Email SMTP */
-config.smtp.username = "anonymous";
-config.smtp.password = "anonymous";
+config.smtp.username = "ananymous";
+config.smtp.password = "ananymous";
 
 /* Gravatar */
 config.gravatar.mugshot = "http://www.gravatar.com/avatar/";
@@ -42,32 +41,32 @@ config.google.gdata_scopes = [
 	"https://www.googleapis.com/auth/userinfo.email",
 	"https://www.googleapis.com/auth/userinfo.profile"
 ];
-config.google.consumer_key = "anonymous";
-config.google.consumer_secret= "anonymous";
+config.google.consumer_key = "ananymous";
+config.google.consumer_secret= "ananymous";
 config.google.auth = "/auth/google";
 config.google.callback = "/auth/google/callback";
 
 /* Twitter OAuth */
-config.twitter.consumer_key = "anonymous";
-config.twitter.consumer_secret = "anonymous";
+config.twitter.consumer_key = "ananymous";
+config.twitter.consumer_secret = "ananymous";
 config.twitter.auth = "/auth/twitter";
 config.twitter.callback = "/auth/twitter/callback";
 
 /* Facebook OAuth2 */
-config.facebook.consumer_key = "anonymous";
-config.facebook.consumer_secret = "anonymous";
+config.facebook.consumer_key = "ananymous";
+config.facebook.consumer_secret = "ananymous";
 config.facebook.auth = "/auth/facebook";
 config.facebook.callback = "/auth/facebook/callback";
 
 /* Linkedin OAuth */
-config.linkedin.consumer_key = "anonymous";
-config.linkedin.consumer_secret = "anonymous";
+config.linkedin.consumer_key = "ananymous";
+config.linkedin.consumer_secret = "ananymous";
 config.linkedin.auth = "/auth/linkedin";
 config.linkedin.callback = "/auth/linkedin/callback";
 
 /* GitHub OAuth2 */
-config.github.consumer_key = "anonymous";
-config.github.consumer_secret = "anonymous";
+config.github.consumer_key = "ananymous";
+config.github.consumer_secret = "ananymous";
 config.github.auth = "/auth/github";
 config.github.callback = "/auth/github/callback";
 
