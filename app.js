@@ -16,7 +16,7 @@ var express = require('express'),
 	routes = require('./routes'),
 	user = require('./routes/user');
 
-var SessionStore = new MongoStore({ db: config.database_name });
+var SessionStore = new MongoStore({ url: "mongodb://" + config.database_url });
 /* Set app properties */
 app.set('title', "CodeBuddy");
 app.set('view engine', 'jade');
