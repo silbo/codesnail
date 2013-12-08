@@ -1,10 +1,38 @@
 extends layout
 
 block content
-	div#users
-		each user in users
-			a(class="mugshot-link", href="#{user.profile.website}", title="profile")
-				img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
-				p #{user.name}
-				p #{user.profile.description}
+	script(type="text/javascript", src="/socket.io/socket.io.js")
+	script(type="text/javascript").
+		window.onload = function() {
+			var socket = io.connect();
+			var oldUsers = {};
+			setInterval(function() {
+				if (document.getElementById("online-users") == null) return;
+				/* Aquire all the users */
+				socket.emit("users", Object.keys(oldUsers));
+				socket.on("users", function (users) {
+					console.log("editing users");
+					document.getElementById("online-users").innerHTML = "";
+					for (var key in users) {
+						document.getElementById("online-users").innerHTML += '<div class="user"><a class="mugshot-link" href="' + users[key].profile.website + '" title="profile">' +
+						'<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
+						'<p>' + users[key].name + '</p><p>' + users[key].profile.description + '</p></a></div>';
+					}
+					oldUsers = users;
+				});
+			}, 2000);
+		}
 	a(href="/profile") Profile
+	h3 All users:
+	div#all-users
+		each user in users
+			div.user
+				a(class="mugshot-link", href="#{user.profile.website}", title="profile")
+					img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+					p #{user.name}
+					p #{user.profile.description}
+	div.clear
+	h3 Ready to play:
+	div#online-users
+		p Loading users ...
+	div.clear
