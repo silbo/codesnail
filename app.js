@@ -6,14 +6,17 @@ var express = require('express'),
 	app = express(),
 	jade = require('jade'),
 	flash = require('connect-flash'),
+	http = require('http'),
 	passport = require('passport'),
 	auth = require("./config/authentication"),
 	db = require("./config/database"),
+	MongoStore = require('connect-mongo')(express),
 	config = require("./config/config"),
 	email = require("./config/email"),
 	routes = require('./routes'),
 	user = require('./routes/user');
 
+var SessionStore = new MongoStore({ db: config.database_url });
 /* Set app properties */
 app.set('title', "CodeBuddy");
 app.set('view engine', 'jade');
@@ -25,7 +28,10 @@ app.use(expressValidator());
 app.use(express.logger('dev'));
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.session({ secret: "super-secret-u-will-never-guess" }));
+app.use(express.session({ 
+	secret: "super-secret-u-will-never-guess",
+	store: SessionStore
+}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -98,5 +104,51 @@ db.Provider.find(function (err, providers) {
 });
 
 /* Start the app */
-app.listen(config.port, config.host);
-console.log("INFO", "listening on port:", config.port);
+var server = http.createServer(app).listen(config.port, function(){
+  console.log("INFO", "express server listening on port:", config.port);
+});
+
+/* Setup socket sessionstore */
+var io = require('socket.io').listen(server);
+var passportSocketIo = require('passport.socketio');
+io.set('authorization', passportSocketIo.authorize({
+  cookieParser: express.cookieParser,
+  key: 'connect.sid',
+  secret: 'super-secret-u-will-never-guess',
+  store: SessionStore,
+  fail: function(data, accept) {
+  	console.log("ERROR", "scoket data:", data);
+  	accept(null, false);
+  },
+  success: function(data, accept) {
+  	//console.log("INFO", "scoket:", data);
+    accept(null, true);
+  }
+}));
+
+var onlineUsers = {};
+io.sockets.on('connection', function (socket) {
+	/* Add user to online users */
+	console.log("INFO", "socket connection established");
+	console.log("INFO", "socket user:", socket.handshake.user.email);
+	onlineUsers[socket.handshake.user.email] = {
+		name: socket.handshake.user.name,
+		profile: {
+			mugshot: socket.handshake.user.profile.mugshot,
+			website: socket.handshake.user.profile.website,
+			description: socket.handshake.user.profile.description
+		}
+	};
+
+	/* Send the users all the users */
+  socket.on("users", function (data) {
+  	if ( Object.keys(onlineUsers).join(",") != data.join(",") )
+    	io.sockets.emit("users", onlineUsers);
+  });
+
+  /* Delete user from online users */
+  socket.on('disconnect', function() {
+  	console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
+  	delete onlineUsers[socket.handshake.user.email];
+	});
+});
