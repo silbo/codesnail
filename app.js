@@ -10,13 +10,13 @@ var express = require('express'),
 	passport = require('passport'),
 	auth = require("./config/authentication"),
 	db = require("./config/database"),
-	MongoStore = require('connect-mongo')(express),
+	//MongoStore = require('connect-mongo')(express),
 	config = require("./config/config"),
 	email = require("./config/email"),
 	routes = require('./routes'),
 	user = require('./routes/user');
 
-var SessionStore = new MongoStore({ url: "mongodb://" + config.database_url });
+//var SessionStore = new MongoStore({ url: config.database_url });
 /* Set app properties */
 app.set('title', "CodeBuddy");
 app.set('view engine', 'jade');
@@ -30,7 +30,7 @@ app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({ 
 	secret: "super-secret-u-will-never-guess",
-	store: SessionStore
+	//store: SessionStore
 }));
 app.use(flash());
 app.use(passport.initialize());
@@ -110,6 +110,7 @@ var server = http.createServer(app).listen(config.port, config.host, function() 
 
 /* Setup socket sessionstore */
 var io = require('socket.io').listen(server);
+/*
 var passportSocketIo = require('passport.socketio');
 io.set('authorization', passportSocketIo.authorize({
   cookieParser: express.cookieParser,
@@ -125,12 +126,12 @@ io.set('authorization', passportSocketIo.authorize({
     accept(null, true);
   }
 }));
-
-var onlineUsers = {};
+*/
+//var onlineUsers = {};
 io.sockets.on('connection', function (socket) {
 	/* Add user to online users */
 	console.log("INFO", "socket connection established");
-	console.log("INFO", "socket user:", socket.handshake.user.email);
+	/*console.log("INFO", "socket user:", socket.handshake.user.email);
 	onlineUsers[socket.handshake.user.email] = {
 		name: socket.handshake.user.name,
 		profile: {
@@ -138,20 +139,15 @@ io.sockets.on('connection', function (socket) {
 			website: socket.handshake.user.profile.website,
 			description: socket.handshake.user.profile.description
 		}
-	};
+	};*/
 	/* Update the online users for all users */
-	io.sockets.emit("users", onlineUsers);
-
-	/* Send the users all the users */
-  socket.on("users", function (data) {
-  	io.sockets.emit("users", onlineUsers);
-  });
+	io.sockets.emit("users", {});
 
   /* Delete user from online users */
   socket.on('disconnect', function() {
-  	console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
-  	delete onlineUsers[socket.handshake.user.email];
+  	//console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
+  	//delete onlineUsers[socket.handshake.user.email];
   	/* Update the online users for all users */
-  	io.sockets.emit("users", onlineUsers);
+  	io.sockets.emit("users", {});
 	});
 });
