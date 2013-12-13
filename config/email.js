@@ -21,18 +21,6 @@ exports.sendRegistrationEmail = function sendEmail(name, email, hash) {
 	});
 }
 
-exports.sendLoginEmail = function sendEmail(name, email, password) {
-	server.send({
-	   text: "Welcome to CodeBuddy, your default password is: " + password + " login at " + config.hostname + "/login",
-	   from: "CodeBuddyWeb <codebuddyweb@gmail.com>",
-	   to: name + " <" + email + ">",
-	   subject: "CodeBuddy password"
-	}, function(err, message) {
-		if (err) console.log("ERROR", "sending email:", err);
-		else console.log("INFO", "successfully sent email:", message);
-	});
-}
-
 exports.sendForgotPassword = function sendEmail(name, email, password) {
 	server.send({
 	   text: "CodeBuddy, your new password is: " + password + " login at " + config.hostname + "/login",
