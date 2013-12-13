@@ -60,21 +60,18 @@ var UserSchema = new Schema({
 UserSchema.pre('save', function(next) {
 	/* When the user logs in with a provider first time */
 	if (this.password == "default") {
-		/* Send the user his default password */
-		this.password = auth.calculateHash("sha1", this.email + new Date());
-		email.sendLoginEmail(this.name, this.email, this.password);
 		/* Calculate the password hash */
-		this.password = auth.calculateHash("sha1", this.password);
+		this.password = auth.calculateHash("sha256", this.email + this.joined_date);
 		/* Set user as verified */
 		this.verification.verified = true;
-		this.verification.verification_hash = auth.calculateHash("sha1", this.email + new Date());
+		this.verification.verification_hash = auth.calculateHash("sha256", this.email + this.joined_date);
 	}
 	/* When the user registers first time */
 	else if (this.verification.verification_hash == "default") {
 		/* Calculate the password hash */
-		this.password = auth.calculateHash("sha1", this.password);
+		this.password = auth.calculateHash("sha256", this.password + this.joined_date);
 		/* Calculate the verification hash */
-	  this.verification.verification_hash = auth.calculateHash("sha1", this.email + new Date());
+	  this.verification.verification_hash = auth.calculateHash("sha256", this.email + this.joined_date);
 	  /* Send the user the verification email */
 	  email.sendRegistrationEmail(this.name, this.email, this.verification.verification_hash);
 	}
