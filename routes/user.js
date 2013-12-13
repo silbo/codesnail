@@ -38,7 +38,7 @@ exports.register = function(req, res) {
 		  if (err) console.log("ERROR", "error saving user:", err);
 		  else {
 		    console.log("INFO", "user saved:", user.email);
-				return res.render("register", { messages: "Successfully signed up, check your inbox", errors: [], name: "", email: "" });
+				return res.render("register", { message: "Successfully signed up, check your inbox", errors: [], name: "", email: "" });
 		  }
 		});
 	});
@@ -46,7 +46,7 @@ exports.register = function(req, res) {
 
 exports.forgotPassword = function(req, res) {
 	/* When the form was not submitted */
-	if (req.body.reset != "Submit") return res.render("forgot", { errors: [], messages: "", email: "" });
+	if (req.body.reset != "Submit") return res.render("forgot", { errors: [], message: "", email: "" });
 
 	/* Check for form errors */
 	req.assert("email", "A valid email is required").isEmail();
@@ -58,9 +58,9 @@ exports.forgotPassword = function(req, res) {
 			if (err) console.log("ERROR", "finding user:", err);
 			else if (!user) console.log("INFO", "user not found:", req.body.email);
 			else {
-				user.password = auth.calculateHash("sha1", user.email + new Date())
+				user.password = auth.calculateHash("sha256", user.email + user.joined_date);
 				email.sendForgotPassword(user.name, user.email, user.password);
-				user.password = auth.calculateHash("sha1", user.password);
+				user.password = auth.calculateHash("sha256", user.password + user.joined_date);
 				user.save();
 			}
 		});
@@ -77,17 +77,15 @@ exports.verify = function(req, res) {
 			return res.redirect("/login");
 		/* When the user is already verified */
 		} else if (user.verification.verified) return res.redirect("/login");
+  	/* Verify the user */
   	db.User.update({ 'verification.verification_hash': req.params.id }, { $set: { 'verification.verified': true } }, {upsert: true}, function(err) {
 	    if (err) {
 	    	console.log("ERROR", "error verifing user:", err);
 	    	return res.redirect("/login");
 	    }
     	console.log("INFO", "user successfully verified:", user.email);
-    	/* Login the user */
-    	req.login(user, function(err) {
-       	if (err) console.log("ERROR", "logging in:", err);
-        else return res.redirect("/");
-      });
+    	/* Notify the user of successful verification */
+    	res.render("login", { logins: config.logins, errors: [], message: "Successfully verified" });
 	  });
 	});
 };
@@ -101,7 +99,7 @@ exports.profile = function(req, res) {
     if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
     	logins.push(config.logins[index]);
   }
-	res.render("profile", { logins: logins, user: req.user, messages: req.flash('message'), errors: req.flash('error') || [] });
+	res.render("profile", { logins: logins, user: req.user, message: req.flash('message'), errors: req.flash('error') || [] });
 };
 
 /* Update user profile */
