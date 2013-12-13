@@ -8,7 +8,7 @@ block content
 	div#register
 		each error in errors
 			p.errors #{error.msg}
-		p.messages #{messages}
+		p.messages #{message}
 		form(name="register", action="/register", method="post")
 			input(type="text", name="name", value="#{name}", placeholder="Full name")
 			br
