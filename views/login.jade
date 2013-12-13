@@ -8,6 +8,7 @@ block content
 	div#login
 		each error in errors
 			p.errors #{error}
+		p.messages #{message}
 		form(name="login", action="/login", method="post")
 			input(type="email", name="username", placeholder="Email")
 			br
