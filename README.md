@@ -22,7 +22,7 @@ node app
 LINUX
 -----
 ```bash
-sudo apt-get install nodejs
+sudo apt-get install nodejs npm mongodb
 git clone https://github.com/silps/codebuddy.git
 cd codebuddy
 npm install
