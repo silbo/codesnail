@@ -1,0 +1,42 @@
+extends layout
+
+block content
+	link(href="/codemirror/lib/codemirror.css", rel="stylesheet")
+	link(href="/codemirror/addon/hint/show-hint.css", rel="stylesheet")
+	style(type="text/css")
+		.CodeMirror {
+			border-top: 1px solid #ccc;
+			border-bottom: 1px solid #ccc;
+		}
+		div#code-wrapper {
+			margin-left: auto;
+			margin-right: auto;
+			max-width: 75%;
+		}
+	script(type="text/javascript", src="/codemirror/lib/codemirror.js")
+	script(type="text/javascript", src="/codemirror/addon/hint/show-hint.js")
+	script(type="text/javascript", src="/codemirror/addon/hint/html-hint.js")
+	script(type="text/javascript", src="/codemirror/addon/hint/xml-hint.js")
+	script(type="text/javascript", src="/codemirror/mode/xml/xml.js")
+
+	p
+		a(href="/register") Login
+		|  or 
+		a(href="/register") Register
+		|  or 
+		a(href="/forgot") Forgot password
+		|  or Coding
+
+	div#code-wrapper
+		span Test Coding Abilities
+		textarea(id="code", name="code")
+
+	script(type="text/javascript").
+		CodeMirror.commands.autocomplete = function(cm) {
+			CodeMirror.showHint(cm, CodeMirror.hint.html);
+		};
+		var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+			mode: "text/html",
+			lineNumbers: true,
+			extraKeys: {"Ctrl-Space": "autocomplete"}
+		});

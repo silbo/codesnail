@@ -1,10 +1,12 @@
 extends layout
 
 block content
-	p 
+	p
 		a(href="/login") Login
 		|  or Register or 
 		a(href="/forgot") Forgot password
+		|  or 
+		a(href="/coding") Coding
 	div#register
 		each error in errors
 			p.errors #{error.msg}

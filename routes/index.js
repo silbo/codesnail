@@ -9,3 +9,8 @@ exports.index = function(req, res) {
 		res.render('index', { user: req.user, users: users });
 	});
 };
+
+/* Coding section */
+exports.coding = function(req, res) {
+	res.render('coding');
+};

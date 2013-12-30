@@ -1,0 +1,41 @@
+<!doctype html>
+
+<title>Codebuddy Coding</title>
+<meta charset="utf-8"/>
+<link rel=stylesheet href="../doc/docs.css">
+
+<link rel="stylesheet" href="../lib/codemirror.css">
+<link rel="stylesheet" href="../addon/hint/show-hint.css">
+<style type="text/css">
+.CodeMirror {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+</style>
+
+<script src="../lib/codemirror.js"></script>
+<script src="../addon/hint/show-hint.js"></script>
+<script src="../addon/hint/html-hint.js"></script>
+<script src="../addon/hint/xml-hint.js"></script>
+<script src="../mode/xml/xml.js"></script>
+
+<article>
+<h2>HTML Code</h2>
+<form>
+  <div style="max-width: 50em">
+    <textarea id="code" name="code"></textarea>
+  </div>
+</form>
+
+<script id="script">
+CodeMirror.commands.autocomplete = function(cm) {
+  CodeMirror.showHint(cm, CodeMirror.hint.html);
+};
+var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+  mode: "text/html",
+  lineNumbers: true,
+  extraKeys: {"Ctrl-Space": "autocomplete"}
+});
+</script>
+
+</article>

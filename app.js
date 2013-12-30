@@ -46,6 +46,7 @@ app.get("/login", user.login);
 app.all("/register", user.register);
 app.get("/register/:id", user.verify);
 app.all("/forgot", user.forgotPassword);
+app.get("/coding", routes.coding);
 
 app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
