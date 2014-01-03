@@ -12,5 +12,5 @@ exports.index = function(req, res) {
 
 /* Coding section */
 exports.coding = function(req, res) {
-	res.render('coding');
+	res.render('coding', { user: req.user });
 };
