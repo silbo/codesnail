@@ -1,11 +1,16 @@
 extends layout
 
 block content
+
 	a(href="/") Index
+	|  or Profile or 
+	a(href="/coding") Coding
+
 	div#profile
 		h3 Change profile:
 		each error in errors
 			p.errors #{error.msg}
+
 		form(name="profile", action="/profile/update", method="post", enctype="multipart/form-data")
 			div Email: #{user.email} (ask admin to change email xD)
 			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
@@ -38,6 +43,7 @@ block content
 						a(href="#{login[1]}") connect
 						br
 			input(type="submit", value="Save")
+
 		h3 Change password:
 		form(name="password", action="/profile/password", method="post")
 			input(type="password", name="passwordOld" placeholder="Old password")

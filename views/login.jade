@@ -1,12 +1,14 @@
 extends layout
 
 block content
-	p Login or 
-		a(href="/register") Register
-		|  or 
-		a(href="/forgot") Forgot password
-		|  or 
-		a(href="/coding") Coding
+
+	| Login or 
+	a(href="/register") Register
+	|  or 
+	a(href="/forgot") Forgot password
+	|  or 
+	a(href="/coding") Coding
+
 	div#login
 		each error in errors
 			p.errors #{error}
@@ -17,6 +19,7 @@ block content
 			input(type="password", name="password", placeholder="Password")
 			br
 			input(type="submit", name="login", value="Login")
+
 	p Login with OAuth/OAuth2
 	div#oauths
 		each login in logins

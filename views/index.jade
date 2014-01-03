@@ -16,7 +16,12 @@ block content
 				}
 			});
 		}
+
+	| Index or 
 	a(href="/profile") Profile
+	|  or 
+	a(href="/coding") Coding
+
 	h3 All users:
 	div#all-users
 		each user in users
@@ -26,6 +31,7 @@ block content
 					p #{user.name}
 					p #{user.profile.description}
 	div.clear
+	
 	h3 Ready to play:
 	div#online-users
 		p Loading users ...

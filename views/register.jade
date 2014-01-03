@@ -1,16 +1,18 @@
 extends layout
 
 block content
-	p
-		a(href="/login") Login
-		|  or Register or 
-		a(href="/forgot") Forgot password
-		|  or 
-		a(href="/coding") Coding
+
+	a(href="/login") Login
+	|  or Register or 
+	a(href="/forgot") Forgot password
+	|  or 
+	a(href="/coding") Coding
+
 	div#register
 		each error in errors
 			p.errors #{error.msg}
 		p.messages #{message}
+
 		form(name="register", action="/register", method="post")
 			input(type="text", name="name", value="#{name}", placeholder="Full name")
 			br
