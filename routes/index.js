@@ -13,7 +13,7 @@ exports.index = function(req, res) {
 
 /* Study section */
 exports.study = function(req, res) {
-	if (req.user) {
+	if (!req.user) {
 		req.session.passport.user = auth.generateGuest();
 		req.user = req.session.passport.user;
 	}
@@ -22,7 +22,7 @@ exports.study = function(req, res) {
 
 /* Coding section */
 exports.coding = function(req, res) {
-	if (req.user) {
+	if (!req.user) {
 		req.session.passport.user = auth.generateGuest();
 		req.user = req.session.passport.user;
 	}
