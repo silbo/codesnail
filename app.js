@@ -106,9 +106,8 @@ db.Provider.find(function (err, providers) {
 });
 
 /* Start the app */
-var server = http.createServer(app).listen(config.port, config.host, function() {
-	console.log("INFO", "express server listening on port:", config.port);
-});
+var server = http.createServer(app).listen(config.port, config.host);
+console.log("INFO", "express server listening on port:", config.port);
 
 /* Setup socket sessionstore */
 var io = require('socket.io').listen(server);
