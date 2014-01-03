@@ -10,13 +10,13 @@ var express = require('express'),
 	passport = require('passport'),
 	auth = require("./config/authentication"),
 	db = require("./config/database"),
-	MongoStore = require('connect-mongo')(express),
+	MongoStore = require('connect-mongo-store')(express),
 	config = require("./config/config"),
 	email = require("./config/email"),
 	routes = require('./routes'),
 	user = require('./routes/user');
 
-var SessionStore = new MongoStore({ url: config.database_url });
+var SessionStore = new MongoStore(config.database_url);
 /* Set app properties */
 app.set('title', "CodeBuddy");
 app.set('view engine', 'jade');
@@ -95,13 +95,13 @@ if (false) {
 db.User.find(function (err, users) {
 	if (err) console.log("ERROR", "fetching all users:", err);
 	else users.forEach(function(user) {
-		console.log("INFO", "user info:", user);
+		console.log("INFO", "user name:", user.name);
 	});
 });
 db.Provider.find(function (err, providers) {
 	if (err) console.log("ERROR", "fetching all providers:", err);
 	else providers.forEach(function(provider) {
-		console.log("INFO", "provider info:", provider);
+		console.log("INFO", "provider url:", provider.url);
 	});
 });
 
