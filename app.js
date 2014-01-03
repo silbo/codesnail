@@ -46,7 +46,7 @@ app.get("/login", user.login);
 app.all("/register", user.register);
 app.get("/register/:id", user.verify);
 app.all("/forgot", user.forgotPassword);
-app.get("/study", routes.);
+app.get("/study", routes.study);
 app.get("/coding", routes.coding);
 
 app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
@@ -106,7 +106,7 @@ db.Provider.find(function (err, providers) {
 });
 
 /* Start the app */
-var server = http.createServer(app).listen(config.port, config.host function() {
+var server = http.createServer(app).listen(config.port, config.host, function() {
 	console.log("INFO", "express server listening on port:", config.port);
 });
 
