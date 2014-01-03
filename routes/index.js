@@ -1,6 +1,7 @@
 /* Add modules */
 var config = require("../config/config"),
-	db = require("../config/database");
+	db = require("../config/database"),
+	auth = require("../config/authentication");
 
 /* Homepage */
 exports.index = function(req, res) {
@@ -10,7 +11,20 @@ exports.index = function(req, res) {
 	});
 };
 
+/* Study section */
+exports.study = function(req, res) {
+	if (req.user) {
+		req.session.passport.user = auth.generateGuest();
+		req.user = req.session.passport.user;
+	}
+	res.render('study', { user: req.user });
+}
+
 /* Coding section */
 exports.coding = function(req, res) {
+	if (req.user) {
+		req.session.passport.user = auth.generateGuest();
+		req.user = req.session.passport.user;
+	}
 	res.render('coding', { user: req.user });
 };
