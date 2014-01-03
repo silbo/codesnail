@@ -19,6 +19,27 @@ exports.calculateHash = function calculateHash(type, text) {
   return shasum.digest("hex");
 }
 
+/* Random function */
+exports.generateRandom = function generateRandom() {
+  var current_date = (new Date()).valueOf().toString();
+  var random = Math.random().toString();
+  return crypto.createHash('sha1').update(current_date + random).digest('hex');
+}
+
+/* Generate a random guest account */
+exports.generateGuest = function generateGuest() {
+  var randomEmail = exports.generateRandom() + "@email.com";
+  var user = {
+    name: "Guest", email: randomEmail,
+    profile: {
+      mugshot: "http://www.gravatar.com/avatar/" + randomEmail + "?d=identicon",
+      website: "http://www.google.com/",
+      description: ""
+    }
+  };
+  return user;
+}
+
 /* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
