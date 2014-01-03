@@ -1,0 +1,13 @@
+extends layout
+
+block content
+
+	a(href="/") Index
+	|  or 
+	if user.name != "Guest"
+		a(href="/profile") Profile
+		|  or 
+	| Study or 
+	a(href="/coding") Coding
+
+	p Learn hard and live long

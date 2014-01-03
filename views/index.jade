@@ -18,7 +18,10 @@ block content
 		}
 
 	| Index or 
-	a(href="/profile") Profile
+	if user.name != "Guest"
+		a(href="/profile") Profile
+		|  or 
+	a(href="/study") Study
 	|  or 
 	a(href="/coding") Coding
 
