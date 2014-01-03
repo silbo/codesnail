@@ -46,6 +46,7 @@ app.get("/login", user.login);
 app.all("/register", user.register);
 app.get("/register/:id", user.verify);
 app.all("/forgot", user.forgotPassword);
+app.get("/study", routes.);
 app.get("/coding", routes.coding);
 
 app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
@@ -105,7 +106,7 @@ db.Provider.find(function (err, providers) {
 });
 
 /* Start the app */
-var server = http.createServer(app).listen(config.port, function() {
+var server = http.createServer(app).listen(config.port, config.host function() {
 	console.log("INFO", "express server listening on port:", config.port);
 });
 
@@ -150,7 +151,7 @@ io.sockets.on('connection', function (socket) {
 	/* User sends his/her code */
 	socket.on('get-code', function(userEmail) {
 		console.log("INFO", "get user code:", userEmail);
-		io.sockets.emit("receive-code", onlineUsers[userEmail].code);
+		socket.emit("receive-code", onlineUsers[userEmail].code);
 	});
 
 	/* User sends his/her code */
