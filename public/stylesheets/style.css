@@ -54,6 +54,17 @@ p.messages {
 	color: green;
 }
 
+div#task-message {
+	top: 5%;
+	left: 5%;
+	width: 90%;
+	height: 90%;
+	display: none;
+	position: fixed;
+	font-size: 10em;
+	background-color: #ccc;
+}
+
 div#footer {
 	width: 98%;
 	margin-top: 5%;
