@@ -58,11 +58,12 @@ div#task-message {
 	top: 5%;
 	left: 5%;
 	width: 90%;
-	height: 90%;
+	height: 30%;
+	z-index: 100;
 	display: none;
 	position: fixed;
 	font-size: 10em;
-	background-color: #ccc;
+	background-color: white;
 }
 
 div#footer {
