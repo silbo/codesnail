@@ -48,7 +48,7 @@ window.onload = function() {
 		var code = editor.getValue();
 		/* When the users code has changed */
 		if (oldCode != code)
-			/* Send it for verification */
+			/* Send it for verification and saving */
 			socket.emit("verify-task", editor.getValue())
 		oldCode = code;
 	}, 1000);
@@ -83,9 +83,4 @@ window.onload = function() {
 /* Get a users code */
 function getCode(userEmail) {
 	socket.emit("get-code", userEmail);
-}
-
-/* Send users code */
-function setCode() {
-	socket.emit("set-code", editor.getValue());
 }
