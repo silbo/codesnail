@@ -27,19 +27,19 @@ exports.register = function(req, res) {
 
 	/* Find existing user */
 	db.User.findOne({ email: req.body.email }, function (err, user) {
-	  if (err) console.log("ERROR", "error finding user:", err);
-	  else if (user) console.log("INFO", "email already takes:", req.body.email);
-	  if (err || user) return res.render("register", { errors: [{ msg: "Email already taken" }], name: req.body.name, email: req.body.email });
+		if (err) console.log("ERROR", "error finding user:", err);
+		else if (user) console.log("INFO", "email already takes:", req.body.email);
+		if (err || user) return res.render("register", { errors: [{ msg: "Email already taken" }], name: req.body.name, email: req.body.email });
 
-	  /* When the email is not taken */
-	  console.log("INFO", "user:", user);
+		/* When the email is not taken */
+		console.log("INFO", "user:", user);
 		var user = new db.User({ name: req.body.name, email: req.body.email, password: req.body.password });
 		user.save(function(err) {
-		  if (err) console.log("ERROR", "error saving user:", err);
-		  else {
-		    console.log("INFO", "user saved:", user.email);
+			if (err) console.log("ERROR", "error saving user:", err);
+			else {
+				console.log("INFO", "user saved:", user.email);
 				return res.render("register", { message: "Successfully signed up, check your inbox", errors: [], name: "", email: "" });
-		  }
+			}
 		});
 	});
 };
@@ -64,7 +64,7 @@ exports.forgotPassword = function(req, res) {
 				user.save();
 			}
 		});
-		message = "Successfully signed up, check your inbox";
+		message = "Successfully resetted password, check your inbox";
 		req.body.email = "";
 	}
 	res.render("forgot", { errors: errors || [], message: message, email: req.body.email || "" });
@@ -77,16 +77,16 @@ exports.verify = function(req, res) {
 			return res.redirect("/login");
 		/* When the user is already verified */
 		} else if (user.verification.verified) return res.redirect("/login");
-  	/* Verify the user */
-  	db.User.update({ 'verification.verification_hash': req.params.id }, { $set: { 'verification.verified': true } }, {upsert: true}, function(err) {
-	    if (err) {
-	    	console.log("ERROR", "error verifing user:", err);
-	    	return res.redirect("/login");
-	    }
-    	console.log("INFO", "user successfully verified:", user.email);
-    	/* Notify the user of successful verification */
-    	res.render("login", { logins: config.logins, errors: [], message: "Successfully verified" });
-	  });
+		/* Verify the user */
+		db.User.update({ 'verification.verification_hash': req.params.id }, { $set: { 'verification.verified': true } }, {upsert: true}, function(err) {
+			if (err) {
+				console.log("ERROR", "error verifing user:", err);
+				return res.redirect("/login");
+			}
+			console.log("INFO", "user successfully verified:", user.email);
+			/* Notify the user of successful verification */
+			res.render("login", { logins: config.logins, errors: [], message: "Successfully verified" });
+		});
 	});
 };
 
@@ -96,9 +96,9 @@ exports.profile = function(req, res) {
 	var logins = [];
 	var providers = req.user.profile.providers.map(function(elem) { return elem.name; }).join(",");
 	for(var index = 0; index < config.logins.length; index++) {
-    if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
-    	logins.push(config.logins[index]);
-  }
+		if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
+			logins.push(config.logins[index]);
+	}
 	res.render("profile", { logins: logins, user: req.user, message: req.flash('message'), errors: req.flash('error') || [] });
 };
 
@@ -142,9 +142,10 @@ exports.mugshotUpdate = function(req, res) {
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
 		if (err) { console.log("ERROR", "finding user:", err); return res.redirect("/profile"); }
 		/* Update the user mugshot */
-		for (var i = 0; i < user.profile.providers.length; i++)
+		for (var i = 0; i < user.profile.providers.length; i++) {
 			if (user.profile.providers[i].name == req.params.provider)
 				user.profile.mugshot = user.profile.providers[i].mugshot;
+		}
 		user.save();
 
 		/* Update the user object in the session */
@@ -164,7 +165,10 @@ exports.passwordUpdate = function(req, res) {
 
 	/* Find the user by email */
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
-		if (err) { console.log("ERROR", "finding user:", err); return res.redirect("/profile"); }
+		if (err) { 
+			console.log("ERROR", "finding user:", err);
+			return res.redirect("/profile");
+		}
 		/* Update the user fields */
 		user.password = auth.calculateHash("sha1", req.body.password);
 		user.save();
@@ -208,7 +212,7 @@ exports.providerRemove = function(req, res) {
 
 /* All users page */
 exports.list = function(req, res) {
-  res.send("respond with a resource");
+	res.send("respond with a resource");
 };
 
 /* Logout function */
