@@ -92,6 +92,13 @@ exports.verify = function(req, res) {
 
 /* User profile page */
 exports.profile = function(req, res) {
+	/* When guest user, the profile is not available */
+	if (!req.user.email) {
+		req.flash('error', [{ msg: "Guest user has no profile" }]);
+		res.redirect("/");
+		return;
+	}
+	console.log("INFO", "user", req.user);
 	/* Check which providers have been connected */
 	var logins = [];
 	var providers = req.user.profile.providers.map(function(elem) { return elem.name; }).join(",");
