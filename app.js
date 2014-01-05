@@ -10,15 +10,14 @@ var express = require('express'),
 	passport = require('passport'),
 	auth = require("./config/authentication"),
 	db = require("./config/database"),
-	MongoStore = require('connect-mongo-store')(express),
+	MongoStore = require('connect-mongo')(express),
 	config = require("./config/config"),
 	email = require("./config/email"),
 	routes = require('./routes'),
 	user = require('./routes/user');
 
-var SessionStore = new MongoStore(config.database_url);
+var SessionStore = new MongoStore({ url: config.database_url });
 /* Set app properties */
-app.set('title', "CodeBuddy");
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
@@ -106,7 +105,7 @@ db.Provider.find(function (err, providers) {
 });
 
 /* Start the app */
-var server = http.createServer(app).listen(config.port, config.host);
+var server = http.createServer(app).listen(config.port);
 console.log("INFO", "express server listening on port:", config.port);
 
 /* Setup socket sessionstore */
@@ -130,6 +129,17 @@ io.set('authorization', passportSocketIo.authorize({
 
 /* Online users */
 var onlineUsers = {};
+var currentTask = 0;
+var task = [
+	"Task 1: Create a basic html structure",
+	"Task 2: Add a header 1 inside the body",
+	"Task 3: Add a paragraph inside the body",
+	"Task 4: Add a link inside the body"];
+var taskVerify = [
+	"<html(.*)><head(.*)>(.*)</head><body(.*)></body></html>",
+	"<html(.*)><head(.*)>(.*)</head><body(.*)><h1(.*)>(.*)</h1></body></html>",
+	"<html(.*)><head(.*)>(.*)</head><body(.*)><h1(.*)>(.*)</h1><p(.*)>(.*)</p></body></html>",
+	"<html(.*)><head(.*)>(.*)</head><body(.*)><h1(.*)>(.*)</h1><p(.*)>(.*)</p><a(.*)></a></body></html>"];
 /* User initiated socket connection */
 io.sockets.on('connection', function (socket) {
 	/* Add user to online users */
@@ -147,10 +157,29 @@ io.sockets.on('connection', function (socket) {
 	/* Update the online users for all users */
 	io.sockets.emit("users", onlineUsers);
 
-	/* User sends his/her code */
+	/* User asks for someones code */
 	socket.on('get-code', function(userEmail) {
 		console.log("INFO", "get user code:", userEmail);
 		socket.emit("receive-code", onlineUsers[userEmail].code);
+	});
+
+	/* User asks for a task */
+	socket.on('get-task', function() {
+		console.log("INFO", "get task:", socket.handshake.user.email);
+		socket.emit("receive-task", task[currentTask]);
+	});
+
+	/* User verifies a task */
+	socket.on('verify-task', function(code) {
+		console.log("INFO", "verifiying task:", code.replace(/\s+/g, ''));
+		if (code.replace(/\s+/g, '').match(taskVerify[currentTask])) {
+			io.sockets.emit("receive-task-verification", socket.handshake.user.name + " Wins!");
+			if (currentTask < 3) currentTask += 1;
+			else currentTask = 0;
+			io.sockets.emit("receive-task", task[currentTask]);
+		}
+		else
+			io.sockets.emit("receive-task-verification", "");
 	});
 
 	/* User sends his/her code */
