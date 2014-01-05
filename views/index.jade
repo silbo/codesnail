@@ -2,20 +2,7 @@ extends layout
 
 block content
 	script(type="text/javascript", src="/socket.io/socket.io.js")
-	script(type="text/javascript").
-		window.onload = function() {
-			var socket = io.connect();
-			/* Aquire all the users */
-			socket.on("users", function (users) {
-				if (document.getElementById("online-users") == null) return;
-				document.getElementById("online-users").innerHTML = "";
-				for (var key in users) {
-					document.getElementById("online-users").innerHTML += '<div class="user"><a class="mugshot-link" href="' + users[key].profile.website + '" title="profile">' +
-					'<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
-					'<p>' + users[key].name + '</p><p>' + users[key].profile.description + '</p></a></div>';
-				}
-			});
-		}
+	script(type="text/javascript", src="/javascripts/main.js")
 
 	| Index or 
 	if user.name != "Guest"
