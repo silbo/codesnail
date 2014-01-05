@@ -8,7 +8,7 @@ var config = require("../config/config"),
 
 /* Login page */
 exports.login = function(req, res) {
-	if (req.isAuthenticated(req, res)) return res.redirect("/profile");
+	if (req.user && req.user.verification && req.user.verification.verified) return res.redirect("/profile");
 	res.render("login", { logins: config.logins, errors: req.flash('error') || [] });
 };
 
