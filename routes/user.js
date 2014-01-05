@@ -9,7 +9,7 @@ var config = require("../config/config"),
 /* Login page */
 exports.login = function(req, res) {
 	if (req.user && req.user.verification && req.user.verification.verified) return res.redirect("/profile");
-	res.render("login", { logins: config.logins, errors: req.flash('error') || [] });
+	res.render("login", { logins: config.logins, errors: req.flash('error') || [], message: req.flash('message') || "" });
 };
 
 /* User registration */
@@ -85,7 +85,8 @@ exports.verify = function(req, res) {
 			}
 			console.log("INFO", "user successfully verified:", user.email);
 			/* Notify the user of successful verification */
-			res.render("login", { logins: config.logins, errors: [], message: "Successfully verified" });
+			req.flash('message', "Successfully verified");
+			res.redirect("/login");
 		});
 	});
 };
