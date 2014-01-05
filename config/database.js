@@ -71,14 +71,14 @@ UserSchema.pre('save', function(next) {
 		/* Calculate the password hash */
 		this.password = auth.calculateHash("sha256", this.password + this.joined_date);
 		/* Calculate the verification hash */
-	  this.verification.verification_hash = auth.calculateHash("sha256", this.email + this.joined_date);
-	  /* Send the user the verification email */
-	  email.sendRegistrationEmail(this.name, this.email, this.verification.verification_hash);
+		this.verification.verification_hash = auth.calculateHash("sha256", this.email + this.joined_date);
+		/* Send the user the verification email */
+		email.sendRegistrationEmail(this.name, this.email, this.verification.verification_hash);
 	}
 	/* Set the mugshot and website from gravatar */
 	this.profile.mugshot = this.profile.mugshot || config.gravatar.mugshot + auth.calculateHash("md5", this.email) + "?d=identicon";
 	this.profile.website = this.profile.website || config.gravatar.profile + auth.calculateHash("md5", this.email);
-  next();
+	next();
 });
 
 /* Database objects */
