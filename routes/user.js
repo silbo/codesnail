@@ -177,7 +177,7 @@ exports.passwordUpdate = function(req, res) {
 			return res.redirect("/profile");
 		}
 		/* Update the user fields */
-		user.password = auth.calculateHash("sha1", req.body.password);
+		user.password = auth.calculateHash("sha256", req.body.password + user.joined_date);
 		user.save();
 		req.flash('message', "Successfully changed password");
 		res.redirect("/profile");
