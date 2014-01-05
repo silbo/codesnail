@@ -132,14 +132,14 @@ var onlineUsers = {};
 var currentTask = 0;
 var task = [
 	"Task 1: Create a basic html structure",
-	"Task 2: Add a header 1 inside the body",
-	"Task 3: Add a paragraph inside the body",
-	"Task 4: Add a link inside the body"];
+	"Task 2: Add a header 1 with text 'Awesome' inside the body",
+	"Task 3: Add two paragraph under the header, the fist with text 'Cool' and second with text 'Interesting'",
+	"Task 4: Add a link with text 'My Website' and link 'http://www.mywebsite.com', after the paragraphs"];
 var taskVerify = [
-	"<html(.*)><head(.*)>(.*)</head><body(.*)></body></html>",
-	"<html(.*)><head(.*)>(.*)</head><body(.*)><h1(.*)>(.*)</h1></body></html>",
-	"<html(.*)><head(.*)>(.*)</head><body(.*)><h1(.*)>(.*)</h1><p(.*)>(.*)</p></body></html>",
-	"<html(.*)><head(.*)>(.*)</head><body(.*)><h1(.*)>(.*)</h1><p(.*)>(.*)</p><a(.*)></a></body></html>"];
+	'<html(.*)><head>(.*)</head><body></body></html>',
+	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1></body></html>',
+	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p></body></html>',
+	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p><ahref="http://www.mywebsite.com">MyWebsite</a></body></html>'];
 /* User initiated socket connection */
 io.sockets.on('connection', function (socket) {
 	/* Add user to online users */
@@ -172,6 +172,8 @@ io.sockets.on('connection', function (socket) {
 	/* User verifies a task */
 	socket.on('verify-task', function(code) {
 		console.log("INFO", "verifiying task:", code.replace(/\s+/g, ''));
+		/* Save the users code */
+		onlineUsers[socket.handshake.user.email].code = code;
 		if (code.replace(/\s+/g, '').match(taskVerify[currentTask])) {
 			io.sockets.emit("receive-task-verification", socket.handshake.user.name + " Wins!");
 			if (currentTask < 3) currentTask += 1;
@@ -180,12 +182,6 @@ io.sockets.on('connection', function (socket) {
 		}
 		else
 			io.sockets.emit("receive-task-verification", "");
-	});
-
-	/* User sends his/her code */
-	socket.on('set-code', function(code) {
-		console.log("INFO", "set user code:", code);
-		onlineUsers[socket.handshake.user.email].code = code;
 	});
 
 	/* User disconnected from socket */
