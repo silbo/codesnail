@@ -10,6 +10,8 @@ block content
 
 	div#profile
 		h3 Change profile:
+		
+		p.messages #{message}
 		each error in errors
 			p.errors #{error.msg}
 
@@ -48,8 +50,6 @@ block content
 
 		h3 Change password:
 		form(name="password", action="/profile/password", method="post")
-			input(type="password", name="passwordOld" placeholder="Old password")
-			br
 			input(type="password" name="password" placeholder="New password")
 			br
 			input(type="password" name="passwordConfirm" placeholder="Repeat new password")
