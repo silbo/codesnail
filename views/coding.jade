@@ -3,60 +3,8 @@ extends layout
 block content
 
 	script(type="text/javascript", src="/socket.io/socket.io.js")
-	script(src="/ace/ace.js", type="text/javascript")
-	script(type="text/javascript").
-		var socket = undefined;
-		var editor = undefined;
-		window.onload = function() {
-			socket = io.connect();
-			/* Aquire all the users */
-			socket.on("users", function (users) {
-				if (document.getElementById("online-users") == null) return;
-				document.getElementById("online-users").innerHTML = "";
-				for (var key in users) {
-					document.getElementById("online-users").innerHTML += '<div class="user" onclick="javascript:getCode(\'' + users[key].email + '\')">' +
-					'<a class="mugshot-link" href="#" title="show code">' +
-					'<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
-					'<p>' + users[key].name + '</p><p>' + users[key].profile.description + '</p></a></div>';
-				}
-			});
-			/* Receive the requested users code */
-			socket.on("receive-code", function (code) {
-				editor.setValue(code);
-			});
-			/* ACE editor initialization */
-			editor = ace.edit("code");
-			editor.container.style.opacity = "";
-			editor.session.setMode("ace/mode/html");
-			editor.setOptions({ maxLines: 30, minLines: 10 });
-			editor.setAutoScrollEditorIntoView(true);
-
-			ace.config.loadModule("ace/ext/emmet", function() {
-				ace.require("ace/lib/net").loadScript("http://nightwing.github.io/emmet-core/emmet.js", function() {
-					editor.setOption("enableEmmet", true);
-				});
-
-				editor.setOptions({
-					enableSnippets: true,
-					enableBasicAutocompletion: true
-				});
-			});
-
-			ace.config.loadModule("ace/ext/language_tools", function() {
-				editor.setOptions({
-					enableSnippets: true,
-					enableBasicAutocompletion: true
-				});
-			});
-		}
-		/* Get the code from the server */
-		function getCode(userEmail) {
-			socket.emit("get-code", userEmail);
-		}
-		/* Send the code to the server */
-		function setCode() {
-			socket.emit("set-code", editor.getValue());
-		}
+	script(type="text/javascript", src="/ace/ace.js")
+	script(type="text/javascript", src="/javascripts/main.js")
 
 	a(href="/") Index
 	|  or 
@@ -71,16 +19,9 @@ block content
 		p Loading users ...
 	div.clear
 
+	div#task
+	div#task-message
 	div#code-wrapper
 		span Test Coding Abilities
 		div#code
-			&lt;!DOCTYPE html>
-			&lt;html lang="en">
-			&lt;head>
-			|	&lt;title>&lt;/title>
-			&lt;/head>
-			&lt;body>
-			|	
-			&lt;/body>
-			&lt;/html>
 		input(type="button", onclick="javascript:setCode()", value="Save Code")
