@@ -22,22 +22,25 @@ exports.calculateHash = function calculateHash(type, text) {
 /* Random function */
 exports.generateRandom = function generateRandom() {
     var current_date = (new Date()).valueOf().toString();
-    var random = Math.random().toString();
-    return crypto.createHash('sha1').update(current_date + random).digest('hex');
+    var random = parseInt(Math.random().toString()*100);
+    return random;
 }
 
 /* Generate a random guest account */
 exports.generateGuest = function generateGuest() {
-    var randomEmailHash = auth.calculateHash('md5', exports.generateRandom() + "@email.com");
+    var random = exports.generateRandom();
+    var randomEmailHash = exports.calculateHash('md5', random + "@email.com");
     var user = {
-        name: "Guest",
+        name: "Guest" + random,
+        guest: true,
         profile: {
             mugshot: "http://www.gravatar.com/avatar/" + randomEmailHash + "?d=identicon",
-            website: "http://www.google.com/",
+            website: "http://www.gravatar.com/",
             description: "",
             points: 0
         }
     };
+    console.log("INFO", "generated guest user:", user);
     return user;
 }
 
