@@ -8,7 +8,7 @@ block content
 
 	a(href="/") Index
 	|  or 
-	if user.name != "Guest"
+	if !user.guest
 		a(href="/profile") Profile
 		|  or 
 	a(href="/study") Study
@@ -24,4 +24,3 @@ block content
 	div#code-wrapper
 		span Test Coding Abilities
 		div#code
-		input(type="button", onclick="javascript:setCode()", value="Save Code")
