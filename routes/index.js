@@ -7,7 +7,7 @@ var config = require("../config/config"),
 exports.index = function(req, res) {
 	db.User.find(function (err, users) {
 		if (err) console.log("ERROR", "fetching all users:", err);
-		res.render('index', { user: req.user, users: users });
+		res.render('index', { user: req.user, users: users, errors: req.flash('error') });
 	});
 };
 
