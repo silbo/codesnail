@@ -49,8 +49,10 @@ exports.generateGuest = function generateGuest() {
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     console.log("INFO", "login user:", req.user);
     if (req.user && req.user.guest) return next();
-    if (req.isAuthenticated() && req.user.verification && req.user.verification.verified) return next();
-    req.flash('error', "Please verify your user");
+    if (req.isAuthenticated() && req.user.verification) {
+        if (!req.user.verification.verified) req.flash('error', "Please verify your user");
+        else return next();
+    }
     res.redirect('/login');
 }
 
