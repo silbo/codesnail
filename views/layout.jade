@@ -1,7 +1,7 @@
 doctype 5
 html(lang="en")
 	head
-		title CodeBuddy
+		title CodeSnail
 		script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js")
 		link(href="/stylesheets/style.css", rel="stylesheet")
 	body
@@ -11,8 +11,9 @@ html(lang="en")
 					a(class="mugshot-link", href="#{user.profile.website}", title="profile")
 						img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 						p #{user.name}
+						p points: #{user.profile.points}
 					a(href="/logout") Logout
-			h1 Welcome to CodeBuddy
+			h1 Welcome to CodeSnail
 			h4 Learn new skills while completing exciting challenges.
 
 		block content
