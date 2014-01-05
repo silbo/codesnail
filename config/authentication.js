@@ -1,7 +1,8 @@
 /* Configuration, database and crypto */
-var config = require("./config"),
-    db = require("./database"),
-    crypto = require('crypto');
+var db = require("./database"),
+    crypto = require('crypto'),
+    config = require("./config"),
+    flash = require('connect-flash');
 
 /* OAuth stuff */
 var passport = require('passport'),
@@ -46,7 +47,10 @@ exports.generateGuest = function generateGuest() {
 
 /* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated() && req.user.verification.verified) return next();
+    console.log("INFO", "login user:", req.user);
+    if (req.user && req.user.guest) return next();
+    if (req.isAuthenticated() && req.user.verification && req.user.verification.verified) return next();
+    req.flash('error', "Please verify your user");
     res.redirect('/login');
 }
 
