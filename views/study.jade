@@ -7,7 +7,7 @@ block content
 
 	a(href="/") Index
 	|  or 
-	if user.name != "Guest"
+	if !user.guest
 		a(href="/profile") Profile
 		|  or 
 	| Study or 

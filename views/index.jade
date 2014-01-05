@@ -5,12 +5,15 @@ block content
 	script(type="text/javascript", src="/javascripts/main.js")
 
 	| Index or 
-	if user.name != "Guest"
+	if !user.guest
 		a(href="/profile") Profile
 		|  or 
 	a(href="/study") Study
 	|  or 
 	a(href="/coding") Coding
+
+	each error in errors
+		p.errors #{error.msg}
 
 	h3 All users:
 	div#all-users
