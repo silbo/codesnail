@@ -106,7 +106,7 @@ exports.profile = function(req, res) {
 		if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
 			logins.push(config.logins[index]);
 	}
-	res.render("profile", { logins: logins, user: req.user, message: req.flash('message'), errors: req.flash('error') || [] });
+	res.render("profile", { logins: logins, user: req.user, message: req.flash('message') || "", errors: req.flash('error') || [] });
 };
 
 /* Update user profile */
