@@ -177,7 +177,7 @@ io.sockets.on('connection', function (socket) {
 		if (code.replace(/\s+/g, '').match(taskVerify[currentTask])) {
 			io.sockets.emit("receive-task-verification", socket.handshake.user.name + " Wins!");
 			/* Update the current task */
-			currentTask = currentTask % task.length;
+			currentTask = (currentTask + 1) % task.length;
 			io.sockets.emit("receive-task", task[currentTask]);
 		}
 		else
