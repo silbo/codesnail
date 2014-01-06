@@ -131,9 +131,9 @@ io.set('authorization', passportSocketIo.authorize({
 var onlineUsers = {};
 var currentTask = 0;
 var task = [
-	"Task 1: Create a basic html structure",
+	"Task 1: Create a basic html structure with head and body",
 	"Task 2: Add a header 1 with text 'Awesome' inside the body",
-	"Task 3: Add two paragraph under the header, the fist with text 'Cool' and second with text 'Interesting'",
+	"Task 3: Add two paragraph under the header 1, the first with text 'Cool' and second with text 'Interesting'",
 	"Task 4: Add a link with text 'My Website' and link 'http://www.mywebsite.com', after the paragraphs"];
 var taskVerify = [
 	'<html(.*)><head>(.*)</head><body></body></html>',
@@ -176,8 +176,8 @@ io.sockets.on('connection', function (socket) {
 		onlineUsers[socket.handshake.user.email].code = code;
 		if (code.replace(/\s+/g, '').match(taskVerify[currentTask])) {
 			io.sockets.emit("receive-task-verification", socket.handshake.user.name + " Wins!");
-			if (currentTask < 3) currentTask += 1;
-			else currentTask = 0;
+			/* Update the current task */
+			currentTask = currentTask % task.length;
 			io.sockets.emit("receive-task", task[currentTask]);
 		}
 		else
