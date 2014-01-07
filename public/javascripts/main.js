@@ -1,5 +1,6 @@
 var socket = undefined;
 var editor = undefined;
+var editor_other = undefined;
 var oldCode = undefined;
 
 /* When DOM has been loaded */
@@ -23,7 +24,9 @@ window.onload = function() {
 
 	/* Receive the requested users code */
 	socket.on("receive-code", function (code) {
-		editor.setValue(code);
+		editor_other.setValue(code);
+		$("#code-message").slideDown("fast")
+		setTimeout(function() { $("#code-message").slideUp("fast"); }, 2000);
 	});
 
 	/* Receive the requested task */
@@ -34,8 +37,8 @@ window.onload = function() {
 	/* Receive the requested task */
 	socket.on("receive-task-verification", function (message) {
 		if (message) {
-			$("#task-message").slideDown("fast")
 			$("#task-message").html(message);
+			$("#task-message").slideDown("fast")
 			setTimeout(function() { $("#task-message").slideUp("fast"); }, 1000);
 		}
 	});
@@ -54,6 +57,10 @@ window.onload = function() {
 	}, 1000);
 
 	/* ACE editor initialization */
+	editor_other = ace.edit("code-message");
+	editor_other.session.setMode("ace/mode/html");
+	editor_other.setOptions({ maxLines: 10, minLines: 10 });
+
 	editor = ace.edit("code");
 	editor.session.setMode("ace/mode/html");
 	editor.setOptions({ maxLines: 10, minLines: 10 });
