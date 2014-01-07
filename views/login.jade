@@ -7,9 +7,7 @@ block content
 	|  or 
 	a(href="/forgot") Forgot password
 	|  or 
-	a(href="/study") Study
-	|  or 
-	a(href="/coding") Coding
+	a(href="/study") Log in with guest
 
 	div#login
 		each error in errors
@@ -23,7 +21,7 @@ block content
 			br
 			input(type="submit", name="login", value="Login")
 
-	p Login with OAuth/OAuth2
+	p Login with other providers
 	div#oauths
 		each login in logins
 			a(href="#{login[1]}") #{login[0]}
