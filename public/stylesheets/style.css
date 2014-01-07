@@ -1,19 +1,36 @@
 body {
-	top: 0px;
-	margin: 0px;
-	width: 100%;
+	margin: 1%;
+}
+
+input, textarea {
+	width: 20%;
+	outline: none;
+	border-radius: 4px;
+	-o-border-radius: 4px;
+	-ms-border-radius: 4px;
+	border: 1px solid #ccc;
+	-moz-border-radius: 4px;
+	margin: 5px 1px 3px 0px;
+	padding: 3px 0px 3px 3px;
+	-webkit-border-radius: 4px;
+}
+
+input:focus, textarea:focus {
+	margin: 5px 1px 3px 0px;
+	padding: 3px 0px 3px 3px;
+	border: 1px solid rgba(81, 203, 238, 1);
+	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 }
 
 div#header {
-	width: 100%;
 	text-align: center;
 	background-color: #ccc;
 	border-bottom: 1px solid #ccc;
 }
 
 div#user {
-	top: 5px;
-	right: 5px;
+	top: 1%;
+	right: 1%;
 	position: fixed;
 }
 
