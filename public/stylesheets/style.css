@@ -66,6 +66,16 @@ div#task-message {
 	background-color: white;
 }
 
+div#code-message {
+	top: 20%;
+	left: 25%;
+	width: 50%;
+	height: 25%;
+	display: none;
+	position: fixed;
+	background-color: white;
+}
+
 div#footer {
 	width: 98%;
 	margin-top: 5%;
