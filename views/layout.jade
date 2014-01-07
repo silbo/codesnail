@@ -6,16 +6,17 @@ html(lang="en")
 		link(href="/stylesheets/style.css", rel="stylesheet")
 	body
 		div#header
-			div#user
-				if user
-					a(class="mugshot-link", href="#{user.profile.website}", title="profile")
-						img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
-						p #{user.name}
-						p points: #{user.profile.points}
-					a(href="/logout") Logout
 			h1 Welcome to CodeSnail
 			h4 Learn new skills while completing exciting challenges.
+		div#user
+			if user
+				a(class="mugshot-link", href="#{user.profile.website}", title="profile")
+					img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+					p #{user.name}
+					p points: #{user.profile.points}
+				input(type="button", value="Logout" onclick="window.location.href='/logout'")
 
-		block content
+		div#content
+			block content
 
 		div#footer Built by Students

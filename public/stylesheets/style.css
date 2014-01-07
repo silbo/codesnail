@@ -1,5 +1,6 @@
-body {
-	margin: 1%;
+html, body, h1 {
+	margin: 0px;
+	padding: 0px;
 }
 
 input, textarea {
@@ -53,16 +54,15 @@ input:focus, textarea:focus {
 	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 }
 
-div#header {
-	text-align: center;
-	background-color: #ccc;
-	border-bottom: 1px solid #ccc;
+div#user {
+	top: 2%;
+	right: 1%;
+	position: absolute;
+	line-height: 0px;
 }
 
-div#user {
-	top: 1%;
-	right: 1%;
-	position: fixed;
+div#user input {
+	width: 100%;
 }
 
 div#online-users {
@@ -130,6 +130,18 @@ div#code-message {
 	display: none;
 	position: fixed;
 	background-color: white;
+}
+
+div#header {
+	padding-top: 5px;
+	text-align: center;
+	background-color: #ccc;
+	border-bottom: 1px solid #ccc;
+}
+
+div#content {
+	padding-left: 1%;
+	padding-right: 1%;
 }
 
 div#footer {
