@@ -49,9 +49,8 @@ exports.generateGuest = function generateGuest() {
 /* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     console.log("INFO", "login user:", req.user);
-    if (req.isAuthenticated() && req.user.verification) {
-        if (!req.user.verification.verified) req.flash('error', "Please verify your user");
-        else return next();
+    if (req.isAuthenticated()) {
+        return next();
     }
     res.redirect('/login');
 }
