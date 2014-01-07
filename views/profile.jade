@@ -19,33 +19,21 @@ block content
 			div Email: #{user.email} (ask admin to change email xD)
 			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
 			div Points: #{user.profile.points}
-			div Mugshot:
+			div#mugshot
 				img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 				input(type="file", name="mugshot")
 			div Name:
+				br
 				input(type="text", name="name", value="#{user.name}")
 			div Description:
 			textarea(type="text", name="description", placeholder="personal info")
 				| #{user.profile.description}
 			div Location:
+				br
 				input(type="text", name="location", placeholder="location", value="#{user.profile.location}")
 			div Website:
+				br
 				input(type="text", name="website", placeholder="website", value="#{user.profile.website}")
-			div Other accounts:
-				each provider in user.profile.providers
-					div
-						img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
-						div #{provider.name} 
-							a(href="#{provider.url}") #{provider.display_name}
-							&nbsp;
-							a(href="/profile/mugshot/#{provider.name}") set as mugshot
-							&nbsp;
-							a(href="/profile/remove/#{provider.name}") disconnect
-				div#oauths
-					each login in logins
-						| #{login[0]} 
-						a(href="#{login[1]}") connect
-						br
 			input(type="submit", value="Save")
 
 		h3 Change password:
@@ -55,3 +43,19 @@ block content
 			input(type="password" name="passwordConfirm" placeholder="Repeat new password")
 			br
 			input(type="submit", value="Save")
+
+		h3 Other accounts:
+		each provider in user.profile.providers
+			div
+				img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
+				div #{provider.name} 
+					a(href="#{provider.url}") #{provider.display_name}
+					&nbsp;
+					a(href="/profile/mugshot/#{provider.name}") set as mugshot
+					&nbsp;
+					a(href="/profile/remove/#{provider.name}") disconnect
+		div#oauths
+			each login in logins
+				| #{login[0]} 
+				a(href="#{login[1]}") connect
+				br
