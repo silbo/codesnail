@@ -41,10 +41,10 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 }
 
-app.get("/login", user.login);
-app.all("/register", user.register);
-app.get("/register/:id", user.verify);
-app.all("/forgot", user.forgotPassword);
+app.get("/login", auth.checkLogin, user.login);
+app.all("/register", auth.checkLogin, user.register);
+app.get("/register/:id", auth.checkLogin, user.verify);
+app.all("/forgot", auth.checkLogin, user.forgotPassword);
 app.get("/study", routes.study);
 app.get("/coding", routes.coding);
 
