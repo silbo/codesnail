@@ -6,13 +6,11 @@ block content
 	script(type="text/javascript", src="/ace/ace.js")
 	script(type="text/javascript", src="/javascripts/main.js")
 
-	a(href="/") Index
-	|  or 
+	input(type="button", value="Index" onclick="window.location.href='/'")
 	if !user.guest
-		a(href="/profile") Profile
-		|  or 
-	a(href="/study") Study
-	|  or Coding
+		input(type="button", value="Profile" onclick="window.location.href='/profile'")
+	input(type="button", value="Study" onclick="window.location.href='/study'")
+	input(type="button", value="Coding" onclick="window.location.href='/coding'")
 
 	h3 Online users:
 	div#online-users

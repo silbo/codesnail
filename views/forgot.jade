@@ -2,11 +2,10 @@ extends layout
 
 block content
 
-	a(href="/login") Login
-	|  or 
-	a(href="/register") Register
-	|  or Forgot password or 
-	a(href="/study") Log in with guest
+	input(type="button", value="Login" onclick="window.location.href='/login'")
+	input(type="button", value="Register" onclick="window.location.href='/register'")
+	input(type="button", value="Forgot Password" onclick="window.location.href='/forgot'")
+	input(type="button", value="Login as Guest" onclick="window.location.href='/study'")
 
 	div#forgot
 		each error in errors

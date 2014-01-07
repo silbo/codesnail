@@ -4,13 +4,11 @@ block content
 	script(type="text/javascript", src="/socket.io/socket.io.js")
 	script(type="text/javascript", src="/javascripts/main.js")
 
-	| Index or 
+	input(type="button", value="Index" onclick="window.location.href='/'")
 	if !user.guest
-		a(href="/profile") Profile
-		|  or 
-	a(href="/study") Study
-	|  or 
-	a(href="/coding") Coding
+		input(type="button", value="Profile" onclick="window.location.href='/profile'")
+	input(type="button", value="Study" onclick="window.location.href='/study'")
+	input(type="button", value="Coding" onclick="window.location.href='/coding'")
 
 	each error in errors
 		p.errors #{error.msg}
