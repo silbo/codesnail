@@ -22,5 +22,5 @@ block content
 	p Login with other providers
 	div#oauths
 		each login in logins
-			a(href="#{login[1]}") #{login[0]}
+			input(type="button", value="#{login[0]}" onclick="window.location.href='#{login[1]}'")
 			br
