@@ -1,6 +1,13 @@
+body {
+	top: 0px;
+	margin: 0px;
+	width: 100%;
+}
+
 div#header {
-	width: 98%;
+	width: 100%;
 	text-align: center;
+	background-color: #ccc;
 	border-bottom: 1px solid #ccc;
 }
 
@@ -36,6 +43,7 @@ img.mugshot {
 	height: 50px;
 	display: block;
 	border-radius: 50%;
+	-moz-border-radius:50%;
 	-webkit-border-radius: 50%;
 }
 
@@ -77,8 +85,9 @@ div#code-message {
 }
 
 div#footer {
-	width: 98%;
+	width: 100%;
 	margin-top: 5%;
 	text-align: center;
+	background-color: #ccc;
 	border-top: 1px solid #ccc;
 }
