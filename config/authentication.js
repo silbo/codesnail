@@ -39,7 +39,8 @@ exports.generateGuest = function generateGuest() {
             website: "http://www.gravatar.com/",
             description: "",
             points: 0
-        }
+        },
+        verification: { verified: true }
     };
     console.log("INFO", "generated guest user:", user);
     return user;
@@ -47,7 +48,11 @@ exports.generateGuest = function generateGuest() {
 
 /* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) return next();
+    console.log("INFO", "login user:", req.user);
+    if (req.isAuthenticated() && req.user.verification) {
+        if (!req.user.verification.verified) req.flash('error', "Please verify your user");
+        else return next();
+    }
     res.redirect('/login');
 }
 
