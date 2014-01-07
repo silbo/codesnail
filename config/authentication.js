@@ -23,7 +23,7 @@ exports.calculateHash = function calculateHash(type, text) {
 /* Random function */
 exports.generateRandom = function generateRandom() {
     var current_date = (new Date()).valueOf().toString();
-    var random = parseInt(Math.random().toString()*100);
+    var random = parseInt(Math.random()*100);
     return random;
 }
 
@@ -35,8 +35,8 @@ exports.generateGuest = function generateGuest() {
         name: "Guest" + random,
         guest: true,
         profile: {
-            mugshot: "http://www.gravatar.com/avatar/" + randomEmailHash + "?d=identicon",
-            website: "http://www.gravatar.com/",
+            mugshot: config.gravatar.mugshot + randomEmailHash + "?d=identicon",
+            website: config.gravatar.profile,
             description: "",
             points: 0
         },
@@ -46,12 +46,29 @@ exports.generateGuest = function generateGuest() {
     return user;
 }
 
+/* Simple route middleware to ensure user does not go back to login or register after login. */
+exports.checkLogin = function ensureAuthenticated(req, res, next) {
+    /* When user is logged in */
+    if (req.isAuthenticated()) {
+        return res.redirect("/profile");
+    }
+    /* When user is not logged in */
+    return next();
+}
+
 /* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
-    console.log("INFO", "login user:", req.user);
+    /* When user is logged in */
     if (req.isAuthenticated()) {
-        return next();
+        /* When guest user, the profile is not available */
+        if (!req.user.email && req.url == "/profile") {
+            req.flash('error', [{ msg: "Guest user has no profile" }]);
+            return res.redirect("/");
+        }
+        else if (req.user.verification.verified) return next();
+        else req.flash('error', "Please verify your user");
     }
+    /* When user is not logged in, show login*/
     res.redirect('/login');
 }
 
