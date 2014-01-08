@@ -1,8 +1,8 @@
-/* Start the fileserver */
-var client = new BinaryClient('ws://localhost:9000');
+/* When DOM has been loaded */
+window.onload = function() {
+	var socket = io.connect();
+	var stream = ss.createStream();
 
-// Wait for connection to BinaryJS server
-client.on('open', function() {
 	var box = $('#box');
 	box.on('dragenter', doNothing);
 	box.on('dragover', doNothing);
@@ -13,20 +13,21 @@ client.on('open', function() {
 		/* Max mugshot size 100KB */
 		if (file.size > 100000) {
 			$(".messages").html("Mugshot too large");
-			return;	
+			return;
 		}
-		/* `client.send` is a helper function that creates a stream with the */
-		/* given metadata, and then chunks up and streams the data. */
 		/* Append the file path the the form */
-		$('form#profile').append('<input type="hidden" hidden="hidden" name="mugshot" value="'+file.name+'" />');
-		var stream = client.send(file, { name: file.name, size: file.size });
-		/* Print progress */
-		var tx = 0;
-		stream.on('data', function(data) {
-			$('#progress').text(Math.round(tx+=data.rx*100) + '% complete');
+		$('form#profile').append('<input type="hidden" name="mugshot" value="'+file.name+'" />');
+
+		/* Upload a file to the server */
+		ss(socket).emit('mugshot', stream, { size: file.size, name: file.name });
+		ss.createBlobReadStream(file).pipe(stream);
+
+		/* Show progress */
+		ss(socket).on('data', function(message) {
+			$('.messages').text(message);
 		});
 	}); 
-});
+};
 
 /* Deal with DOM quirks */
 function doNothing (e) {
