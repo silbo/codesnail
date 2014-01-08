@@ -2,6 +2,9 @@ extends layout
 
 block content
 
+	script(type="text/javascript", src="http://cdn.binaryjs.com/0/binary.js")
+	script(type="text/javascript", src="/javascripts/profile.js")
+
 	input(type="button", value="Index" onclick="window.location.href='/'")
 	if !user.guest
 		input(type="button", value="Profile" onclick="window.location.href='/profile'")
@@ -16,13 +19,14 @@ block content
 		each error in errors
 			p.errors #{error.msg}
 
-		form(name="profile", action="/profile/update", method="post", enctype="multipart/form-data")
+		div#progress 0% complete
+		div#box(style="height: 50px;") Connecting...
+		img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+
+		form#profile(name="profile", action="/profile/update", method="post")
 			div Email: #{user.email} (ask admin to change email xD)
 			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
 			div Points: #{user.profile.points}
-			div#mugshot
-				img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
-				input(type="file", name="mugshot")
 			div Name:
 				br
 				input(type="text", name="name", value="#{user.name}")
