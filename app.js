@@ -110,6 +110,10 @@ console.log("INFO", "express server listening on port:", config.port);
 
 /* Setup socket sessionstore */
 var io = require('socket.io').listen(server);
+/* Configure timeout */
+io.configure( function() {
+    io.set('close timeout', 60*60*24); // 24h time out
+});
 
 var passportSocketIo = require('passport.socketio');
 io.set('authorization', passportSocketIo.authorize({
@@ -191,5 +195,7 @@ io.sockets.on('connection', function (socket) {
 		delete onlineUsers[socket.handshake.user.email];
 		/* Update the online users for all users */
 		io.sockets.emit("users", onlineUsers);
+		/* Try to reconnect */
+
 	});
 });
