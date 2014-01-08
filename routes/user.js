@@ -112,35 +112,31 @@ exports.profile = function(req, res) {
 
 /* Update user profile */
 exports.profileUpdate = function(req, res) {
-	/* Validate the field */
-
-	/* When a mugshot was given, upload it */
-	if (req.files.mugshot.originalFilename != "") {
-		var localPath = __dirname + "/../public";
-		var remotePath = "/images/" + auth.calculateHash("md5", req.user.email) + req.files.mugshot.name;
-		localPath += remotePath;
-		fs.readFile(req.files.mugshot.path, function (err, data) {
-			fs.writeFile(localPath, data, function(err) {
-				console.log("INFO", "upload finished:", localPath);
-			});
-		});
+	/* Check for form errors */
+	req.assert("name", "Name is required").notEmpty();
+	var errors = req.validationErrors();
+	/* When the form contains errors */
+	if (errors) {
+		req.flash('error', errors);
+		return res.redirect("/profile");
 	}
 
 	/* Find the user by email */
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
 		if (err) { console.log("ERROR", "finding user:", err); return res.redirect("/profile"); }
 		/* Update the user fields */
-		user.name = req.body.name
+		user.name = req.body.name;
 		user.profile.description = req.body.description;
 		user.profile.location = req.body.location;
 		user.profile.website = req.body.website;
 		/* When a mugshot was specified */
-		if (typeof remotePath !== "undefined") user.profile.mugshot = remotePath;
+		if (typeof req.body.mugshot !== "undefined") user.profile.mugshot = "/images/" + req.body.mugshot;
+		console.log("INFO", "saving user:", user);
 		user.save();
 
 		/* Update the user object in the session */
 		req.session.passport.user = user;
-		res.redirect("/profile");
+		return res.redirect("/profile");
 	});
 };
 
