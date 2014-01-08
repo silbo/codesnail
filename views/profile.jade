@@ -48,14 +48,14 @@ block content
 		each provider in user.profile.providers
 			div
 				img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
-				div #{provider.name} 
-					a(href="#{provider.url}") #{provider.display_name}
+				div(style="text-transform:capitalize;") #{provider.name}
+					br
+					input(type="button", value="#{provider.display_name}" onclick="window.location.href='#{provider.url}'")
 					&nbsp;
-					a(href="/profile/mugshot/#{provider.name}") set as mugshot
+					input(type="button", value="Set as Mugshot" onclick="window.location.href='/profile/mugshot/#{provider.name}'")
 					&nbsp;
-					a(href="/profile/remove/#{provider.name}") disconnect
+					input(type="button", value="Disconnect" onclick="window.location.href='/profile/remove/#{provider.name}'")
 		div#oauths
 			each login in logins
-				| #{login[0]} 
-				a(href="#{login[1]}") connect
+				input(type="button", value="Connect #{login[0]}" onclick="window.location.href='#{login[1]}'")
 				br
