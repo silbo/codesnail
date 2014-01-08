@@ -32,7 +32,10 @@ window.onload = function() {
 
 	/* Receive the requested task */
 	socket.on("receive-task", function (task) {
-		$("#task").html("<p>" + task + "</p>");
+		$('#task').fadeOut("slow", function() {
+			$("#task").html("<p>" + task + "</p>");
+			$("#task").fadeIn("slow");
+		});
 	});
 
 	/* Receive the requested task */
