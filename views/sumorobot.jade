@@ -1,0 +1,35 @@
+extends layout
+
+block content
+
+	script(type="text/javascript", src="/socket.io/socket.io.js")
+	script(type="text/javascript", src="/javascripts/sumorobot.js")
+	script(type="text/javascript" src="/blockly/blockly_compressed.js")
+	script(type="text/javascript" src="/blockly/en_compressed.js")
+	script(type="text/javascript" src="/blockly/javascript_compressed.js")
+
+	input(type="button", value="Index" onclick="window.location.href='/'")
+	if !user.guest
+		input(type="button", value="Profile" onclick="window.location.href='/profile'")
+	input(type="button", value="Study" onclick="window.location.href='/study'")
+	input(type="button", value="Coding" onclick="window.location.href='/coding'")
+	input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
+
+	h3 Online users:
+	div#online-users
+		p Loading users ...
+	div.clear
+
+	div#blocklyDiv(style="height: 400px;")
+
+	xml#toolbox(style="display: none").
+		<block type="controls_arduino_main"></block>
+		<block type="controls_if"></block>
+		<block type="controls_arduino_motor"></block>
+		<block type="controls_arduino_move"></block>
+		<block type="controls_arduino_opponent"></block>
+		<block type="controls_arduino_line"></block>
+
+	div#buttons
+		input(type="button" value="Send Code" onclick="sendCode();") SEND
+		input(type="button" value="Show Code" onclick="showCode();") SHOW
