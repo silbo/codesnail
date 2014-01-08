@@ -15,7 +15,8 @@ window.onload = function() {
 		$("#online-users").html("");
 		/* Populate all the online users */
 		for (var key in users) {
-			$("#online-users").html( $("#online-users").html() + '<div class="user" onclick="javascript:getCode(\'' + users[key].email + '\')">' +
+			$("#online-users").html( $("#online-users").html() + 
+			'<div id="'+users[key].name.replace(/ /g, "")+'" class="user" onclick="javascript:getCode(\'' + users[key].email + '\')">' +
 			'<a class="mugshot-link" href="#" title="show code">' +
 			'<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
 			'<p>' + users[key].name + '</p><p>' + users[key].profile.description + '</p></a></div>');
@@ -35,9 +36,11 @@ window.onload = function() {
 	});
 
 	/* Receive the requested task */
-	socket.on("receive-task-verification", function (message) {
-		if (message) {
-			$("#task-message").html(message);
+	socket.on("receive-task-verification", function (name) {
+		if (name) {
+			var offset = $("#"+name.replace(/ /g, "")).offset();
+			offset.left;
+			$("#task-message").html(name + " Wins!");
 			$("#task-message").slideDown("fast")
 			setTimeout(function() { $("#task-message").slideUp("fast"); }, 1000);
 		}
@@ -52,9 +55,15 @@ window.onload = function() {
 		/* When the users code has changed */
 		if (oldCode != code)
 			/* Send it for verification and saving */
-			socket.emit("verify-task", editor.getValue())
+			socket.emit("verify-task", editor.getValue());
 		oldCode = code;
 	}, 1000);
+
+	/* Execute in intervals */
+	setInterval(function() {
+		/* Send ping to keep connection alive */
+		socket.emit("ping");
+	}, 10000);
 
 	/* ACE editor initialization */
 	editor_other = ace.edit("code-message");
