@@ -28,3 +28,12 @@ exports.coding = function(req, res) {
 	}
 	res.render('coding', { user: req.user });
 };
+
+/* Sumorobot programming section */
+exports.sumorobot = function(req, res) {
+	if (!req.user) {
+		req.session.passport.user = auth.generateGuest();
+		req.user = req.session.passport.user;
+	}
+	res.render('sumorobot', { user: req.user });
+};
