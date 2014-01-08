@@ -2,26 +2,26 @@
 
 /* Add modules */
 var express = require('express'),
-	expressValidator = require('express-validator'),
 	app = express(),
-	jade = require('jade'),
-	flash = require('connect-flash'),
+	fs = require('fs'),
 	http = require('http'),
-	passport = require('passport'),
-	auth = require("./config/authentication"),
-	db = require("./config/database"),
-	MongoStore = require('connect-mongo')(express),
-	config = require("./config/config"),
-	email = require("./config/email"),
+	jade = require('jade'),
 	routes = require('./routes'),
-	user = require('./routes/user');
+	passport = require('passport'),
+	user = require('./routes/user'),
+	flash = require('connect-flash'),
+	email = require("./config/email"),
+	db = require("./config/database"),
+	config = require("./config/config"),
+	auth = require("./config/authentication"),
+	MongoStore = require('connect-mongo')(express),
+	expressValidator = require('express-validator');
 
 var SessionStore = new MongoStore({ url: config.database_url });
 /* Set app properties */
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
-app.use(express.multipart());
 app.use(express.urlencoded());
 app.use(expressValidator());
 app.use(express.logger('dev'));
@@ -108,6 +108,28 @@ db.Provider.find(function (err, providers) {
 /* Start the app */
 var server = http.createServer(app).listen(config.port);
 console.log("INFO", "express server listening on port:", config.port);
+
+/* Start Binary.js server */
+var BinaryServer = require('binaryjs').BinaryServer;
+/* Start the binary server on another port than socket.io */
+var bs = BinaryServer({ port: 9000 });
+
+/* Wait for new user connections */
+bs.on('connection', function(client) {
+	/* Incoming stream from browsers */
+	client.on('stream', function(stream, meta) {
+		console.log("INFO", "incoming stream size:", meta.size)
+		/* Drop the stream if the file is too large max 100KB allowed */
+		if (meta.size > 100000) return;
+		/* Write into public folder */
+		var file = fs.createWriteStream(__dirname + '/public/images/' + meta.name);
+		stream.pipe(file);
+		/* Send progress back */
+		stream.on('data', function(data) {
+			stream.write({rx: data.length / meta.size});
+		});
+	});
+});
 
 /* Setup socket sessionstore */
 var io = require('socket.io').listen(server);
