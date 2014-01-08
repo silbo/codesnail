@@ -112,7 +112,7 @@ console.log("INFO", "express server listening on port:", config.port);
 var io = require('socket.io').listen(server);
 /* Configure timeout */
 io.configure( function() {
-    io.set('close timeout', 60*60*24); // 24h time out
+    io.set('close timeout', 60); // 60 sec time out
 });
 
 var passportSocketIo = require('passport.socketio');
