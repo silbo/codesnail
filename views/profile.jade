@@ -2,7 +2,8 @@ extends layout
 
 block content
 
-	script(type="text/javascript", src="http://cdn.binaryjs.com/0/binary.js")
+	script(type="text/javascript", src="/socket.io/socket.io.js")
+	script(type="text/javascript", src="/javascripts/socket.io-stream.js")
 	script(type="text/javascript", src="/javascripts/profile.js")
 
 	input(type="button", value="Index" onclick="window.location.href='/'")
@@ -19,7 +20,6 @@ block content
 		each error in errors
 			p.errors #{error.msg}
 
-		div#progress 0% complete
 		div#box(style="height: 50px;") Connecting...
 		img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 
