@@ -3,7 +3,7 @@ var stream = undefined;
 
 /* When DOM has been loaded */
 window.onload = function() {
-	socket = io.connect();
+	socket = io.connect('http://www.codesnail.com/profile');
 	stream = ss.createStream();
 
 	var box = $('#box');
