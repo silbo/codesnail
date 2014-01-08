@@ -112,7 +112,7 @@ console.log("INFO", "express server listening on port:", config.port);
 /* Start Binary.js server */
 var BinaryServer = require('binaryjs').BinaryServer;
 /* Start the binary server on another port than socket.io */
-var bs = BinaryServer({ port: 9000 });
+var bs = BinaryServer({ server: server });
 
 /* Wait for new user connections */
 bs.on('connection', function(client) {
