@@ -79,7 +79,7 @@ app.get("/profile/mugshot/:provider", auth.ensureAuthenticated, user.mugshotUpda
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
 
 /* Delete all the users and providers */
-if (false) {
+if (true) {
 	db.User.remove(function (err, removed) {
 		if (err) console.log("ERROR", "deleting all users:", err);
 		else console.log("INFO", "successfully removed all users");
