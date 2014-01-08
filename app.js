@@ -109,30 +109,9 @@ db.Provider.find(function (err, providers) {
 var server = http.createServer(app).listen(config.port);
 console.log("INFO", "express server listening on port:", config.port);
 
-/* Start Binary.js server */
-var BinaryServer = require('binaryjs').BinaryServer;
-/* Start the binary server on another port than socket.io */
-var bs = BinaryServer({ server: server });
-
-/* Wait for new user connections */
-bs.on('connection', function(client) {
-	/* Incoming stream from browsers */
-	client.on('stream', function(stream, meta) {
-		console.log("INFO", "incoming stream size:", meta.size)
-		/* Drop the stream if the file is too large max 100KB allowed */
-		if (meta.size > 100000) return;
-		/* Write into public folder */
-		var file = fs.createWriteStream(__dirname + '/public/images/' + meta.name);
-		stream.pipe(file);
-		/* Send progress back */
-		stream.on('data', function(data) {
-			stream.write({rx: data.length / meta.size});
-		});
-	});
-});
-
 /* Setup socket sessionstore */
 var io = require('socket.io').listen(server);
+var ss = require('socket.io-stream');
 
 var passportSocketIo = require('passport.socketio');
 io.set('authorization', passportSocketIo.authorize({
@@ -212,6 +191,16 @@ io.sockets.on('connection', function (socket) {
 			io.sockets.emit("receive-task-verification", "");
 	});
 
+	/* To stream mugshot to the server */
+	ss(socket).on('mugshot', function(stream, meta) {
+		console.log("INFO", "incoming stream size:", meta.size, meta.name)
+		/* Drop the stream if the file is too large max 100KB allowed */
+		if (meta.size > 100000) return;
+		stream.pipe(fs.createWriteStream(__dirname + '/public/images/' + meta.name));
+		// Send progress back
+		ss(socket).emit('data', "Mugshot uploaded, click save to update");
+	});
+
 	/* User disconnected from socket */
 	socket.on('disconnect', function() {
 		console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
@@ -219,7 +208,6 @@ io.sockets.on('connection', function (socket) {
 		delete onlineUsers[socket.handshake.user.email];
 		/* Update the online users for all users */
 		io.sockets.emit("users", onlineUsers);
-		/* Try to reconnect */
-
+		/* TODO: Try to reconnect */
 	});
 });
