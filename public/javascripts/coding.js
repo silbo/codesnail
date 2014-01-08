@@ -37,12 +37,13 @@ window.onload = function() {
 
 	/* Receive the requested task */
 	socket.on("receive-task-verification", function (name) {
+		/* When someone solved the task */
 		if (name) {
+			/* Animate the user win */
 			var offset = $("#"+name.replace(/ /g, "")).offset();
-			offset.left;
-			$("#task-message").html(name + " Wins!");
-			$("#task-message").slideDown("fast")
-			setTimeout(function() { $("#task-message").slideUp("fast"); }, 1000);
+			$("#code-points").css({ top: offset.top + 15, left: offset.left - 10 });
+			$("#code-points").fadeIn("fast");
+			setTimeout(function() { $("#code-points").fadeOut("fast"); }, 2000);
 		}
 	});
 
