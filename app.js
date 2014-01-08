@@ -47,6 +47,7 @@ app.get("/register/:id", auth.checkLogin, user.verify);
 app.all("/forgot", auth.checkLogin, user.forgotPassword);
 app.get("/study", routes.study);
 app.get("/coding", routes.coding);
+app.get("/sumorobot", routes.sumorobot);
 
 app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
@@ -110,10 +111,6 @@ console.log("INFO", "express server listening on port:", config.port);
 
 /* Setup socket sessionstore */
 var io = require('socket.io').listen(server);
-/* Configure timeout */
-io.configure( function() {
-    io.set('close timeout', 60*5); // 5 mit timeout
-});
 
 var passportSocketIo = require('passport.socketio');
 io.set('authorization', passportSocketIo.authorize({
@@ -162,6 +159,11 @@ io.sockets.on('connection', function (socket) {
 	io.sockets.emit("users", onlineUsers);
 
 	/* User asks for someones code */
+	socket.on('ping', function() {
+		console.log("INFO", "ping received from user:", socket.handshake.user.email);
+	});
+
+	/* User asks for someones code */
 	socket.on('get-code', function(userEmail) {
 		console.log("INFO", "get user code:", userEmail);
 		socket.emit("receive-code", onlineUsers[userEmail].code);
@@ -179,7 +181,7 @@ io.sockets.on('connection', function (socket) {
 		/* Save the users code */
 		onlineUsers[socket.handshake.user.email].code = code;
 		if (code.replace(/\s+/g, '').match(taskVerify[currentTask])) {
-			io.sockets.emit("receive-task-verification", socket.handshake.user.name + " Wins!");
+			io.sockets.emit("receive-task-verification", socket.handshake.user.name);
 			/* Update the current task */
 			currentTask = (currentTask + 1) % task.length;
 			io.sockets.emit("receive-task", task[currentTask]);
