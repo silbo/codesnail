@@ -1,7 +1,10 @@
+var socket = undefined;
+var stream = undefined;
+
 /* When DOM has been loaded */
 window.onload = function() {
-	var socket = io.connect();
-	var stream = ss.createStream();
+	socket = io.connect();
+	stream = ss.createStream();
 
 	var box = $('#box');
 	box.on('dragenter', doNothing);
