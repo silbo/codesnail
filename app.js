@@ -41,13 +41,13 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 }
 
+app.get("/study", routes.study);
+app.get("/coding", routes.coding);
+app.get("/sumorobot", routes.sumorobot);
 app.get("/login", auth.checkLogin, user.login);
 app.all("/register", auth.checkLogin, user.register);
 app.get("/register/:id", auth.checkLogin, user.verify);
 app.all("/forgot", auth.checkLogin, user.forgotPassword);
-app.get("/study", routes.study);
-app.get("/coding", routes.coding);
-app.get("/sumorobot", routes.sumorobot);
 
 app.post("/login", passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/login", failureFlash: true }));
 
@@ -76,8 +76,8 @@ app.get("/", auth.ensureAuthenticated, routes.index);
 app.get("/profile", auth.ensureAuthenticated, user.profile);
 app.post("/profile/update", auth.ensureAuthenticated, user.profileUpdate);
 app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate);
-app.get("/profile/mugshot/:provider", auth.ensureAuthenticated, user.mugshotUpdate);
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
+app.get("/profile/mugshot/:provider", auth.ensureAuthenticated, user.mugshotUpdate);
 
 /* Delete all the users and providers */
 if (false) {
@@ -114,10 +114,9 @@ var io = require('socket.io').listen(server);
 var ss = require('socket.io-stream');
 
 /* assuming io is the Socket.IO server object */
-io.configure(function () {
-	io.set("transports", ["xhr-polling"]);
-	io.set("polling duration", 10);
-});
+//io.configure(function () {
+//	io.set("timeout", 60); // 1 min timeout
+//});
 
 var passportSocketIo = require('passport.socketio');
 io.set('authorization', passportSocketIo.authorize({
@@ -153,10 +152,12 @@ io.sockets.on('connection', function (socket) {
 	/* Add user to online users */
 	console.log("INFO", "socket connection established");
 	console.log("INFO", "socket user:", socket.handshake.user.email);
+	socket.heartbeatTimeout = 5000;
 	onlineUsers[socket.handshake.user.email] = {
 		name: socket.handshake.user.name,
 		email: socket.handshake.user.email,
 		profile: {
+			points: socket.handshake.user.profile.points,
 			mugshot: socket.handshake.user.profile.mugshot,
 			website: socket.handshake.user.profile.website,
 			description: socket.handshake.user.profile.description
