@@ -48,31 +48,29 @@ exports.generateGuest = function generateGuest() {
 
 /* Simple route middleware to ensure user does not go back to login or register after login. */
 exports.checkLogin = function ensureAuthenticated(req, res, next) {
-    console.log("INFO", "session:", req._passport);
     /* When user is logged in */
-    if (req.isAuthenticated()) {
-        console.log("INFO", "user trying to access login area:", req.user.name);
+    if (req.isAuthenticated() && req.user.verification.verified) {
         return res.redirect("/profile");
     }
     /* When user is not logged in */
+    req.logout();
     return next();
 }
 
 /* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
-    console.log("INFO", "session:", req._passport);
     /* When user is logged in */
-    if (req.isAuthenticated()) {
-        console.log("INFO", "authed user:", req.user.name);
+    if (req.isAuthenticated() && req.user.verification.verified) {
         /* When guest user, the profile is not available */
         if (!req.user.email && req.url == "/profile") {
             req.flash('error', [{ msg: "Guest user has no profile" }]);
             return res.redirect("/");
         }
-        else if (req.user.verification.verified) return next();
-        else req.flash('error', "Please verify your user");
+        return next();
     }
     /* When user is not logged in, show login*/
+    req.logout();
+    req.flash('error', "Please verify your user");
     res.redirect('/login');
 }
 
@@ -122,9 +120,11 @@ passport.use(new LocalStrategy(
             /* Escape some characters before using regular expression matching */
             db.User.findOne({ email: username }).populate('profile.providers').exec(function (err, user) {
                 if (err) return done(err);
-                if (!user) return done(null, false, { message: "Wrong username or password" });
-                if (user.password != exports.calculateHash("sha256", password + user.joined_date)) 
+                else if (!user) return done(null, false, { message: "Wrong username or password" });
+                else if (user.password != exports.calculateHash("sha256", password + user.joined_date)) 
                     return done(null, false, { message: "Wrong username or password" });
+                else if (user.verification.verified == false)
+                    return done(null, false, { message: "Please verify your user" });
                 return done(null, user);
             });
         });
