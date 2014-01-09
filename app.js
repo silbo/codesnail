@@ -142,14 +142,13 @@ io.set('authorization', passportSocketIo.authorize({
 var tasks = [];
 var currentTask = 0;
 
-/* Fetch all tasks */
-db.Task.find(function(err, db_tasks) {
-	if (err) console.log("ERROR", "fetching all tasks:", err);
-	else tasks = db_tasks;
-});
-
 /* Get new task */
 function getTask() {
+	/* Update tasks */
+	db.Task.find(function(err, db_tasks) {
+		if (err) console.log("ERROR", "fetching all tasks:", err);
+		else tasks = db_tasks;
+	});
 	if (tasks.length == 0) return "Currently no tasks available";
 	return "Task " + (currentTask+1) + ": " + tasks[currentTask].name;
 }
@@ -164,6 +163,17 @@ function taskComplete(code) {
 	}
 	return false;
 }
+
+var task = [
+	"Task 1: Create a basic html structure with head and body",
+	"Task 2: Add a header 1 with text 'Awesome' inside the body",
+	"Task 3: Add two paragraph under the header 1, the first with text 'Cool' and second with text 'Interesting'",
+	"Task 4: Add a link with text 'My Website' and link 'http://www.mywebsite.com', after the paragraphs"];
+var taskVerify = [
+	'<html(.*)><head>(.*)</head><body></body></html>',
+	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1></body></html>',
+	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p></body></html>',
+	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p><ahref="http://www.mywebsite.com">MyWebsite</a></body></html>'];
 
 /* Online users */
 var onlineUsers = {};
