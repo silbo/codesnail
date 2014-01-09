@@ -70,7 +70,6 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     }
     /* When user is not logged in, show login*/
     req.logout();
-    req.flash('error', "Please verify your user");
     res.redirect('/login');
 }
 
