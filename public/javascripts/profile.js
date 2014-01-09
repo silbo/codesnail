@@ -6,9 +6,12 @@ window.onload = function() {
 	socket = io.connect();
 	stream = ss.createStream();
 
-	var box = $("#box");
+	var box = $("#mugshot-box");
 	box.on("dragenter", doNothing);
 	box.on("dragover", doNothing);
+	box.on("dragleave", function() { 
+		$("#mugshot-box").removeClass("mugshot-box"); 
+	});
 	box.text("Drag mugshot here");
 	box.on("drop", function(e) {
 		e.originalEvent.preventDefault();
@@ -34,6 +37,7 @@ window.onload = function() {
 
 /* Deal with DOM quirks */
 function doNothing (e) {
+	$("#mugshot-box").addClass("mugshot-box");
 	e.preventDefault();
 	e.stopPropagation();
 }
