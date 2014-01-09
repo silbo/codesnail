@@ -9,7 +9,8 @@ window.onload = function() {
 	var box = $("#mugshot-box");
 	box.on("dragenter", doNothing);
 	box.on("dragover", doNothing);
-	box.on("dragleave", function() { 
+	/* Dehighlight input box */
+	box.on("dragleave drop", function() {
 		$("#mugshot-box").removeClass("mugshot-box"); 
 	});
 	box.text("Drag mugshot here");
@@ -37,6 +38,7 @@ window.onload = function() {
 
 /* Deal with DOM quirks */
 function doNothing (e) {
+	/* Highlight input box */
 	$("#mugshot-box").addClass("mugshot-box");
 	e.preventDefault();
 	e.stopPropagation();
