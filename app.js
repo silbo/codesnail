@@ -79,29 +79,39 @@ app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate);
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
 app.get("/profile/mugshot/:provider", auth.ensureAuthenticated, user.mugshotUpdate);
 
-/* Delete all the users and providers */
+/* Delete all the users and providers and tasks */
 if (false) {
-	db.User.remove(function (err, removed) {
+	db.User.remove(function(err, removed) {
 		if (err) console.log("ERROR", "deleting all users:", err);
 		else console.log("INFO", "successfully removed all users");
 	});
-	db.Provider.remove(function (err, removed) {
+	db.Provider.remove(function(err, removed) {
 		if (err) console.log("ERROR", "deleting all providers:", err);
 		else console.log("INFO", "successfully removed all providers");
 	});
+	db.Task.remove(function(err, removed) {
+		if (err) console.log("ERROR", "deleting all tasks:", err);
+		else console.log("INFO", "successfully removed all tasks");
+	});
 }
 
-/* Show all the users and providers */
-db.User.find(function (err, users) {
+/* Show all the users and providers and tasks */
+db.User.find(function(err, users) {
 	if (err) console.log("ERROR", "fetching all users:", err);
 	else users.forEach(function(user) {
 		console.log("INFO", "user name:", user.name);
 	});
 });
-db.Provider.find(function (err, providers) {
+db.Provider.find(function(err, providers) {
 	if (err) console.log("ERROR", "fetching all providers:", err);
 	else providers.forEach(function(provider) {
 		console.log("INFO", "provider url:", provider.url);
+	});
+});
+db.Task.find(function(err, tasks) {
+	if (err) console.log("ERROR", "fetching all tasks:", err);
+	else tasks.forEach(function(task) {
+		console.log("INFO", "task:", task.name);
 	});
 });
 
@@ -129,19 +139,34 @@ io.set('authorization', passportSocketIo.authorize({
 	}
 }));
 
+var tasks = [];
+var currentTask = 0;
+
+/* Fetch all tasks */
+db.Task.find(function(err, db_tasks) {
+	if (err) console.log("ERROR", "fetching all tasks:", err);
+	else tasks = db_tasks;
+});
+
+/* Get new task */
+function getTask() {
+	if (tasks.length == 0) return "Currently no tasks available";
+	return "Task " + (currentTask+1) + ": " + tasks[currentTask].name;
+}
+
+/* Check if task is complete */
+function taskComplete(code) {
+	if (tasks.length == 0) return false;
+	/* When task was completed */
+	if (code.replace(/\s+/g, '').match(tasks[currentTask].verification)) {
+		currentTask = (currentTask + 1) % tasks.length;
+		return true;
+	}
+	return false;
+}
+
 /* Online users */
 var onlineUsers = {};
-var currentTask = 0;
-var task = [
-	"Task 1: Create a basic html structure with head and body",
-	"Task 2: Add a header 1 with text 'Awesome' inside the body",
-	"Task 3: Add two paragraph under the header 1, the first with text 'Cool' and second with text 'Interesting'",
-	"Task 4: Add a link with text 'My Website' and link 'http://www.mywebsite.com', after the paragraphs"];
-var taskVerify = [
-	'<html(.*)><head>(.*)</head><body></body></html>',
-	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1></body></html>',
-	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p></body></html>',
-	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p><ahref="http://www.mywebsite.com">MyWebsite</a></body></html>'];
 /* User initiated socket connection */
 io.sockets.on('connection', function (socket) {
 	/* Add user to online users */
@@ -163,7 +188,7 @@ io.sockets.on('connection', function (socket) {
 
 	/* User asks for someones code */
 	socket.on('ping', function() {
-		console.log("INFO", "ping received from user:", socket.handshake.user.email);
+		console.log("INFO", "ping received from user:", socket.handshake.user.name);
 	});
 
 	/* User asks for someones code */
@@ -175,7 +200,7 @@ io.sockets.on('connection', function (socket) {
 	/* User asks for a task */
 	socket.on('get-task', function() {
 		console.log("INFO", "get task:", socket.handshake.user.email);
-		socket.emit("receive-task", task[currentTask]);
+		socket.emit("receive-task", getTask());
 	});
 
 	/* User verifies a task */
@@ -183,11 +208,9 @@ io.sockets.on('connection', function (socket) {
 		console.log("INFO", "verifiying task:", code.replace(/\s+/g, ''));
 		/* Save the users code */
 		onlineUsers[socket.handshake.user.email].code = code;
-		if (code.replace(/\s+/g, '').match(taskVerify[currentTask])) {
+		if (taskComplete(code)) {
 			io.sockets.emit("receive-task-verification", socket.handshake.user.name);
-			/* Update the current task */
-			currentTask = (currentTask + 1) % task.length;
-			io.sockets.emit("receive-task", task[currentTask]);
+			io.sockets.emit("receive-task", getTask());
 		}
 		else
 			io.sockets.emit("receive-task-verification", "");
