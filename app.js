@@ -113,11 +113,6 @@ console.log("INFO", "express server listening on port:", config.port);
 var io = require('socket.io').listen(server);
 var ss = require('socket.io-stream');
 
-/* assuming io is the Socket.IO server object */
-//io.configure(function () {
-//	io.set("timeout", 60); // 1 min timeout
-//});
-
 var passportSocketIo = require('passport.socketio');
 io.set('authorization', passportSocketIo.authorize({
 	cookieParser: express.cookieParser,
