@@ -2,6 +2,7 @@ extends layout
 
 block content
 
+	script(type="text/javascript", src="http://cdn.binaryjs.com/0/binary.js")
 	script(type="text/javascript", src="/socket.io/socket.io.js")
 	script(type="text/javascript", src="/javascripts/socket.io-stream.js")
 	script(type="text/javascript", src="/javascripts/profile.js")
@@ -20,7 +21,7 @@ block content
 		each error in errors
 			p.errors #{error.msg}
 
-		div#box(style="height: 50px;") Connecting...
+		div#mugshot-box(style="height: 50px;") Connecting...
 		img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 
 		form#profile(name="profile", action="/profile/update", method="post")
