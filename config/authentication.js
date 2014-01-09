@@ -48,8 +48,10 @@ exports.generateGuest = function generateGuest() {
 
 /* Simple route middleware to ensure user does not go back to login or register after login. */
 exports.checkLogin = function ensureAuthenticated(req, res, next) {
+    console.log("INFO", "session:", req._passport);
     /* When user is logged in */
     if (req.isAuthenticated()) {
+        console.log("INFO", "user trying to access login area:", req.user.name);
         return res.redirect("/profile");
     }
     /* When user is not logged in */
@@ -58,8 +60,10 @@ exports.checkLogin = function ensureAuthenticated(req, res, next) {
 
 /* Simple route middleware to ensure user is authenticated. Otherwise send to login page. */
 exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
+    console.log("INFO", "session:", req._passport);
     /* When user is logged in */
     if (req.isAuthenticated()) {
+        console.log("INFO", "authed user:", req.user.name);
         /* When guest user, the profile is not available */
         if (!req.user.email && req.url == "/profile") {
             req.flash('error', [{ msg: "Guest user has no profile" }]);
