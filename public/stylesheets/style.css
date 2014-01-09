@@ -3,7 +3,7 @@ html, body, h1 {
 	padding: 0px;
 }
 
-input, textarea, div#box {
+input, textarea, div#mugshot-box {
 	width: 20%;
 	outline: none;
 	border-radius: 4px;
@@ -40,7 +40,7 @@ input[type=submit] {
 	background-image: linear-gradient(to bottom, #62c462, #51a351);
 }
 
-input:focus, textarea:focus, div#box:focus {
+input:focus, textarea:focus, div.mugshot-box {
 	margin: 5px 1px 3px 0px;
 	padding: 3px 0px 3px 3px;
 	border: 1px solid rgba(81, 203, 238, 1);
