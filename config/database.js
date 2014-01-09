@@ -5,7 +5,7 @@ var config = require("./config"),
 
 /* Connect to database */
 var mongoose = require("mongoose");
-var collections = ["users", "reports"];
+var collections = ["users", "providers", "courses", "badges"];
 console.log("INFO", "connecting to database on:", config.database_url);
 mongoose.connect(config.database_url, collections);
 /* Debug mode */
@@ -27,12 +27,20 @@ var ProviderSchema = new Schema({
 	url: String
 });
 
+var TaskSchema = new Schema({
+	name: { type: String, unique: true, required: true },
+	description: String,
+	verification: String,
+	points: { type: Number, required: true, default: 0 },
+	badge: { type: ObjectId, ref: 'Badge' }
+});
+
 var CourseSchema = new Schema({
 	name: { type: String, unique: true, required: true },
 	description: String,
 	difficulty: String,
 	keywords: [{ type: String }],
-	levels: [{ task: String, points: Number, badge: { type: ObjectId, ref: 'Badge' } }]
+	levels: [{ type: ObjectId, ref: 'Task' }]
 });
 
 var UserSchema = new Schema({
@@ -84,5 +92,6 @@ UserSchema.pre('save', function(next) {
 /* Database objects */
 exports.Badge = mongoose.model("Badge", BadgeSchema);
 exports.Provider = mongoose.model("Provider", ProviderSchema);
+exports.Task = mongoose.model("Task", TaskSchema);
 exports.Course = mongoose.model("Course", CourseSchema);
 exports.User = mongoose.model("User", UserSchema);
