@@ -164,24 +164,13 @@ function taskComplete(code) {
 	return false;
 }
 
-var task = [
-	"Task 1: Create a basic html structure with head and body",
-	"Task 2: Add a header 1 with text 'Awesome' inside the body",
-	"Task 3: Add two paragraph under the header 1, the first with text 'Cool' and second with text 'Interesting'",
-	"Task 4: Add a link with text 'My Website' and link 'http://www.mywebsite.com', after the paragraphs"];
-var taskVerify = [
-	'<html(.*)><head>(.*)</head><body></body></html>',
-	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1></body></html>',
-	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p></body></html>',
-	'<html(.*)><head>(.*)</head><body><h1>Awesome</h1><p>Cool</p><p>Interesting</p><ahref="http://www.mywebsite.com">MyWebsite</a></body></html>'];
-
 /* Online users */
 var onlineUsers = {};
 /* User initiated socket connection */
 io.sockets.on('connection', function (socket) {
 	/* Add user to online users */
 	console.log("INFO", "socket connection established");
-	console.log("INFO", "socket user:", socket.handshake.user.email);
+	console.log("INFO", "socket user:", socket.handshake.user.name);
 	socket.heartbeatTimeout = 5000;
 	onlineUsers[socket.handshake.user.email] = {
 		name: socket.handshake.user.name,
@@ -209,7 +198,7 @@ io.sockets.on('connection', function (socket) {
 
 	/* User asks for a task */
 	socket.on('get-task', function() {
-		console.log("INFO", "get task:", socket.handshake.user.email);
+		console.log("INFO", "get task:", socket.handshake.user.name);
 		socket.emit("receive-task", getTask());
 	});
 
@@ -218,8 +207,9 @@ io.sockets.on('connection', function (socket) {
 		console.log("INFO", "verifiying task:", code.replace(/\s+/g, ''));
 		/* Save the users code */
 		onlineUsers[socket.handshake.user.email].code = code;
+		var prev_task = getTask();
 		if (taskComplete(code)) {
-			io.sockets.emit("receive-task-verification", socket.handshake.user.name);
+			io.sockets.emit("receive-task-verification", socket.handshake.user.name, prev_task.points);
 			io.sockets.emit("receive-task", getTask());
 		}
 		else
@@ -238,7 +228,7 @@ io.sockets.on('connection', function (socket) {
 
 	/* User disconnected from socket */
 	socket.on('disconnect', function() {
-		console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
+		console.log("INFO", "socket user disconnected:", socket.handshake.user.name);
 		/* Delete user from online users */
 		delete onlineUsers[socket.handshake.user.email];
 		/* Update the online users for all users */
