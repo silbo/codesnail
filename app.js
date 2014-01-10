@@ -149,8 +149,8 @@ function getTask() {
 		if (err) console.log("ERROR", "fetching all tasks:", err);
 		else tasks = db_tasks;
 	});
-	if (tasks.length == 0) return "Currently no tasks available";
-	return "Task " + (currentTask+1) + ": " + tasks[currentTask].name;
+	if (tasks.length == 0) return { name: "Currently no tasks available" };
+	return { name: "Task " + (currentTask+1) + ": " + tasks[currentTask].name, points: tasks[currentTask].points };
 }
 
 /* Check if task is complete */
@@ -170,7 +170,7 @@ var onlineUsers = {};
 io.sockets.on('connection', function (socket) {
 	/* Add user to online users */
 	console.log("INFO", "socket connection established");
-	console.log("INFO", "socket user:", socket.handshake.user.name);
+	console.log("INFO", "socket user:", socket.handshake.user.email);
 	socket.heartbeatTimeout = 5000;
 	onlineUsers[socket.handshake.user.email] = {
 		name: socket.handshake.user.name,
@@ -187,7 +187,7 @@ io.sockets.on('connection', function (socket) {
 
 	/* User asks for someones code */
 	socket.on('ping', function() {
-		console.log("INFO", "ping received from user:", socket.handshake.user.name);
+		console.log("INFO", "ping received from user:", socket.handshake.user.email);
 	});
 
 	/* User asks for someones code */
@@ -198,7 +198,7 @@ io.sockets.on('connection', function (socket) {
 
 	/* User asks for a task */
 	socket.on('get-task', function() {
-		console.log("INFO", "get task:", socket.handshake.user.name);
+		console.log("INFO", "get task:", socket.handshake.user.email);
 		socket.emit("receive-task", getTask());
 	});
 
@@ -228,7 +228,7 @@ io.sockets.on('connection', function (socket) {
 
 	/* User disconnected from socket */
 	socket.on('disconnect', function() {
-		console.log("INFO", "socket user disconnected:", socket.handshake.user.name);
+		console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
 		/* Delete user from online users */
 		delete onlineUsers[socket.handshake.user.email];
 		/* Update the online users for all users */
