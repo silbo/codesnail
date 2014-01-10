@@ -23,7 +23,7 @@ exports.calculateHash = function calculateHash(type, text) {
 /* Random function */
 exports.generateRandom = function generateRandom() {
     var current_date = (new Date()).valueOf().toString();
-    var random = parseInt(Math.random()*100);
+    var random = parseInt(Math.random()*1000);
     return random;
 }
 
@@ -33,6 +33,7 @@ exports.generateGuest = function generateGuest() {
     var randomEmailHash = exports.calculateHash('md5', random + "@email.com");
     var user = {
         name: "Guest" + random,
+        email: random + "@email.com",
         guest: true,
         profile: {
             mugshot: config.gravatar.mugshot + randomEmailHash + "?d=identicon",
