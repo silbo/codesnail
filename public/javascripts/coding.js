@@ -33,7 +33,7 @@ window.onload = function() {
 	/* Receive the requested task */
 	socket.on("receive-task", function (task) {
 		$('#task').fadeOut("slow", function() {
-			$("#task").html("<p>" + task + "</p>");
+			$("#task").html("<p>" + task.name + "</p>");
 			$("#task").fadeIn("slow");
 		});
 	});
