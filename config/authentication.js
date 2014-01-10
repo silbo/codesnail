@@ -22,8 +22,9 @@ exports.calculateHash = function calculateHash(type, text) {
 
 /* Random function */
 exports.generateRandom = function generateRandom() {
+    /* TODO: Add existing check, or add date + time */
     var current_date = (new Date()).valueOf().toString();
-    var random = parseInt(Math.random()*1000);
+    var random = parseInt(Math.random()*100);
     return random;
 }
 
