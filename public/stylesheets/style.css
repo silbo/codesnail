@@ -103,11 +103,12 @@ p.messages {
 	color: green;
 }
 
-div#code-points {
-	font-size: 2em;
+div#code-points, div#code-win {
 	color: green;
 	display: none;
-	position: fixed;
+	font-size: 2em;
+	font-weight: bold;
+	position: absolute;
 }
 
 div#code-message {
