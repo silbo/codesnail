@@ -19,8 +19,9 @@ window.onload = function() {
 			'<div id="'+users[key].name.replace(/ /g, "")+'" class="user" onclick="javascript:getCode(\'' + users[key].email + '\')">' +
 			'<a class="mugshot-link" href="#" title="show code">' +
 			'<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
-			'<p>' + users[key].name + '</p><p>' + users[key].profile.description + '</p></a></div>');
+			'<p>' + users[key].name + '</p><p>points: ' + users[key].profile.points + '</p></a></div>');
 		}
+		$("input[name='points']").val(users[key].profile.points);
 	});
 
 	/* Receive the requested users code */
