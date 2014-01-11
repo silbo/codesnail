@@ -26,3 +26,7 @@ block content
 	div#code-wrapper
 		span Test Coding Abilities
 		div#code
+
+		form#points(name="points", action="/coding", method="post")
+			input(type="hidden", name="points", value="0")
+			input(type="submit", name="submit", value="Save Points")
