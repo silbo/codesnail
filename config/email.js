@@ -1,7 +1,7 @@
-/* Configuration */
-var config = require("./config");
+/* Add modules */
+var config = require('./config');
+	email = require('../node_modules/emailjs/email.js');
 
-var email = require("../node_modules/emailjs/email.js");
 var server = email.server.connect({
 	user: config.smtp.username,
 	password: config.smtp.password,
