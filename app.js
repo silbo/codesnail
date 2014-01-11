@@ -10,7 +10,6 @@ var express = require('express'),
 	passport = require('passport'),
 	user = require('./routes/user'),
 	flash = require('connect-flash'),
-	email = require("./config/email"),
 	db = require("./config/database"),
 	config = require("./config/config"),
 	auth = require("./config/authentication"),
@@ -115,124 +114,12 @@ db.Task.find(function(err, tasks) {
 	});
 });
 
-/* Start the app */
-var server = http.createServer(app).listen(config.port);
-console.log("INFO", "express server listening on port:", config.port);
-
-/* Setup socket sessionstore */
-var io = require('socket.io').listen(server);
-var ss = require('socket.io-stream');
-
-var passportSocketIo = require('passport.socketio');
-io.set('authorization', passportSocketIo.authorize({
-	cookieParser: express.cookieParser,
-	key: 'connect.sid',
-	secret: 'super-secret-u-will-never-guess',
-	store: SessionStore,
-	fail: function(data, accept) {
-		console.log("ERROR", "scoket data:", data);
-		accept(null, false);
-	},
-	success: function(data, accept) {
-		//console.log("INFO", "scoket:", data);
-		accept(null, true);
-	}
-}));
-
-var tasks = [];
-var currentTask = 0;
-
-/* Get new task */
-function getTask() {
-	/* Update tasks */
-	db.Task.find(function(err, db_tasks) {
-		if (err) console.log("ERROR", "fetching all tasks:", err);
-		else tasks = db_tasks;
-	});
-	if (tasks.length == 0) return { name: "Currently no tasks available" };
-	return { name: "Task " + (currentTask+1) + ": " + tasks[currentTask].name, points: tasks[currentTask].points };
-}
-
-/* Check if task is complete */
-function taskComplete(code) {
-	if (tasks.length == 0) return false;
-	/* When task was completed */
-	if (code.replace(/\s+/g, '').match(tasks[currentTask].verification)) {
-		currentTask = (currentTask + 1) % tasks.length;
-		return true;
-	}
-	return false;
-}
-
-/* Online users */
-var onlineUsers = {};
-/* User initiated socket connection */
-io.sockets.on('connection', function (socket) {
-	/* Add user to online users */
-	console.log("INFO", "socket connection established");
-	console.log("INFO", "socket user:", socket.handshake.user.email);
-	socket.heartbeatTimeout = 5000;
-	onlineUsers[socket.handshake.user.email] = {
-		name: socket.handshake.user.name,
-		email: socket.handshake.user.email,
-		profile: {
-			points: socket.handshake.user.profile.points,
-			mugshot: socket.handshake.user.profile.mugshot,
-			website: socket.handshake.user.profile.website,
-			description: socket.handshake.user.profile.description
-		}
-	};
-	/* Update the online users for all users */
-	io.sockets.emit("users", onlineUsers);
-
-	/* User asks for someones code */
-	socket.on('ping', function() {
-		console.log("INFO", "ping received from user:", socket.handshake.user.email);
-	});
-
-	/* User asks for someones code */
-	socket.on('get-code', function(userEmail) {
-		console.log("INFO", "get user code:", userEmail);
-		socket.emit("receive-code", onlineUsers[userEmail].code);
-	});
-
-	/* User asks for a task */
-	socket.on('get-task', function() {
-		console.log("INFO", "get task:", socket.handshake.user.email);
-		socket.emit("receive-task", getTask());
-	});
-
-	/* User verifies a task */
-	socket.on('verify-task', function(code) {
-		console.log("INFO", "verifiying task:", code.replace(/\s+/g, ''));
-		/* Save the users code */
-		onlineUsers[socket.handshake.user.email].code = code;
-		var prev_task = getTask();
-		if (taskComplete(code)) {
-			io.sockets.emit("receive-task-verification", socket.handshake.user.name, prev_task.points);
-			io.sockets.emit("receive-task", getTask());
-		}
-		else
-			io.sockets.emit("receive-task-verification", "");
-	});
-
-	/* To stream mugshot to the server */
-	ss(socket).on('mugshot', function(stream, meta) {
-		console.log("INFO", "incoming stream size:", meta.size, meta.name)
-		/* Drop the stream if the file is too large max 100KB allowed */
-		if (meta.size > 100000) return;
-		stream.pipe(fs.createWriteStream(__dirname + '/public/images/' + meta.name));
-		// Send progress back
-		ss(socket).emit('data', "Mugshot uploaded, click save to update");
-	});
-
-	/* User disconnected from socket */
-	socket.on('disconnect', function() {
-		console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
-		/* Delete user from online users */
-		delete onlineUsers[socket.handshake.user.email];
-		/* Update the online users for all users */
-		io.sockets.emit("users", onlineUsers);
-		/* TODO: Try to reconnect */
-	});
+/* Start the app and sockets */
+var server = http.createServer(app).listen(config.port, function() {
+	console.log("INFO", "express server listening on port:", config.port);
+	var socket = require("./config/socket");
 });
+
+/* Export items for other modules */
+exports.server = server;
+exports.SessionStore = SessionStore;
