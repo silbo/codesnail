@@ -47,11 +47,15 @@ input:focus, textarea:focus, div.mugshot-box {
 	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 }
 
+div.user {
+	line-height: 0px;
+}
+
 div#user {
 	top: 2%;
 	right: 1%;
-	position: absolute;
 	line-height: 0px;
+	position: absolute;
 }
 
 div#user input {
@@ -60,7 +64,7 @@ div#user input {
 
 div#online-users {
 	width: 98%;
-	height: 70px;
+	height: 75px;
 	border-bottom: 1px solid #ccc;
 }
 
