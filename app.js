@@ -27,7 +27,7 @@ app.use(express.logger('dev'));
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({
-	secret: "super-secret-u-will-never-guess",
+	secret: config.session_secret,
 	store: SessionStore
 }));
 app.use(flash());
@@ -41,7 +41,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get("/study", routes.study);
-app.get("/coding", routes.coding);
+app.all("/coding", routes.coding);
 app.get("/sumorobot", routes.sumorobot);
 app.get("/login", auth.checkLogin, user.login);
 app.all("/register", auth.checkLogin, user.register);
