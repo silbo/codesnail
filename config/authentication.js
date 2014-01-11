@@ -3,16 +3,14 @@ var db = require('./database'),
     crypto = require('crypto'),
     utils = require('./utils'),
     config = require('./config'),
-    flash = require('connect-flash');
-
-/* OAuth stuff */
-var passport = require('passport'),
+    passport = require('passport'),
+    flash = require('connect-flash'),
     LocalStrategy = require('passport-local').Strategy,
-	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+	GitHubStrategy = require('passport-github').Strategy,
 	TwitterStrategy = require('passport-twitter').Strategy,
 	FacebookStrategy = require('passport-facebook').Strategy,
     LinkedInStrategy = require('passport-linkedin').Strategy,
-    GitHubStrategy = require('passport-github').Strategy;
+    GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 /* Simple route middleware to ensure user does not go back to login or register after login. */
 exports.checkLogin = function ensureAuthenticated(req, res, next) {
@@ -84,7 +82,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new LocalStrategy(
     function(username, password, done) {
         process.nextTick(function () {
-            /* Escape some characters before using regular expression matching */
+            /* Find the user */
             db.User.findOne({ email: username }).populate('profile.providers').exec(function (err, user) {
                 if (err) return done(err);
                 else if (!user) return done(null, false, { message: "Wrong username or password" });
