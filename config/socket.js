@@ -3,6 +3,7 @@ var fs = require('fs'),
 	app = require('../app'),
 	db = require('./database'),
 	utils = require('./utils'),
+	config = require('./config'),
 	express = require('express'),
 	ss = require('socket.io-stream'),
 	io = require('socket.io').listen(app.server),
@@ -11,7 +12,7 @@ var fs = require('fs'),
 io.set('authorization', passportSocketIo.authorize({
 	cookieParser: express.cookieParser,
 	key: 'connect.sid',
-	secret: 'super-secret-u-will-never-guess',
+	secret: config.session_secret,
 	store: app.SessionStore,
 	fail: function(data, accept) {
 		console.log("ERROR", "scoket data:", data);
@@ -39,7 +40,8 @@ io.sockets.on('connection', function(socket) {
 			mugshot: socket.handshake.user.profile.mugshot,
 			website: socket.handshake.user.profile.website,
 			description: socket.handshake.user.profile.description
-		}
+		},
+		code: ""
 	};
 	/* Update the online users for all users */
 	io.sockets.emit("users", onlineUsers);
@@ -70,6 +72,10 @@ io.sockets.on('connection', function(socket) {
 		if (utils.taskComplete(code)) {
 			io.sockets.emit("receive-task-verification", socket.handshake.user.name, prev_task.points);
 			io.sockets.emit("receive-task", utils.getTask());
+			/* Update user points in his session */
+			onlineUsers[socket.handshake.user.email].profile.points += prev_task.points;
+			/* Update the online users for all users */
+			io.sockets.emit("users", onlineUsers);
 		}
 		else
 			io.sockets.emit("receive-task-verification", "");
@@ -92,6 +98,7 @@ io.sockets.on('connection', function(socket) {
 		delete onlineUsers[socket.handshake.user.email];
 		/* Update the online users for all users */
 		io.sockets.emit("users", onlineUsers);
-		/* TODO: Try to reconnect */
+		/* When not a guest user, save the points */
+		
 	});
 });
