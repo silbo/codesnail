@@ -1,7 +1,8 @@
-/* Configuration, database and crypto */
-var db = require("./database"),
+/* Add modules */
+var db = require('./database'),
     crypto = require('crypto'),
-    config = require("./config"),
+    utils = require('./utils'),
+    config = require('./config'),
     flash = require('connect-flash');
 
 /* OAuth stuff */
@@ -12,41 +13,6 @@ var passport = require('passport'),
 	FacebookStrategy = require('passport-facebook').Strategy,
     LinkedInStrategy = require('passport-linkedin').Strategy,
     GitHubStrategy = require('passport-github').Strategy;
-
-/* Hashing function */
-exports.calculateHash = function calculateHash(type, text) {
-    var shasum = crypto.createHash(type);
-    shasum.update(text);
-    return shasum.digest("hex");
-}
-
-/* Random function */
-exports.generateRandom = function generateRandom() {
-    /* TODO: Add existing check, or add date + time */
-    var current_date = (new Date()).valueOf().toString();
-    var random = parseInt(Math.random()*100);
-    return random;
-}
-
-/* Generate a random guest account */
-exports.generateGuest = function generateGuest() {
-    var random = exports.generateRandom();
-    var randomEmailHash = exports.calculateHash('md5', random + "@email.com");
-    var user = {
-        name: "Guest" + random,
-        email: random + "@email.com",
-        guest: true,
-        profile: {
-            mugshot: config.gravatar.mugshot + randomEmailHash + "?d=identicon",
-            website: config.gravatar.profile,
-            description: "",
-            points: 0
-        },
-        verification: { verified: true }
-    };
-    console.log("INFO", "generated guest user:", user);
-    return user;
-}
 
 /* Simple route middleware to ensure user does not go back to login or register after login. */
 exports.checkLogin = function ensureAuthenticated(req, res, next) {
@@ -122,7 +88,7 @@ passport.use(new LocalStrategy(
             db.User.findOne({ email: username }).populate('profile.providers').exec(function (err, user) {
                 if (err) return done(err);
                 else if (!user) return done(null, false, { message: "Wrong username or password" });
-                else if (user.password != exports.calculateHash("sha256", password + user.joined_date)) 
+                else if (user.password != utils.calculateHash("sha256", password + user.joined_date)) 
                     return done(null, false, { message: "Wrong username or password" });
                 else if (user.verification.verified == false)
                     return done(null, false, { message: "Please verify your user" });
