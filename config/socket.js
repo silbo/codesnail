@@ -1,5 +1,6 @@
 /* Add modules */
-var app = require('../app'),
+var fs = require('fs'),
+	app = require('../app'),
 	db = require('./database'),
 	utils = require('./utils'),
 	express = require('express'),
