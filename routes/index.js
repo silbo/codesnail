@@ -1,7 +1,7 @@
 /* Add modules */
-var config = require("../config/config"),
-	db = require("../config/database"),
-	auth = require("../config/authentication");
+var db = require('../config/database'),
+	utils = require('../config/utils'),
+	config = require('../config/config');
 
 /* Homepage */
 exports.index = function(req, res) {
@@ -14,7 +14,7 @@ exports.index = function(req, res) {
 /* Study section */
 exports.study = function(req, res) {
 	if (!req.user) {
-		req.session.passport.user = auth.generateGuest();
+		req.session.passport.user = utils.generateGuest();
 		req.user = req.session.passport.user;
 	}
 	res.render('study', { user: req.user });
@@ -23,7 +23,7 @@ exports.study = function(req, res) {
 /* Coding section */
 exports.coding = function(req, res) {
 	if (!req.user) {
-		req.session.passport.user = auth.generateGuest();
+		req.session.passport.user = utils.generateGuest();
 		req.user = req.session.passport.user;
 	}
 	res.render('coding', { user: req.user });
@@ -32,7 +32,7 @@ exports.coding = function(req, res) {
 /* Sumorobot programming section */
 exports.sumorobot = function(req, res) {
 	if (!req.user) {
-		req.session.passport.user = auth.generateGuest();
+		req.session.passport.user = utils.generateGuest();
 		req.user = req.session.passport.user;
 	}
 	res.render('sumorobot', { user: req.user });
