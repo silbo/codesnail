@@ -26,6 +26,9 @@ exports.coding = function(req, res) {
 		req.session.passport.user = utils.generateGuest();
 		req.user = req.session.passport.user;
 	}
+	else if (req.body.points) {
+		req.session.passport.user.profile.points += parseInt(req.body.points);
+	}
 	res.render('coding', { user: req.user });
 };
 
