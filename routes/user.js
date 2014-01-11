@@ -1,10 +1,9 @@
 /* Add modules */
-var config = require("../config/config"),
-	db = require("../config/database"),
-	email = require("../config/email"),
-	auth = require("../config/authentication"),
-	flash = require('connect-flash'),
-	fs = require('fs');
+var flash = require('connect-flash'),
+	db = require('../config/database'),
+	email = require('../config/email'),
+	utils = require('../config/utils'),
+	config = require('../config/config');
 
 /* Login page */
 exports.login = function(req, res) {
@@ -58,9 +57,9 @@ exports.forgotPassword = function(req, res) {
 			if (err) console.log("ERROR", "finding user:", err);
 			else if (!user) console.log("INFO", "user not found:", req.body.email);
 			else {
-				user.password = auth.calculateHash("sha256", user.email + user.joined_date);
+				user.password = utils.calculateHash("sha256", user.email + user.joined_date);
 				email.sendForgotPassword(user.name, user.email, user.password);
-				user.password = auth.calculateHash("sha256", user.password + user.joined_date);
+				user.password = utils.calculateHash("sha256", user.password + user.joined_date);
 				user.save();
 			}
 		});
@@ -174,7 +173,7 @@ exports.passwordUpdate = function(req, res) {
 			return res.redirect("/profile");
 		}
 		/* Update the user fields */
-		user.password = auth.calculateHash("sha256", req.body.password + user.joined_date);
+		user.password = utils.calculateHash("sha256", req.body.password + user.joined_date);
 		user.save();
 		req.flash('message', "Successfully changed password");
 		res.redirect("/profile");
