@@ -57,6 +57,12 @@ io.sockets.on('connection', function(socket) {
 		socket.emit("receive-code", onlineUsers[userEmail].code);
 	});
 
+	/* User asks for someones code */
+	socket.on('share-code', function(code) {
+		console.log("INFO", "save user code:", socket.handshake.user.email);
+		socket.broadcast.emit("receive-code", code);
+	});
+
 	/* User asks for a task */
 	socket.on('get-task', function() {
 		console.log("INFO", "get task:", socket.handshake.user.email);
@@ -69,6 +75,7 @@ io.sockets.on('connection', function(socket) {
 		/* Save the users code */
 		onlineUsers[socket.handshake.user.email].code = code;
 		var prev_task = utils.getTask();
+		/* Check if task has been completed */
 		if (utils.taskComplete(code)) {
 			io.sockets.emit("receive-task-verification", socket.handshake.user.name, prev_task.points);
 			io.sockets.emit("receive-task", utils.getTask());
@@ -98,7 +105,6 @@ io.sockets.on('connection', function(socket) {
 		delete onlineUsers[socket.handshake.user.email];
 		/* Update the online users for all users */
 		io.sockets.emit("users", onlineUsers);
-		/* When not a guest user, save the points */
-		
+		/* TODO: When not a guest user, save the points */
 	});
 });
