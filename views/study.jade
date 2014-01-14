@@ -2,6 +2,7 @@ extends layout
 
 block content
 
+	script(type="text/javascript", src="/socket.io/socket.io.js")
 	script(type="text/javascript", src="/ace/ace.js")
 	script(type="text/javascript", src="/javascripts/study.js")
 
@@ -12,9 +13,17 @@ block content
 	input(type="button", value="Coding" onclick="window.location.href='/coding'")
 	input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
 
+	h3 Online users:
+	div#online-users
+		p Loading users ...
+	div.clear
+
+	h3 Code collaboration
+	div#code
+
 	h3 1. Basic html structure
 	p The basic html structure consists of several things
-	div#basic-code
+	div#basic-example
 		&lt;html>
 		|	&lt;head>
 		|		&lt;title>Title&lt;/title>
@@ -25,17 +34,17 @@ block content
 
 	h3 2. Headers
 	p The headers are awesome
-	div#header-code
+	div#header-example
 		&lt;h1>This is a header 1&lt;/h1>
 		&lt;h2>This is a header 2&lt;/h2>
 		&lt;h3>This is a header 3&lt;/h3>
 
 	h3 3. Paragraphs
 	p Paragraphs contain cool text
-	div#paragraph-code
+	div#paragraph-example
 		&lt;p>My paragraph text&lt;/p>
 
 	h3 4. Links
 	p Links are interesting
-	div#link-code
+	div#link-example
 		&lt;a href="http://www.website.com">My website&lt;/a>
