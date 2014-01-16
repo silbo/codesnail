@@ -8,6 +8,8 @@ window.onload = function() {
 
 	socket = io.connect();
 
+	socket.emit("subscribe", "sumorobot");
+
 	/* Aquire all the users */
 	socket.on("users", function (users) {
 		/* When the online users div does not exist */
