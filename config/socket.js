@@ -72,7 +72,7 @@ io.sockets.on('connection', function(socket) {
 	/* User shares his/her code */
 	socket.on('share-code', function(room, code) {
 		console.log("INFO", "share user code:", socket.handshake.user.email);
-		io.sockets.to(room).broadcast.emit('receive-code', code);
+		socket.broadcast.to(room).emit('receive-code', code);
 	});
 
 	/* User shares his/her chat */
