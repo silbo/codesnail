@@ -7,6 +7,8 @@ var oldCode = undefined;
 window.onload = function() {
 	socket = io.connect();
 
+	socket.emit("subscribe", "coding");
+
 	/* Aquire all the users */
 	socket.on("users", function (users) {
 		/* When the online users div does not exist */
@@ -65,7 +67,7 @@ window.onload = function() {
 		/* When the users code has changed */
 		if (oldCode != code)
 			/* Send it for verification and saving */
-			socket.emit("verify-task", editor.getValue());
+			socket.emit("verify-task", "coding", editor.getValue());
 		oldCode = code;
 	}, 1000);
 
@@ -108,5 +110,5 @@ window.onload = function() {
 
 /* Get a users code */
 function getCode(userEmail) {
-	socket.emit("get-code", userEmail);
+	socket.emit("get-code", "coding", userEmail);
 }
