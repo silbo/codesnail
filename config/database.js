@@ -1,7 +1,7 @@
 /* Add modules */
 var utils = require('./utils'),
-	email = require('./email'),
-	config = require('./config');
+	config = require('./config'),
+	emailing = require('./email');
 
 /* Connect to database */
 var mongoose = require("mongoose");
@@ -81,7 +81,7 @@ UserSchema.pre('save', function(next) {
 		/* Calculate the verification hash */
 		this.verification.verification_hash = utils.calculateHash("sha256", this.email + this.joined_date);
 		/* Send the user the verification email */
-		email.sendRegistrationEmail(this.name, this.email, this.verification.verification_hash);
+		emailing.sendRegistrationEmail(this.name, this.email, this.verification.verification_hash);
 	}
 	/* Set the mugshot and website from gravatar */
 	this.profile.mugshot = this.profile.mugshot || config.gravatar.mugshot + utils.calculateHash("md5", this.email) + "?d=identicon";

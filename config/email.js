@@ -1,8 +1,8 @@
 /* Add modules */
 var config = require('./config');
-	email = require('../node_modules/emailjs/email.js');
+	emailing = require('../node_modules/emailjs/email.js');
 
-var server = email.server.connect({
+var server = emailing.server.connect({
 	user: config.smtp.username,
 	password: config.smtp.password,
 	host: "smtp.gmail.com",

@@ -1,9 +1,9 @@
 /* Add modules */
 var flash = require('connect-flash'),
 	db = require('../config/database'),
-	email = require('../config/email'),
 	utils = require('../config/utils'),
-	config = require('../config/config');
+	config = require('../config/config'),
+	emailing = require('../config/email');
 
 /* Login page */
 exports.login = function(req, res) {
@@ -15,6 +15,7 @@ exports.login = function(req, res) {
 exports.register = function(req, res) {
 	/* When the submit was not pressed, do not process the form */
 	if (req.body.register != "Register") return res.render("register", { errors: [], name: "", email: "" });
+	console.log("INFO", "register page yee2");
 	/* Check for form errors */
 	req.assert("name", "Name is required").notEmpty();
 	req.assert("email", "A valid email is required").isEmail();
@@ -58,7 +59,7 @@ exports.forgotPassword = function(req, res) {
 			else if (!user) console.log("INFO", "user not found:", req.body.email);
 			else {
 				user.password = utils.calculateHash("sha256", user.email + user.joined_date);
-				email.sendForgotPassword(user.name, user.email, user.password);
+				emailing.sendForgotPassword(user.name, user.email, user.password);
 				user.password = utils.calculateHash("sha256", user.password + user.joined_date);
 				user.save();
 			}
