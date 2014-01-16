@@ -5,6 +5,8 @@ var oldCode = undefined;
 window.onload = function() {
 	socket = io.connect();
 
+	socket.emit("subscribe", "study");
+
 	/* Aquire all the users */
 	socket.on("users", function(users) {
 		/* When the online users div does not exist */
@@ -21,15 +23,41 @@ window.onload = function() {
 		}
 	});
 
-	/* Receive the requested users code */
+	/* Receive shared code */
 	socket.on("receive-code", function(code) {
 		editor.setValue(code, 1);
+	});
+
+	/* Receive shared chat */
+	socket.on("receive-chat", function(userName, chat) {
+		$("#chat").append(userName + ": " + chat + "\n");
+		$('#chat').scrollTop($('#chat')[0].scrollHeight);
 	});
 
 	/* Execute when user types */
 	$("#code").keydown(function() {
 		/* Send the code to other users */
-		socket.emit("share-code", editor.getValue());
+		socket.emit("share-code", "study", editor.getValue());
+	});
+
+	/* Execute when user presses enter */
+	$("#message").keypress(function(e) {
+		if(e.which == 13) {
+			/* Send the chat to other users */
+			socket.emit("share-chat", "study", $("#message").val());
+			/* Clear the message field and blur the submit button */
+			$("#submit-chat").blur();
+			$("#message").val("");
+		}
+	});
+
+	/* Execute when user clicks send */
+	$("#submit-chat").click(function() {
+		/* Send the chat to other users */
+		socket.emit("share-chat", "study", $("#message").val());
+		/* Clear the message field and blur the submit button */
+		$("#submit-chat").blur();
+		$("#message").val("");
 	});
 
 	/* ACE editor initialization */
