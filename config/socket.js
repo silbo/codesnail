@@ -7,6 +7,7 @@ var fs = require('fs'),
     config = require('./config'),
     express = require('express'),
     ss = require('socket.io-stream'),
+    exec = require('child_process').exec,
     io = require('socket.io').listen(app.server),
     passportSocketIo = require('passport.socketio');
 
