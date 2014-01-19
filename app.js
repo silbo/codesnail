@@ -40,9 +40,7 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 }
 
-app.get("/study", routes.study);
-app.all("/coding", routes.coding);
-app.get("/sumorobot", routes.sumorobot);
+/* Login and registration */
 app.get("/login", auth.checkLogin, user.login);
 app.all("/register", auth.checkLogin, user.register);
 app.get("/register/:id", auth.checkLogin, user.verify);
@@ -68,7 +66,11 @@ app.get(config.github.callback, passport.authenticate("github", { successRedirec
 
 app.get("/logout", user.logout);
 
-/* Homepage */
+/* Different tabs */
+app.get("/chat", routes.chat);
+app.get("/study", routes.study);
+app.all("/coding", routes.coding);
+app.get("/sumorobot", routes.sumorobot);
 app.get("/", auth.ensureAuthenticated, routes.index);
 
 /* Profile pages */
@@ -78,6 +80,7 @@ app.post("/profile/update", auth.ensureAuthenticated, user.profileUpdate);
 app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate);
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
 app.get("/profile/mugshot/:provider", auth.ensureAuthenticated, user.mugshotUpdate);
+
 
 /* Delete all the users and providers and tasks */
 if (false) {
