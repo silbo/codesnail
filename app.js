@@ -71,8 +71,9 @@ app.get("/logout", user.logout);
 /* Homepage */
 app.get("/", auth.ensureAuthenticated, routes.index);
 
-/* Profile page */
+/* Profile pages */
 app.get("/profile", auth.ensureAuthenticated, user.profile);
+app.get("/:name", auth.ensureAuthenticated, user.detailed);
 app.post("/profile/update", auth.ensureAuthenticated, user.profileUpdate);
 app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate);
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
