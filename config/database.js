@@ -40,7 +40,14 @@ var CourseSchema = new Schema({
 	description: String,
 	difficulty: String,
 	keywords: [{ type: String }],
-	levels: [{ type: ObjectId, ref: 'Task' }]
+	tasks: [{ type: ObjectId, ref: 'Task' }],
+	badge: { type: ObjectId, ref: 'Badge' }
+});
+
+var TrackSchema = new Schema({
+	name: { type: String, unique: true, required: true },
+	description: String,
+	category: [{ type: ObjectId, ref: 'Course' }]
 });
 
 var UserSchema = new Schema({
@@ -61,7 +68,7 @@ var UserSchema = new Schema({
 		providers: [{ type: ObjectId, ref: 'Provider' }],
 		badges: [{ type: ObjectId, ref: 'Badge' }],
 	},
-	courses: [{ progress: Number, course: { type: ObjectId, ref: 'Course' } }]
+	tracks: [{ type: ObjectId, ref: 'Track' }]
 });
 
 /* Predave for user */
