@@ -20,6 +20,9 @@ block content
 		p Loading users ...
 	div.clear
 
+	div#video
+		img(src="http://localhost:8080/?action=stream")
+
 	div#blocklyDiv(style="height: 400px;")
 
 	xml#toolbox(style="display: none").
@@ -31,5 +34,5 @@ block content
 		<block type="controls_arduino_line"></block>
 
 	div#buttons
-		input(type="button" value="Send Code" onclick="sendCode();") SEND
-		input(type="button" value="Show Code" onclick="showCode();") SHOW
+		input(type="button" value="Send Code" onclick="javascript:sendCode();") SEND
+		input(type="button" value="Show Code" onclick="javascript:showCode();") SHOW
