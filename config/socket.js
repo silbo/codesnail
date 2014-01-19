@@ -28,7 +28,7 @@ io.set('authorization', passportSocketIo.authorize({
 }));
 
 /* Online users */
-var onlineUsers = { 'study': {}, 'coding': {}, 'sumorobot': {} };
+var onlineUsers = { 'study': {}, 'coding': {}, 'sumorobot': {}, 'chat': {} };
 var sockUsers = [];
 var eSocks = [];
 
@@ -45,6 +45,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('subscribe', function(room) {
 		socket.join(room);
 		/* Delete user from from every room, dont know where he was :P */
+		delete onlineUsers['chat'][socket.handshake.user.email];
 		delete onlineUsers['study'][socket.handshake.user.email];
 		delete onlineUsers['coding'][socket.handshake.user.email];
 		delete onlineUsers['sumorobot'][socket.handshake.user.email];
@@ -59,6 +60,7 @@ io.sockets.on('connection', function(socket) {
 			}
 		};
 		/* Update the online users for all users in every room */
+		io.sockets.to('chat').emit('users', onlineUsers['chat']);
 		io.sockets.to('study').emit('users', onlineUsers['study']);
 		io.sockets.to('coding').emit('users', onlineUsers['coding']);
 		io.sockets.to('sumorobot').emit('users', onlineUsers['sumorobot']);
@@ -199,10 +201,12 @@ io.sockets.on('connection', function(socket) {
 			});
 		}
 		/* Delete user from from every room, do not know where he is :P */
+		delete onlineUsers['chat'][socket.handshake.user.email];
 		delete onlineUsers['study'][socket.handshake.user.email];
 		delete onlineUsers['coding'][socket.handshake.user.email];
 		delete onlineUsers['sumorobot'][socket.handshake.user.email];
 		/* Update the online users for all users in every room */
+		io.sockets.to('chat').emit('users', onlineUsers['chat']);
 		io.sockets.to('study').emit('users', onlineUsers['study']);
 		io.sockets.to('coding').emit('users', onlineUsers['coding']);
 		io.sockets.to('sumorobot').emit('users', onlineUsers['sumorobot']);
