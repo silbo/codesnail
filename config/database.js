@@ -51,6 +51,7 @@ var TrackSchema = new Schema({
 });
 
 var UserSchema = new Schema({
+	username: { type: String, unique: true, required: true, validate: /^[a-z0-9_-]{4,15}$/ },
 	name: { type: String, required: true },
 	email: { type: String, unique: true, lowercase: true, trim: true, required: true, validate: /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b/ },
 	password: { type: String, required: true, default: "default" },
@@ -92,7 +93,7 @@ UserSchema.pre('save', function(next) {
 	}
 	/* Set the mugshot and website from gravatar */
 	this.profile.mugshot = this.profile.mugshot || config.gravatar.mugshot + utils.calculateHash("md5", this.email) + "?d=identicon";
-	this.profile.website = this.profile.website || "#"
+	this.profile.website = this.profile.website || "";
 	next();
 });
 
@@ -101,4 +102,5 @@ exports.Badge = mongoose.model("Badge", BadgeSchema);
 exports.Provider = mongoose.model("Provider", ProviderSchema);
 exports.Task = mongoose.model("Task", TaskSchema);
 exports.Course = mongoose.model("Course", CourseSchema);
+exports.Track = mongoose.model("Track", TrackSchema);
 exports.User = mongoose.model("User", UserSchema);
