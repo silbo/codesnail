@@ -1,0 +1,31 @@
+extends layout
+
+block content
+
+	input(type="button", value="Index" onclick="window.location.href='/'")
+	if !user.guest
+		input(type="button", value="Profile" onclick="window.location.href='/profile'")
+	input(type="button", value="Study" onclick="window.location.href='/study'")
+	input(type="button", value="Coding" onclick="window.location.href='/coding'")
+	input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
+
+	div#profile
+		h3 #{user.name}'s profile:
+
+		img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+
+		div#profile
+			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
+			div Points: #{user.profile.points}
+			div Display Name: #{user.name}
+			div Description: #{user.profile.description}
+			div Location: #{user.profile.location}
+			div Website: #{user.profile.website}
+
+		h3 Other accounts:
+		each provider in user.profile.providers
+			div
+				img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
+				div(style="text-transform:capitalize;") #{provider.name}
+					br
+					input(type="button", value="#{provider.display_name}" onclick="window.location.href='#{provider.url}'")
