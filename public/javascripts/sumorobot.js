@@ -22,7 +22,7 @@ window.onload = function() {
 			'<div id="'+users[key].name.replace(/ /g, "")+'" class="user" onclick="javascript:getCode(\'' + users[key].email + '\')">' +
 			'<a class="mugshot-link" href="#" title="show code">' +
 			'<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
-			'<p>' + users[key].name + '</p><p>' + users[key].profile.description + '</p></a></div>');
+			'<p>' + users[key].name + '</p><p>points: ' + users[key].profile.points + '</p></a></div>');
 		}
 	});
 
@@ -40,12 +40,17 @@ window.onload = function() {
 	}, 10000);
 }
 
-/* Get a users code */
-function getCode(userEmail) {
-	socket.emit("get-code", userEmail);
+/* Send the code */
+function sendCode() {
+	socket.emit("send-sumorobot-code", Blockly.Generator.workspaceToCode('JavaScript'));
 }
 
+/* Get a users code */
+function getCode(userEmail) {
+	socket.emit("get-code", "sumorobot", userEmail);
+}
+
+/* Show the code */
 function showCode() {
-	var code = Blockly.Generator.workspaceToCode('JavaScript');
-	alert(code);
+	alert(Blockly.Generator.workspaceToCode('JavaScript'));
 }
