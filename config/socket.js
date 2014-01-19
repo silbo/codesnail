@@ -6,6 +6,7 @@ var fs = require('fs'),
 	config = require('./config'),
 	express = require('express'),
 	ss = require('socket.io-stream'),
+	exec = require('child_process').exec,
 	io = require('socket.io').listen(app.server),
 	passportSocketIo = require('passport.socketio');
 
@@ -44,6 +45,7 @@ io.sockets.on('connection', function(socket) {
 		/* Add the user to the room he/she is now */
 		onlineUsers[room][socket.handshake.user.email] = {
 			name: socket.handshake.user.name,
+			email: socket.handshake.user.email,
 			profile: {
 				points: socket.handshake.user.profile.points,
 				mugshot: socket.handshake.user.profile.mugshot,
@@ -105,12 +107,32 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
+	/* User send sumorobot code */
+	socket.on('send-sumorobot-code', function(code) {
+		console.log("INFO", "sumorobot code:", code);
+		/* Add sumorobot libraries */
+		code = "#include <Servo.h>\n#include <Sumorobot.h>\n" + code;
+		/* Write the program to the file */
+		fs.writeFile("public/compiler/main.ino", code, function(err) {
+			if(err) console.log("ERROR", "failed to save sumorobot code:", err);
+			else console.log("INFO", "sumorobot code was saved");
+		});
+		/* Compile the program */
+		var child = exec("cd public/compiler && make all && make upload",
+			function (error, stdout, stderr) {
+				console.log("INFO", "stdout:", stdout);
+				console.log("INFO", "stderr:", stderr);
+				if (error !== null) console.log("INFO", "exec error:", error);
+			}
+		);
+	});
+
 	/* To stream mugshot to the server */
 	ss(socket).on('mugshot', function(stream, meta) {
 		console.log("INFO", "incoming stream size:", meta.size, meta.name)
 		/* Drop the stream if the file is too large max 100KB allowed */
 		if (meta.size > 100000) return;
-		stream.pipe(fs.createWriteStream(__dirname + "/public/images/" + meta.name));
+		stream.pipe(fs.createWriteStream("public/images/" + meta.name));
 		// Send progress back
 		ss(socket).emit('data', "Mugshot uploaded, click save to update");
 	});
@@ -118,7 +140,21 @@ io.sockets.on('connection', function(socket) {
 	/* User disconnected from socket */
 	socket.on('disconnect', function() {
 		console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
-		/* Delete user from from every room, dont know where he is :P */
+		/* Save user points to his/her session */
+		if (onlineUsers['coding'][socket.handshake.user.email]) {
+			var sessionID = socket.handshake.sessionID;
+			var points = onlineUsers['coding'][socket.handshake.user.email].profile.points;
+			app.SessionStore.get(sessionID, function(err, session) {
+				if (!err && session) {
+					session.passport.user.profile.points = points;
+					app.SessionStore.set(sessionID, session);
+					console.log ("INFO", "successfully saved user points");
+				} else {
+					console.log ("ERROR", "saving user points");
+				}
+			});
+		}
+		/* Delete user from from every room, do not know where he is :P */
 		delete onlineUsers['study'][socket.handshake.user.email];
 		delete onlineUsers['coding'][socket.handshake.user.email];
 		delete onlineUsers['sumorobot'][socket.handshake.user.email];
