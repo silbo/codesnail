@@ -28,7 +28,7 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     /* When user is logged in */
     if (req.isAuthenticated() && req.user.verification.verified) {
         /* When guest user, the profile is not available */
-        if (!req.user.email && req.url == "/profile") {
+        if (req.user.name.indexOf("Guest") != -1 && req.url == "/profile") {
             req.flash('error', [{ msg: "Guest user has no profile" }]);
             return res.redirect("/");
         }
@@ -83,7 +83,7 @@ passport.use(new LocalStrategy(
     function(username, password, done) {
         process.nextTick(function () {
             /* Find the user */
-            db.User.findOne({ email: username }).populate('profile.providers').exec(function (err, user) {
+            db.User.findOne({ $or:[{ username: username }, { email: username }] }).populate('profile.providers').exec(function (err, user) {
                 if (err) return done(err);
                 else if (!user) return done(null, false, { message: "Wrong username or password" });
                 else if (user.password != utils.calculateHash("sha256", password + user.joined_date)) 
