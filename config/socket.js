@@ -8,7 +8,7 @@ var fs = require('fs'),
     express = require('express'),
     ss = require('socket.io-stream'),
     io = require('socket.io').listen(app.server),
-    passportSocketIo = require('passport.socketio'),
+    passportSocketIo = require('passport.socketio');
 
 io.set('log level', 1);
 io.set('authorization', passportSocketIo.authorize({
