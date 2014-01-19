@@ -60,6 +60,12 @@ window.onload = function() {
 		$("#message").val("");
 	});
 
+	/* Execute in intervals */
+	setInterval(function() {
+		/* Send ping to keep connection alive */
+		socket.emit("ping");
+	}, 10000);
+
 	/* ACE editor initialization */
 	editor = ace.edit("code");
 	editor.session.setMode("ace/mode/html");
