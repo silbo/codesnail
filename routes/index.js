@@ -26,15 +26,6 @@ exports.coding = function(req, res) {
 		req.session.passport.user = utils.generateGuest();
 		req.user = req.session.passport.user;
 	}
-	/*else if (req.body.points) {
-		req.session.passport.user.profile.points += parseInt(req.body.points);
-		db.User.findOne({ email: req.user.email }).populate('profile.providers').exec(function (err, user) {
-			if (user) {
-				user.pofile.points = parseInt(req.body.points);
-				user.save();
-			}
-		});
-	}*/
 	res.render('coding', { user: req.user });
 };
 
