@@ -14,36 +14,40 @@ exports.login = function(req, res) {
 /* User registration */
 exports.register = function(req, res) {
 	/* When the submit was not pressed, do not process the form */
-	if (req.body.register != "Register") return res.render("register", { errors: [], name: "", email: "" });
+	if (req.body.register != "Register") return res.render("register", { errors: [], username: "", email: "" });
 	console.log("INFO", "register page yee2");
 	/* Check for form errors */
-	req.assert("name", "Name is required").notEmpty();
+	req.assert("username", "A valid username of at least 4 and up to 15 characters is required").len(4, 15);
 	req.assert("email", "A valid email is required").isEmail();
-	req.assert("password", "A valid password of at least 8 characters is required").len(8, 50);
+	req.assert("password", "A valid password of at least 8 and up to 50 characters is required").len(8, 50);
 	req.assert("passwordConfirm", "Passwords entered do not match").equals(req.body.password);
 	var errors = req.validationErrors();
 	/* When the form contains errors */
-	if (errors) return res.render("register", { errors: errors, name: req.body.name, email: req.body.email });
+	if (errors) return res.render("register", { errors: errors, username: req.body.username, email: req.body.email });
 
 	/* Find existing user */
-	db.User.findOne({ email: req.body.email }, function (err, user) {
+	db.User.findOne({ $or:[{ username: req.body.username }, { email: req.body.email }] }, function (err, user) {
 		if (err) console.log("ERROR", "error finding user:", err);
-		else if (user) console.log("INFO", "email already takes:", req.body.email);
-		if (err || user) return res.render("register", { errors: [{ msg: "Email already taken" }], name: req.body.name, email: req.body.email });
-
+		else if (user) console.log("INFO", "email already taken:", req.body.email);
+		if (err || (user && user.email == req.body.email)) {
+			return res.render("register", { errors: [{ msg: "Email already taken" }], username: req.body.username, email: req.body.email });
+		} else if (user && user.username == req.body.username) {
+			return res.render("register", { errors: [{ msg: "Username already taken" }], username: req.body.username, email: req.body.email });
+		}
 		/* When the email is not taken */
 		console.log("INFO", "user:", user);
-		var user = new db.User({ name: req.body.name, email: req.body.email, password: req.body.password });
+		var user = new db.User({ username: req.body.username, name: req.body.username, email: req.body.email, password: req.body.password });
 		user.save(function(err) {
 			if (err) console.log("ERROR", "error saving user:", err);
 			else {
 				console.log("INFO", "user saved:", user.email);
-				return res.render("register", { message: "Successfully signed up, check your inbox", errors: [], name: "", email: "" });
+				return res.render("register", { message: "Successfully signed up, check your inbox", errors: [], username: "", email: "" });
 			}
 		});
 	});
 };
 
+/* Forgotten password */
 exports.forgotPassword = function(req, res) {
 	/* When the form was not submitted */
 	if (req.body.reset != "Submit") return res.render("forgot", { errors: [], message: "", email: "" });
@@ -70,6 +74,7 @@ exports.forgotPassword = function(req, res) {
 	res.render("forgot", { errors: errors || [], message: message, email: req.body.email || "" });
 };
 
+/* User verification */
 exports.verify = function(req, res) {
 	db.User.findOne({ 'verification.verification_hash': req.params.id }, function (err, user) {
 		if (err || !user) {
@@ -91,15 +96,21 @@ exports.verify = function(req, res) {
 	});
 };
 
+/* User detailed page */
+exports.detailed = function(req, res) {
+	db.User.findOne({ 'username': req.params.name }).populate('profile.providers').exec(function (err, user) {
+		/* When the user is does not exist */
+		if (err || !user) {
+			console.log("ERROR", "error finding user:", err);
+			return res.redirect("/");
+		}
+		res.render("detailed", { user: user });
+	});
+};
+
 /* User profile page */
 exports.profile = function(req, res) {
-	/* When guest user, the profile is not available */
-	if (req.user.name.indexOf("Guest") != -1) {
-		req.flash('error', [{ msg: "Guest user has no profile" }]);
-		res.redirect("/");
-		return;
-	}
-	console.log("INFO", "user", req.user);
+	console.log("INFO", "accessing profile", req.user);
 	/* Check which providers have been connected */
 	var logins = [];
 	var providers = req.user.profile.providers.map(function(elem) { return elem.name; }).join(",");
