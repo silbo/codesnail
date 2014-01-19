@@ -1,32 +1,36 @@
 /* Add modules */
 var fs = require('fs'),
-	app = require('../app'),
-	db = require('./database'),
-	utils = require('./utils'),
-	config = require('./config'),
-	express = require('express'),
-	ss = require('socket.io-stream'),
-	exec = require('child_process').exec,
-	io = require('socket.io').listen(app.server),
-	passportSocketIo = require('passport.socketio');
+    app = require('../app'),
+    db = require('./database'),
+    utils = require('./utils'),
+    uuid = require('node-uuid'),
+    config = require('./config'),
+    express = require('express'),
+    ss = require('socket.io-stream'),
+    io = require('socket.io').listen(app.server),
+    passportSocketIo = require('passport.socketio'),
 
+io.set('log level', 1);
 io.set('authorization', passportSocketIo.authorize({
-	cookieParser: express.cookieParser,
-	key: 'connect.sid',
-	secret: config.session_secret,
-	store: app.SessionStore,
-	fail: function(data, accept) {
-		console.log("ERROR", "scoket data:", data);
-		accept(null, false);
-	},
-	success: function(data, accept) {
-		//console.log("INFO", "scoket:", data);
-		accept(null, true);
-	}
+    cookieParser: express.cookieParser,
+    key: 'connect.sid',
+    secret: config.session_secret,
+    store: app.SessionStore,
+    fail: function (data, accept) {
+        console.log("ERROR", "scoket data:", data);
+        accept(null, false);
+    },
+    success: function (data, accept) {
+        //console.log("INFO", "scoket:", data);
+        accept(null, true);
+    }
 }));
 
 /* Online users */
 var onlineUsers = { 'study': {}, 'coding': {}, 'sumorobot': {} };
+var sockUsers = [];
+var eSocks = [];
+
 /* User initiated socket connection */
 io.sockets.on('connection', function(socket) {
 	
@@ -34,6 +38,7 @@ io.sockets.on('connection', function(socket) {
 	console.log("INFO", "socket connection established");
 	console.log("INFO", "socket user:", socket.handshake.user.email);
 	socket.heartbeatTimeout = 5000;
+	sockUsers[socket.handshake.user.email] = socket;
 
 	/* Subscribing and unsubscribing to rooms */
 	socket.on('subscribe', function(room) {
@@ -107,6 +112,44 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
+    socket.on('sendCurrentUser', function (data) {
+        var cuser = {
+            email: socket.handshake.user.email,
+            name: socket.handshake.user.name,
+            profile: {
+                points: socket.handshake.user.profile.points,
+                mugshot: socket.handshake.user.profile.mugshot,
+                description: socket.handshake.user.profile.description
+            }
+        }
+        socket.emit('currentUser', {user: cuser});
+    });
+
+    socket.on('sendExclusiveInvite', function (data) {
+        try {
+            var newSockAdd = uuid.v1();
+            eSocks.push(newSockAdd);
+            sockUsers[data.email].emit('exclusiveInvite', {email: socket.handshake.user.email, newSockAdd: newSockAdd});
+        } catch (error) {
+            console.log("WARN", "error", error);
+        }
+
+    });
+
+    socket.on('eInviteResponse', function (data) {
+        if (data.accepted) {
+            //start listening on new connection
+            //only if(data.newSockadd is in esocket)
+            //also check if its already in Ecode withsomeone
+            startECodeServer(data.newSockAdd,data.email,socket.handshake.user.email);
+            sockUsers[data.email].emit("initiateECode", {on: data.newSockAdd});
+            socket.emit("initiateECode", {on: data.newSockAdd});
+        } else {
+            //delete newsockadd
+            sockUsers[data.email].emit("rejectedECodeInvitation", {});
+        }
+    });
+
 	/* User send sumorobot code */
 	socket.on('send-sumorobot-code', function(code) {
 		console.log("INFO", "sumorobot code:", code);
@@ -165,3 +208,42 @@ io.sockets.on('connection', function(socket) {
 		/* TODO: When not a guest user, save the points */
 	});
 });
+
+function startECodeServer(on,pe1,pe2) {
+
+    var p1={
+        email:pe1,
+        code:"",
+        socket:null,
+        score:0
+    };
+    var p2={
+        email:pe2,
+        code:"",
+        socket:null,
+        score:0
+    };
+
+    var eSock = io.of('/' + on)
+        .on('connection', function (socket) {
+            //console.log("Threat detected")
+
+            if(socket.handshake.user.email==p1.email){
+                p1.socket=socket;
+            }else{
+                p2.socket=socket;
+            }
+            socket.on("recieveClientCode", function (data) {
+                if(socket.handshake.user.email==p1.email){
+                    p1.code=data.code;
+                    p2.socket.emit("p2Status",{code:data.code});
+                    console.log("emitted to"+p2.email);
+                }else{
+                    p2.code=data.code;
+                    p1.socket.emit("p2Status",{code:data.code});
+                    console.log("emitted to"+p1.email);
+                }
+            });
+
+        });
+}
