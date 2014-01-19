@@ -13,3 +13,10 @@ results
 
 npm-debug.log
 node_modules
+
+# sumorobot
+*.ino
+*.hex
+*.o
+.dep/
+.lib/
