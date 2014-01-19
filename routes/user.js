@@ -94,7 +94,7 @@ exports.verify = function(req, res) {
 /* User profile page */
 exports.profile = function(req, res) {
 	/* When guest user, the profile is not available */
-	if (!req.user.email) {
+	if (req.user.name.indexOf("Guest") != -1) {
 		req.flash('error', [{ msg: "Guest user has no profile" }]);
 		res.redirect("/");
 		return;
