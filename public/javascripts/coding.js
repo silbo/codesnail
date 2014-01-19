@@ -28,7 +28,6 @@ window.onload = function () {
                 '<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
                 '<p>' + users[key].name + '</p><p>points: ' + users[key].profile.points + '</p></a></div>');
         }
-        $("input[name='points']").val(users[key].profile.points);
     });
 
     /* Receive the requested users code */
@@ -69,12 +68,6 @@ window.onload = function () {
 
     /* Get the task */
     socket.emit("get-task");
-
-
-
-
-
-
 
     socket.emit("sendCurrentUser");
     socket.on("exclusiveInvite", function (data) {
@@ -118,9 +111,6 @@ window.onload = function () {
         //window.console.log(data.user);
     });
 
-
-
-
     /* Execute in intervals */
     setInterval(function () {
         var code = editor.getValue();
@@ -136,7 +126,6 @@ window.onload = function () {
         /* Send ping to keep connection alive */
         socket.emit("ping");
     }, 10000);
-
 
     /* ACE editor initialization */
     editor_other = ace.edit("code-message");
@@ -185,6 +174,7 @@ function invitationRejected() {
         $(inviDailog).dialog("close");
     }, 2000);
 }
+
 var inviDailog = null;
 function inviteToECode() {
     var selectedUser = "";
@@ -277,6 +267,3 @@ function initiateECode(on) {
 
 
 }
-
-
-
