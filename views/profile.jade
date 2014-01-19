@@ -25,10 +25,11 @@ block content
 		img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 
 		form#profile(name="profile", action="/profile/update", method="post")
-			div Email: #{user.email} (ask admin to change email xD)
+			div Username: #{user.username}
+			div Email: #{user.email}
 			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
 			div Points: #{user.profile.points}
-			div Name:
+			div Display Name:
 				br
 				input(type="text", name="name", value="#{user.name}")
 			div Description:
