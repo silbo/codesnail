@@ -37,3 +37,12 @@ exports.sumorobot = function(req, res) {
 	}
 	res.render('sumorobot', { user: req.user });
 };
+
+/* Chatting section */
+exports.chat = function(req, res) {
+	if (!req.user) {
+		req.session.passport.user = utils.generateGuest();
+		req.user = req.session.passport.user;
+	}
+	res.render('chat', { user: req.user });
+};
