@@ -36,14 +36,14 @@ window.onload = function() {
 	/* Execute when user types */
 	$("#code").keydown(function() {
 		/* Send the code to other users */
-		socket.emit("share-code", "study", editor.getValue());
+		socket.emit("share-code", "chat", editor.getValue());
 	});
 
 	/* Execute when user presses enter */
 	$("#message").keypress(function(e) {
 		if(e.which == 13) {
 			/* Send the chat to other users */
-			socket.emit("share-chat", "study", $("#message").val());
+			socket.emit("share-chat", "chat", $("#message").val());
 			/* Clear the message field and blur the submit button */
 			$("#submit-chat").blur();
 			$("#message").val("");
@@ -53,7 +53,7 @@ window.onload = function() {
 	/* Execute when user clicks send */
 	$("#submit-chat").click(function() {
 		/* Send the chat to other users */
-		socket.emit("share-chat", "study", $("#message").val());
+		socket.emit("share-chat", "chat", $("#message").val());
 		/* Clear the message field and blur the submit button */
 		$("#submit-chat").blur();
 		$("#message").val("");
