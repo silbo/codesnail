@@ -199,6 +199,16 @@ io.sockets.on('connection', function(socket) {
 					console.log ("ERROR", "saving user points");
 				}
 			});
+			/* When not a guest user */
+			if (socket.handshake.user.name.indexOf("Guest") == -1) {
+				db.User.findOne({ email: socket.handshake.user.email }, function (err, user) {
+					if (err) console.log("ERROR", "finding user:", err);
+					else {
+						user.profile.points = points;
+						user.save();
+					}
+				});
+			}
 		}
 		/* Delete user from from every room, do not know where he is :P */
 		delete onlineUsers['chat'][socket.handshake.user.email];
@@ -216,6 +226,27 @@ io.sockets.on('connection', function(socket) {
 
 function startECodeServer(on,pe1,pe2) {
 
+	var etasks = utils.getTasks();
+	var currenteTask = 0;
+
+	/* Get new task */
+	function geteTask() {
+	    if (etasks.length == 0) return { name: "Currently no tasks available" };
+	    if (etasks.length == currenteTask) return { name: "Done" };
+	    return { name: "Task " + (currenteTask + 1) + ": " + etasks[currenteTask].name, points: etasks[currenteTask].points };
+	}
+
+	/* Check if task is complete */
+	function taskeComplete(code) {
+	    if (etasks.length == 0) return false;
+	    /* When task was completed */
+	    if (code.replace(/\s+/g, '').match(etasks[currenteTask].verification)) {
+	        currenteTask += 1;
+	        return true;
+	    }
+	    return false;
+	}
+
     var p1={
         email:pe1,
         code:"",
@@ -228,27 +259,60 @@ function startECodeServer(on,pe1,pe2) {
         socket:null,
         score:0
     };
+    var currentP = undefined;
 
     var eSock = io.of('/' + on)
         .on('connection', function (socket) {
             //console.log("Threat detected")
 
-            if(socket.handshake.user.email==p1.email){
-                p1.socket=socket;
-            }else{
-                p2.socket=socket;
+            if (socket.handshake.user.email == p1.email) {
+                p1.socket = socket;
+            } else {
+                p2.socket = socket;
             }
+            /* User asks for a task */
+			socket.on('get-etask', function() {
+				console.log("INFO", "get etask:", socket.handshake.user.email);
+				socket.emit('receive-etask', geteTask());
+				//p2.socket.emit('receive-etask', utils.getTask());
+			});
             socket.on("recieveClientCode", function (data) {
-                if(socket.handshake.user.email==p1.email){
-                    p1.code=data.code;
-                    p2.socket.emit("p2Status",{code:data.code});
-                    console.log("emitted to"+p2.email);
-                }else{
-                    p2.code=data.code;
-                    p1.socket.emit("p2Status",{code:data.code});
-                    console.log("emitted to"+p1.email);
+                if (socket.handshake.user.email == p1.email) {
+                	currentP = p1;
+                    p1.code = data.code;
+                    p2.socket.emit("p2Status", {code:data.code});
+                    console.log("emitted to" + p2.email);
+                } else {
+                	currentP = p2;
+                    p2.code = data.code;
+                    p1.socket.emit("p2Status", {code:data.code});
+                    console.log("emitted to" + p1.email);
                 }
+                console.log("INFO", "verifiying task:", data.code.replace(/\s+/g, ''));
+				/* Save the users code */
+				var prev_task = geteTask();
+				/* Check if task has been completed */
+				if (taskeComplete(data.code)) {
+					console.log("INFO", "task completed");
+					/* Send the winner to everyone in the room and update their task */
+					p1.socket.emit('receive-etask-verification', socket.handshake.user.name, prev_task.points);
+					p2.socket.emit('receive-etask-verification', socket.handshake.user.name, prev_task.points);
+					currentP.score += prev_task.points;
+					if (geteTask().name == "Done") {
+						var winner = undefined;
+						if (p1.score > p2.score) winner = p1.email;
+						else winner = p2.email;
+						p1.socket.emit('eCode-done', winner);
+						p2.socket.emit('eCode-done', winner);
+					} else {
+						p1.socket.emit('receive-etask', geteTask());
+						p2.socket.emit('receive-etask', geteTask());
+					}
+					/* Update user points in his session */
+					//onlineUsers[room][socket.handshake.user.email].profile.points += prev_task.points;
+					/* Update the online users for all users */
+					//io.sockets.to(room).emit('users', onlineUsers[room]);
+				}
             });
-
         });
 }
