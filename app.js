@@ -83,7 +83,7 @@ app.get("/chat", routes.chat);
 app.get("/study", routes.study);
 app.all("/coding", routes.coding);
 app.get("/sumorobot", routes.sumorobot);
-app.get("/", auth.ensureAuthenticated, routes.index);
+app.get("/dashboard", auth.ensureAuthenticated, routes.index);
 
 /* Profile pages */
 app.get("/profile", auth.ensureAuthenticated, user.profile);
