@@ -5,7 +5,7 @@ var oldCode = undefined;
 var eSock = null;
 var onlineUsers = {};
 var currentUser = {};
-
+var selectedUser = "";
 
 /* When DOM has been loaded */
 window.onload = function () {
@@ -88,6 +88,7 @@ window.onload = function () {
             buttons: {
                 "Accept": function () {
                     socket.emit("eInviteResponse", {accepted: true, email: data.email, newSockAdd: data.newSockAdd});
+                    selectedUser = data.email;
                     $(this).dialog("close");
                 },
                 "Cancel": function () {
@@ -177,7 +178,6 @@ function invitationRejected() {
 
 var inviDailog = null;
 function inviteToECode() {
-    var selectedUser = "";
     inviDailog = $("#inviteExclusive").dialog({
         title: "select a coder",
         open: function (eve, ui) {
@@ -205,7 +205,7 @@ function inviteToECode() {
             });
         },
         buttons: {
-            "Invite": function () {
+            "Invite": function() {
                 /*var tmepUser={
                  email:selectedUser,
                  name:onlineUsers[selectedUser].name,
@@ -241,29 +241,78 @@ function initiateECode(on) {
     p2.setAutoScrollEditorIntoView(true);
     p2.setReadOnly(true);
 
+    // hell magic man, yyber hax, dont try it at home
+    var opponent = onlineUsers[selectedUser];
+    $("#online-users").html("");
+    $("#online-users").append(
+        '<div id="' + currentUser.name.replace(/ /g, "") + '" class="user" onclick="javascript:getCode(\'' + currentUser.email + '\')">' +
+        '<a class="mugshot-link" href="#" title="show code">' +
+        '<img class="mugshot" src="' + currentUser.profile.mugshot + '" alt="mugshot" />' +
+        '<p>' + currentUser.name + '</p><p>points: ' + currentUser.profile.points + '</p></a></div>');
+    $("#online-users").append(
+        '<div id="' + opponent.name.replace(/ /g, "") + '" class="user" onclick="javascript:getCode(\'' + opponent.email + '\')">' +
+        '<a class="mugshot-link" href="#" title="show code">' +
+        '<img class="mugshot" src="' + opponent.profile.mugshot + '" alt="mugshot" />' +
+        '<p>' + opponent.name + '</p><p>points: ' + opponent.profile.points + '</p></a></div>');
+    $(".user").css({ "padding-right": "510px" });
+
     var newAdd = window.location.protocol + "//" + window.location.host + "/" + on;
     ///window.console.log(newAdd);
     eSock = io.connect(newAdd); //all ecomunication on this sock now
 
-    p1.on("change", function(obj){
-        eSock.emit("recieveClientCode",{code:p1.getValue()});
+    p1.on("change", function(obj) {
+        eSock.emit("recieveClientCode",{ code:p1.getValue() });
     });
 
-    p1.on("paste", function(str){
+    p1.on("paste", function(str) {
         alert("Pasting is not Allowed, You will be punished for Plagarism...");
         punish();
     });
 
-    function punish(){ //ignore this
+    /* Receive the requested task */
+    eSock.on("receive-etask", function(task) {
+        $('#eTask').fadeOut("slow", function() {
+            $("#eTask").html("<p>" + task.name + "</p>");
+            $("#eTask").fadeIn("slow");
+        });
+    });
+
+    /* Receive the requested task */
+    eSock.on("receive-etask-verification", function (name, points) {
+        /* When someone solved the task */
+        if (name) {
+            /* Animate the user win */
+            var offset = $("#" + name.replace(/ /g, "")).offset();
+            $("#eCode-win").css({ top: offset.top + 15, left: offset.left - 10 });
+            $("#eCode-win").fadeIn("fast");
+            setTimeout(function () {
+                $("#eCode-win").fadeOut("fast");
+            }, 2000);
+            /* Animate the use points */
+            $("#eCode-points").css({ top: offset.top, left: offset.left });
+            $("#eCode-points").html(points);
+            $("#eCode-points").toggle("bounce", { times: 1 }, "slow");
+            $("#eCode-points").fadeOut("fast");
+        }
+    });
+
+    function punish() { //ignore this
         setTimeout(function () {
             p1.setValue("You are punished!! :D");
         }, 2000);
     }
 
+    eSock.on("eCode-done", function(email) {
+        alert(onlineUsers[email].name+" Won!");
+        setTimeout(function () {
+            window.location = "/coding";
+        }, 3000);
+    });
 
     eSock.on("p2Status", function (data) {
         p2.setValue(data.code);
     });
 
-
+    /* Get the task */
+    eSock.emit("get-etask");
 }
