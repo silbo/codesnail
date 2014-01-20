@@ -11,11 +11,12 @@ block content
 			p.errors #{error.msg}
 
 		h3 All users:
-		div#all-users
+		div#online-users
 			each user in users
 				div.user
 					a(class="mugshot-link", href="/#{user.username}", title="profile")
-						img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+						center
+							img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 						p #{user.name}
 						p #{user.profile.description}
 						p points: #{user.profile.points}
