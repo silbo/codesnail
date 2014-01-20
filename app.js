@@ -81,7 +81,6 @@ app.post("/profile/password", auth.ensureAuthenticated, user.passwordUpdate);
 app.get("/profile/remove/:name", auth.ensureAuthenticated, user.providerRemove);
 app.get("/profile/mugshot/:provider", auth.ensureAuthenticated, user.mugshotUpdate);
 
-
 /* Delete all the users and providers and tasks */
 if (false) {
 	db.User.remove(function(err, removed) {
