@@ -2,6 +2,8 @@ var editor = undefined;
 
 /* When DOM has been loaded */
 window.onload = function() {
+    var contents = $('iframe').contents(),
+        ifbody = contents.find('body')
 	socket = io.connect();
 
 	socket.emit("subscribe", "chat");
@@ -25,6 +27,7 @@ window.onload = function() {
 	/* Receive shared code */
 	socket.on("receive-code", function(code) {
 		editor.setValue(code, 1);
+        ifbody.html(editor.getValue());
 	});
 
 	/* Receive shared chat */
@@ -70,6 +73,11 @@ window.onload = function() {
 	editor.session.setMode("ace/mode/html");
 	editor.setOptions({ maxLines: 10, minLines: 10 });
 	editor.setAutoScrollEditorIntoView(true);
+
+
+    editor.on("change",function(obj){
+        ifbody.html(editor.getValue());
+    });
 
 	/* Load emmet for fast coding */
 	ace.config.loadModule("ace/ext/emmet", function() {
