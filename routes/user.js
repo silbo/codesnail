@@ -14,7 +14,7 @@ exports.login = function(req, res) {
 /* User registration */
 exports.register = function(req, res) {
 	/* When the submit was not pressed, do not process the form */
-	if (req.body.register != "Register") return res.render("register", { errors: [], username: "", email: "" });
+	if (req.method == 'GET') return res.render("register", { errors: [], username: "", email: "" });
 	console.log("INFO", "register page yee2");
 	/* Check for form errors */
 	req.assert("username", "A valid username of at least 4 and up to 15 characters is required").len(4, 15);
@@ -50,7 +50,7 @@ exports.register = function(req, res) {
 /* Forgotten password */
 exports.forgotPassword = function(req, res) {
 	/* When the form was not submitted */
-	if (req.body.reset != "Submit") return res.render("forgot", { errors: [], message: "", email: "" });
+	if (req.method == 'GET') return res.render("forgot", { errors: [], message: "", email: "" });
 
 	/* Check for form errors */
 	req.assert("email", "A valid email is required").isEmail();
