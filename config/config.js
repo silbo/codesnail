@@ -24,7 +24,7 @@ if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	config.hostname = "https://codebuddy-students.rhcloud.com";
 /* For others */
 } else {
-	config.database_url = "mongodb://codesnail:*C0d3Sn41l*@ds061278.mongolab.com:61278/codesnail";
+	config.database_url = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "mongodb://127.0.0.1:3000/codesnail";
 	config.hostname = "http://www.codesnail.com";
 }
 
@@ -38,8 +38,8 @@ config.gravatar.profile = "http://www.gravatar.com/";
 
 /* Google OAuth2 */
 config.google.gdata_scopes = [
-        "https://www.googleapis.com/auth/userinfo.email",
-        "https://www.googleapis.com/auth/userinfo.profile"
+	"https://www.googleapis.com/auth/userinfo.email",
+	"https://www.googleapis.com/auth/userinfo.profile"
 ];
 config.google.consumer_key = process.env.GOOGLE_KEY || "anonymous";
 config.google.consumer_secret= process.env.GOOGLE_SECRET || "anonymous";
