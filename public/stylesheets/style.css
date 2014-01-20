@@ -124,13 +124,8 @@ div#code-points, div#code-win, div#eCode-points, div#eCode-win {
 }
 
 div#code-message {
-    top: 22%;
-    left: 25%;
-    width: 50%;
-    height: 25%;
+    height: 125px;
     display: none;
-    position: fixed;
-    background-color: white;
 }
 
 div#header {
