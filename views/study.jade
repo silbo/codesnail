@@ -2,42 +2,35 @@ extends layout2
 
 block content
 
-	//script(type="text/javascript", src="/socket.io/socket.io.js")
-	//script(type="text/javascript", src="/ace/ace.js")
 	script(type="text/javascript", src="/javascripts/study.js")
+	
+	.box-title
+		h3 Study
+	.box-content
+		h3 1. Basic html structure
+		p The basic html structure consists of several things
+		div#basic-example
+			&lt;html>
+			|	&lt;head>
+			|		&lt;title>Title&lt;/title>
+			|	&lt;/head>
+			|	&lt;body>
+			|	&lt;/body>
+			&lt;/html>
 
-	//input(type="button", value="Index" onclick="window.location.href='/'")
-	//if !user.guest
-		input(type="button", value="Profile" onclick="window.location.href='/profile'")
-	//input(type="button", value="Study" onclick="window.location.href='/study'")
-	//input(type="button", value="Coding" onclick="window.location.href='/coding'")
-	//input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
-	//input(type="button", value="Chat" onclick="window.location.href='/chat'")
+		h3 2. Headers
+		p The headers are awesome
+		div#header-example
+			&lt;h1>This is a header 1&lt;/h1>
+			&lt;h2>This is a header 2&lt;/h2>
+			&lt;h3>This is a header 3&lt;/h3>
 
-	h3 1. Basic html structure
-	p The basic html structure consists of several things
-	div#basic-example
-		&lt;html>
-		|	&lt;head>
-		|		&lt;title>Title&lt;/title>
-		|	&lt;/head>
-		|	&lt;body>
-		|	&lt;/body>
-		&lt;/html>
+		h3 3. Paragraphs
+		p Paragraphs contain cool text
+		div#paragraph-example
+			&lt;p>My paragraph text&lt;/p>
 
-	h3 2. Headers
-	p The headers are awesome
-	div#header-example
-		&lt;h1>This is a header 1&lt;/h1>
-		&lt;h2>This is a header 2&lt;/h2>
-		&lt;h3>This is a header 3&lt;/h3>
-
-	h3 3. Paragraphs
-	p Paragraphs contain cool text
-	div#paragraph-example
-		&lt;p>My paragraph text&lt;/p>
-
-	h3 4. Links
-	p Links are interesting
-	div#link-example
-		&lt;a href="http://www.website.com">My website&lt;/a>
+		h3 4. Links
+		p Links are interesting
+		div#link-example
+			&lt;a href="http://www.website.com">My website&lt;/a>

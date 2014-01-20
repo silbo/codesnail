@@ -7,16 +7,13 @@ html.no-js
     title CodeSnail App
     meta(name='description', content='')
     meta(name='viewport', content='width=device-width')
-    //
-      base css styles
+    // base css styles
     link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap.min.css')
     link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap-responsive.min.css')
     link(rel='stylesheet', href='/irfandesign/app/assets/font-awesome/css/font-awesome.min.css')
     link(rel='stylesheet', href='/irfandesign/app/assets/normalize/normalize.css')
-    //
-      page specific css styles
-    //
-      flaty css styles
+    // page specific css styles
+    // flaty css styles
     link(rel='stylesheet', href='/irfandesign/app/css/style.css')
     link(rel='stylesheet', href='/irfandesign/app/css/responsive.css')
     script(src='/irfandesign/app/assets/modernizr/modernizr-2.6.2.min.js')
@@ -30,8 +27,7 @@ html.no-js
         | or
         a(href='http://www.google.com/chromeframe/?redirect=true') activate Google Chrome Frame
         | to improve your experience.
-    //
-       BEGIN Main Content
+    // BEGIN Main Content
     .login-wrapper
       h1(align='center') CodeSnail Login / Sign Up
 
@@ -40,8 +36,7 @@ html.no-js
             p.errors(style="color:red;") #{error}
         p.messages #{message}
 
-      //
-         BEGIN Login Form
+      // BEGIN Login Form
       form#form-login(name="login", action="/login", method="post")
         h3 Login to your account
         hr
@@ -60,59 +55,15 @@ html.no-js
           br
           br
           each login in logins
-                a(href="javascript:window.location.href='#{login[1]}'") #{login[0]} |
+                a(href="#{login[1]}") #{login[0]} |
 
         hr
         p.clearfix
-          a.goto-forgot.pull-left(href='#') Forgot Password?
-          a.goto-register.pull-right(href='#') Sign up now
-      //
-         END Login Form
-      //
-         BEGIN Forgot Password Form
-      form#form-forgot.hide(action='', method='get')
-        h3 Get back your password
-        hr
-        .control-group
-          .controls
-            input.input-block-level(type='text', placeholder='Email')
-        .control-group
-          .controls
-            button.btn.btn-primary.input-block-level(type='submit') Recover
-        hr
-        p.clearfix
-          a.goto-login.pull-left(href='#') ← Back to login form
-      //
-         END Forgot Password Form
-      //
-         BEGIN Register Form
-      form#form-register.hide(action='', method='get')
-        h3 Sign up
-        hr
-        .control-group
-          .controls
-            input.input-block-level(type='text', placeholder='Username')
-        .control-group
-          .controls
-            input.input-block-level(type='text', placeholder='Email')
-        .control-group
-          .controls
-            input.input-block-level(type='password', placeholder='Password')
-        .control-group
-          .controls
-            input.input-block-level(type='password', placeholder='Repeat Password')
-        .control-group
-          .controls
-            button.btn.btn-primary.input-block-level(type='submit') Sign up
-        hr
-        p.clearfix
-          a.goto-login.pull-left(href='#') ← Back to login form
-      //
-         END Register Form
-    //
-       END Main Content
-    //
-      basic scripts
+          a.goto-forgot.pull-left(href='/forgot') Forgot Password?
+          a.goto-register.pull-right(href='/register') Sign up now
+      // END Login Form
+    // END Main Content
+    // basic scripts
 
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     //script
@@ -122,9 +73,7 @@ html.no-js
     script(type='text/javascript')
       function goToForm(form)
       {
-      $('.login-wrapper > form:visible').fadeOut(500, function(){
-      $('#form-' + form).fadeIn(500);
-      });
+      $('.login-wrapper > form:visible').fadeOut(500);
       }
       $(function() {
       $('.goto-login').click(function(){

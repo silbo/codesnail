@@ -1,24 +1,85 @@
-extends layout
+!!! 5
+html.no-js
+  <![endif]
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title CodeSnail App
+    meta(name='description', content='')
+    meta(name='viewport', content='width=device-width')
+    // base css styles
+    link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap.min.css')
+    link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/irfandesign/app/assets/font-awesome/css/font-awesome.min.css')
+    link(rel='stylesheet', href='/irfandesign/app/assets/normalize/normalize.css')
+    // page specific css styles
+    // flaty css styles
+    link(rel='stylesheet', href='/irfandesign/app/css/style.css')
+    link(rel='stylesheet', href='/irfandesign/app/css/responsive.css')
+    script(src='/irfandesign/app/assets/modernizr/modernizr-2.6.2.min.js')
+  body.login-page
+    //if lt IE 7
+      p.chromeframe
+        | You are using an
+        strong outdated
+        | browser. Please
+        a(href='http://browsehappy.com/') upgrade your browser
+        | or
+        a(href='http://www.google.com/chromeframe/?redirect=true') activate Google Chrome Frame
+        | to improve your experience.
+    // BEGIN Main Content
+    .login-wrapper
+      h1(align='center') CodeSnail Login / Sign Up
 
-block content
+      div#forErrors(align='center')
+        each error in errors
+            p.errors(style="color:red;") #{error.msg}
+        p.messages #{message}
 
-	input(type="button", value="Login" onclick="window.location.href='/login'")
-	input(type="button", value="Register" onclick="window.location.href='/register'")
-	input(type="button", value="Forgot Password" onclick="window.location.href='/forgot'")
-	input(type="button", value="Login as Guest" onclick="window.location.href='/study'")
+      // BEGIN Register Form
+      form#form-register(name="register", action='/register', method='post')
+        h3 Sign up
+        hr
+        .control-group
+          .controls
+            input.input-block-level(type='text', placeholder='Username')
+        .control-group
+          .controls
+            input.input-block-level(type='text', placeholder='Email')
+        .control-group
+          .controls
+            input.input-block-level(type='password', placeholder='Password')
+        .control-group
+          .controls
+            input.input-block-level(type='password', placeholder='Repeat Password')
+        .control-group
+          .controls
+            button.btn.btn-primary.input-block-level(type='submit') Sign up
+        hr
+        p.clearfix
+          a.goto-login.pull-left(href='/login') ← Back to login form
+      // END Register Form
+    // END Main Content
+    // basic scripts
 
-	div#register
-		each error in errors
-			p.errors #{error.msg}
-		p.messages #{message}
-
-		form(name="register", action="/register", method="post")
-			input(type="text", name="username", value="#{username}", placeholder="Username")
-			br
-			input(type="email", name="email", value="#{email}", placeholder="Email")
-			br
-			input(type="password", name="password", placeholder="Password")
-			br
-			input(type="password", name="passwordConfirm", placeholder="Repeat Password")
-			br
-			input(type="submit", name="register", value="Register")
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    //script
+      window.jQuery || document.write('<script src="/irfandesign/code/assets/jquery/jquery-1.10.1.min.js"><\\/script>')
+    script(src='/irfandesign/app/assets/jquery/jquery-1.10.1.min.js')
+    script(src='/irfandesign/app/assets/bootstrap/bootstrap.min.js')
+    script(type='text/javascript')
+      function goToForm(form)
+      {
+      $('.login-wrapper > form:visible').fadeOut(500);
+      }
+      $(function() {
+      $('.goto-login').click(function(){
+      goToForm('login');
+      });
+      $('.goto-forgot').click(function(){
+      goToForm('forgot');
+      });
+      $('.goto-register').click(function(){
+      goToForm('register');
+      });
+      });
