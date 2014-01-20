@@ -47,6 +47,11 @@ body
         a(href='http://www.google.com/chromeframe/?redirect=true') activate Google Chrome Frame
         | to improve your experience.
     // BEGIN Navbar
+    script(type='text/javascript')
+        var nSound = new Audio("sounds/notify_awais.mp3"); // buffers automatically when created
+        function notifySound(){
+            nSound.play();
+        }
     #navbar.navbar
         .navbar-inner
             .container-fluid
