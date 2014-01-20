@@ -1,27 +1,22 @@
-extends layout
+extends layout2
 
 block content
-	script(type="text/javascript", src="/socket.io/socket.io.js")
+
 	script(type="text/javascript", src="/javascripts/main.js")
 
-	input(type="button", value="Index" onclick="window.location.href='/'")
-	if !user.guest
-		input(type="button", value="Profile" onclick="window.location.href='/profile'")
-	input(type="button", value="Study" onclick="window.location.href='/study'")
-	input(type="button", value="Coding" onclick="window.location.href='/coding'")
-	input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
-	input(type="button", value="Chat" onclick="window.location.href='/chat'")
+	.box-title
+		h3 Dashboard
+	.box-content
+		each error in errors
+			p.errors #{error.msg}
 
-	each error in errors
-		p.errors #{error.msg}
-
-	h3 All users:
-	div#all-users
-		each user in users
-			div.user
-				a(class="mugshot-link", href="/#{user.username}", title="profile")
-					img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
-					p #{user.name}
-					p #{user.profile.description}
-					p points: #{user.profile.points}
-	div.clear
+		h3 All users:
+		div#all-users
+			each user in users
+				div.user
+					a(class="mugshot-link", href="/#{user.username}", title="profile")
+						img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+						p #{user.name}
+						p #{user.profile.description}
+						p points: #{user.profile.points}
+		div.clear
