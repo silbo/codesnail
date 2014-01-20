@@ -1,0 +1,841 @@
+/* General
+-------------------------------------------------- */
+
+html {
+	margin: 0;
+}
+
+body {
+	position: relative;
+	background: url(../img/diagonal-stripe.png) repeat #f2f2f2;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 13px;
+	color: #323232;
+}
+
+.container {
+	margin: 0 auto;
+	max-width: 1170px;
+}
+
+@media (max-width: 979px) {
+	body { padding-top: 0 !important; }
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'OstrichSansRoundedMedium';
+	font-weight: 300;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+p {
+	margin-bottom: 18px;
+}
+
+input[type="text"],
+input[type="search"], 
+input[type="password"], 
+input[type="submit"],
+textarea {
+	font-family: 'Open Sans', sans-serif;
+}
+
+hr {
+	margin: 0;
+	border-top-color: #dadada;	
+}
+
+figure {
+	margin: 0;
+}
+
+.not-visible {
+	visibility: hidden;
+}
+
+.color-blue {
+	color: #5e91c1;
+}
+
+
+/* Socialico, Social Media Icons
+-------------------------------------------------- */
+
+[class^="socicon"]:before, [class*=" socicon"]:before {
+  font-family: SocialicoRegular;
+  font-weight: normal;
+  font-style: normal;
+  font-size:32px;
+  display: inline-block;
+  text-decoration: none!important;
+}
+
+a [class^="socicon"], a [class*=" socicon"] {
+  display: inline-block;
+  text-decoration: none!important;
+}
+
+/* makes the font 33% larger relative to the icon container */
+.icon-large:before {
+  vertical-align: top;
+  font-size: 1.3333333333333333em;
+}
+
+li [class^="socicon"], li [class*=" socicon"] {
+  display: inline-block;
+  width: 1.25em;
+  text-align: center;
+}
+
+li .large[class^="socicon"], li .large[class*=" socicon"] {
+  /* 1.5 increased font size for .large * 1.25 width */
+  width: 1.875em;
+}
+
+li[class^="socicon"], li[class*=" socicon"] {
+  margin-left: 0;
+  list-style-type: none;
+}
+
+li[class^="socicon"]:before, li[class*=" socicon"]:before {
+  text-indent: -2em;
+  text-align: center;
+}
+
+li[class^="socicon"].large:before, li[class*=" socicon"].large:before {
+  text-indent: -1.3333333333333333em;
+}
+
+/* available social icons */
+.twitterbird.socicon:before {position:relative;left:-3px;}
+
+.circle.socicon:before{content:"\0020"}
+.soundcloudcircle.socicon:before{content:"\0021"}
+.mobilemecircle.socicon:before{content:"\0024"}
+.pinterestcircle.socicon:before{content:"\0026"}
+.downloadcircle.socicon:before{content:"\0028"}
+.refreshcircle.socicon:before{content:"\0029"}
+.flowercircle.socicon:before{content:"\002C"}
+.starcircle.socicon:before{content:"\002D"}
+.musiccircle.socicon:before{content:"\002E"}
+.foursquarecircle.socicon:before{content:"\002F"}
+.windowscircle.socicon:before{content:"\0030"}
+.pluscircle.socicon:before{content:"\0031"}
+.linkcircle.socicon:before{content:"\0032"}
+.heartcircle.socicon:before{content:"\0033"}
+.aperturecircle.socicon:before{content:"\0034"}
+.filmcircle.socicon:before{content:"\0035"}
+.lastfmcircle.socicon:before{content:"\0036"}
+.mappincircle.socicon:before{content:"\0037"}
+.waterdropcircle.socicon:before{content:"\0038"}
+.qikcircle.socicon:before{content:"\0033"}
+.messagecircle.socicon:before{content:"\003F"}
+.applecircle.socicon:before{content:"\0040"}
+.amazon.socicon:before{content:"\0041"}
+.bebo.socicon:before{content:"\0042"}
+.appstore.socicon:before{content:"\0043"}
+.dribbble.socicon:before{content:"\0044"}
+.behance.socicon:before{content:"\0045"}
+.facebook.socicon:before{content:" \0046"}
+.google.socicon:before{content:"\0047"}
+.skype.socicon:before{content:"\0048"}
+.linkedin.socicon:before{content:"\0049"}
+.deviantart.socicon:before{content:"\004A"}
+.bing.socicon:before{content:"\004B"}
+.twitterbird.socicon:before{content:"\004C"}
+.myspace.socicon:before{content:"\004D"}
+.flickr.socicon:before{content:"\004E"}
+.tumblr.socicon:before{content:"\004F"}
+.paypal.socicon:before{content:"\0050"}
+.quora.socicon:before{content:"\0051"}
+.rss.socicon:before{content:"\0052"}
+.stumbleupon.socicon:before{content:"\0053"}
+.twitter.socicon:before{content:"\0054"}
+.blogger.socicon:before{content:"\0055"}
+.vimeo.socicon:before{content:"\0056"}
+.wordpress.socicon:before{content:"\0057"}
+.youtube.socicon:before{content:"\0058"}
+.yahoo.socicon:before{content:"\0059"}
+.aol.socicon:before{content:"\005A"}
+.amazoncircle.socicon:before{content:"\0061"}
+.bebocircle.socicon:before{content:"\0062"}
+.appstorecircle.socicon:before{content:"\0063"}
+.dribbblecircle.socicon:before{content:"\0064"}
+.behancecircle.socicon:before{content:"\0065"}
+.facebookcircle.socicon:before{content:"\0066"}
+.googlecircle.socicon:before{content:"\0067"}
+.skypecircle.socicon:before{content:"\0068"}
+.linkedincircle.socicon:before{content:"\0069"}
+.deviantartcircle.socicon:before{content:"\006A"}
+.bingcircle.socicon:before{content:"\006B"}
+.twitterbirdcircle.socicon:before{content:"\006C"}
+.myspacecircle.socicon:before{content:"\006D"}
+.flickrcircle.socicon:before{content:"\006E"}
+.tumblrcircle.socicon:before{content:"\006F"}
+.paypalcircle.socicon:before{content:"\0070"}
+.quoracircle.socicon:before{content:"\0071"}
+.rsscircle.socicon:before{content:"\0072"}
+.stumbleuponcircle.socicon:before{content:"\0073"}
+.twittercircle.socicon:before{content:"\0074"}
+.bloggercircle.socicon:before{content:"\0075"}
+.vimeocircle.socicon:before{content:"\0076"}
+.wordpresscircle.socicon:before{content:"\0077"}
+.youtubecircle.socicon:before{content:"\0078"}
+.yahoocircle.socicon:before{content:"\0079"}
+.aolcircle.socicon:before{content:"\007A"}
+
+
+
+/* General Bootstrap Overrides
+-------------------------------------------------- */
+
+/* button */
+.btn {
+	background-image: none;
+	border: none;
+	border-radius: 8px;
+	padding: 14px;
+	font-weight: 300;
+	text-shadow: none;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+	background-color: #0376DA;	
+}
+
+.btn.loading {
+	background-image: -webkit-gradient(linear, 0 0, 100% 100%,
+		color-stop(.25, rgba(0, 0, 0, .10)), 
+		color-stop(.25, transparent),
+		color-stop(.5, transparent), 
+		color-stop(.5, rgba(0, 0, 0, .10)),
+		color-stop(.75, rgba(0, 0, 0, .10)), 
+		color-stop(.75, transparent), 
+		to(transparent));
+
+	background-image: -moz-linear-gradient(-45deg, 
+			rgba(0, 0, 0, .10) 25%, 
+			transparent 25%,
+			transparent 50%, rgba(0, 0, 0, .10) 50%, 
+			rgba(0, 0, 0, .10) 75%, 
+			transparent 75%, transparent
+		);
+    
+	background-position: 0 0;
+
+	background-size: 60px 60px;
+	-moz-background-size: 60px 60px;
+	-webkit-background-size: 60px 60px;
+    
+	-webkit-animation: animate-stripes 2s linear infinite;
+}
+
+/* full width section container */
+.full-width {
+	width: 100%;
+	background: #2a2a2a;
+}
+
+/* section */
+.section .heading {
+	font-size: 4em;
+	font-weight: 700;
+	color: #9cac27;
+	text-shadow: 1px 1px 0px #fff;
+	line-height: 1;
+	margin-top: 0;
+}
+
+.section .description {
+	font-size: 1.8em;	
+	font-weight: 300;
+	line-height: 1.6;
+}
+
+/* navbar */
+.navbar .btn-navbar {
+	background-color: #FFF;
+	background-image: none;
+	margin-top: 2em;
+
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.navbar .btn-navbar:hover,
+.navbar .btn-navbar:active,
+.navbar .btn-navbar.active {
+	background-color: #fff;
+}
+
+.navbar .btn-navbar .icon-bar {
+	background-color: #5e91c1;
+	-webkit-box-shadow: none;		
+	-moz-box-shadow: none;
+	box-shadow: none;
+} 
+
+
+
+/* Header
+-------------------------------------------------- */
+
+.header {
+	margin-bottom: 85px;
+	background-image: url(../img/hero.jpg);
+	background-position: top center;
+	
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+/* top nav */
+#top-nav {
+	position: absolute;
+	width: 100%;
+	margin: 0;
+	z-index: 99;
+}
+
+#top-nav .navbar-inner {
+	border: none;
+	background: rgba(77, 77, 77, 0.3);
+
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+
+	-webkit-box-shadow: none;		
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+
+#top-nav .nav {
+	margin-top: 20px
+}
+
+#top-nav .nav > li > a {
+	color: #fff;
+	text-shadow: none;
+	padding: 10px 0 10px 30px;
+}
+
+#top-nav .nav > li > a:focus,
+#top-nav .nav > li > a:hover {
+  color: #ddd;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+/* hero unit */
+.hero-unit {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	background-color: transparent;
+}
+
+.hero-unit .container .row-fluid {
+	position: relative;
+	min-height: 678px;
+}
+
+.hero-unit .hero-image {
+	background: url(../img/iphone-white-mockup.png);
+	width: 370px;
+	height: 560px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	text-align: right;
+}
+
+#hero-carousel {
+	position: absolute;
+	left: 30px;
+	top: 134px;
+	margin-bottom: 0;	
+}
+
+.hero-text {
+	width: 65%;
+	z-index: 99;
+	color: #f2f2f2;
+	padding: 7em 0;
+}
+
+.hero-text .heading {
+	font-size: 3.5em;
+	line-height: 1.2;
+}
+
+.hero-text .description {
+	margin-bottom: 45px;	
+	font-size: 1.4em;
+	line-height: 1.6;
+}
+
+/* Features
+-------------------------------------------------- */
+
+.features .feature-item {
+	margin: 65px 0;
+}
+
+.features .feature-item:first-child {
+	margin-top: 15px;
+}
+
+.features .right-text {
+	padding-left: 14px;
+}
+
+.features img {
+	-webkit-box-shadow: 2px 2px 12px #4d4d4d;
+	-moz-box-shadow: 2px 2px 12px #4d4d4d;
+	box-shadow: 2px 2px 12px #4d4d4d;
+}
+
+.features img.no-shadow {
+	-webkit-box-shadow: none;		
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+
+.section.features-more {
+	margin-top: 15px;
+}
+
+.section.features-more .heading {
+	margin-bottom: 40px;
+	text-align: center;
+}
+
+.section.features-more .more-item .heading {
+	margin-bottom: 12px;
+	font-size: 2em;
+	color: #323232;
+	font-weight: 300;
+	text-align: left;
+}
+
+.features-more .more-item .heading i {
+	margin-right: 7px;
+}
+
+.section.features-more .more-item .description {
+	font-size: 1em;
+	text-align: left;
+	font-weight: normal;
+}
+
+
+
+
+/* Call To Action
+-------------------------------------------------- */
+
+.call-to-action {
+	padding-top: 15px; 
+}
+
+.call-to-action .description {
+	margin-bottom: 45px;
+}
+
+.call-to-action .inner {
+	position: relative;
+}
+
+.call-to-action .image-wrapper {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+.call-to-action .btn {
+	margin-bottom: 65px;
+}
+
+
+
+/* Newsletter
+-------------------------------------------------- */
+
+.newsletter {
+	padding: 65px 0;
+	color: #f2f2f2;
+}
+
+.newsletter .heading {
+	margin-top: 0;
+	font-family: inherit;
+	font-size: 2.3em;
+	line-height: 1;
+}
+
+.newsletter .description {
+	font-size: 1.2em;
+	font-weight: 300;
+}
+
+.newsletter .description,
+.newsletter form {
+	margin-bottom: 0;
+}
+
+.newsletter form input {
+	margin-bottom: 20px;
+}
+
+.newsletter form input[type="email"] {
+	padding: 18px 20px;
+	margin-right: 16px;
+	width: 333px;
+	font-size: 1.5em;	
+}
+
+.newsletter form .btn {
+	padding: 19px 24px;
+	font-size: 1.4em;
+}
+
+.alert {
+	width: 88%;
+	background: none;
+	font-weight: 300;
+	margin: 0 auto 20px auto;
+	text-shadow: none;
+	border: 1px solid #8e8e8e;
+	color: #4d4d4d;
+	display: none;
+}
+
+.alert .close {
+	color: #8e8e8e;
+	opacity: inherit;
+	text-shadow: none;
+}
+
+.alert-success {
+	color: #fff;
+}
+
+.alert-error {
+	color: #BB0300;
+}
+
+.alert p {
+	margin-bottom: 0;
+	font-size: 1.3em;
+}
+
+
+
+/* Footer
+-------------------------------------------------- */
+
+.full-width.footer {
+	background: inherit;
+	margin: 30px 0 15px 0;
+}
+
+.copyright {
+	font-size: 0.9em;
+}
+
+.social ul {
+	list-style-type: none;
+	text-align: right;
+}
+
+.social li {
+	display: -moz-inline-stack;
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+}
+
+.social li a {
+	color: #8e8e8e;
+
+	-webkit-transition: all 300ms cubic-bezier(0.420, 0.000, 0.580, 1.000); 
+	-moz-transition: all 300ms cubic-bezier(0.420, 0.000, 0.580, 1.000); 
+	-ms-transition: all 300ms cubic-bezier(0.420, 0.000, 0.580, 1.000); 
+	-o-transition: all 300ms cubic-bezier(0.420, 0.000, 0.580, 1.000); 
+	transition: all 300ms cubic-bezier(0.420, 0.000, 0.580, 1.000); /* ease-in-out */
+}
+
+.social li a:hover {
+	color: #4d4d4d;
+}
+
+.social [class^="socicon"]:before, 
+.social [class*=" socicon"]:before {	
+	font-size: 55px;
+}
+
+.social li [class^="socicon"], 
+.social li [class*=" socicon"] {
+	width: inherit;
+	margin-left: 14px;
+}
+
+
+
+/* Media Queries
+-------------------------------------------------- */
+
+/* Large desktop */
+@media (min-width: 1200px) {
+	.pricing .row-fluid {
+		width: 65% !important;
+	}	
+}
+
+@media (min-width: 980px) {
+
+}
+
+@media (max-width: 979px) {
+
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) { 
+
+	.container {
+		width: auto;
+		padding: 0 20px;
+	}
+
+	.testimonials {
+		padding: 65px 0;
+	}
+
+	#top-nav .nav-collapse.in {
+		background-color: #1469B9;
+	}
+
+	.hero-text {
+		font-size: 0.8em;
+		padding: 11em 0;
+	}
+
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+
+	.header {
+		margin-left: -20px;
+		margin-right: -20px;
+	}
+
+	#top-nav {
+		position: relative;
+	}
+
+	.hero-unit {
+		padding: 0 20px;
+		text-align: center;
+	}
+
+	.hero-unit .hero-image {
+		display: none;
+	}
+
+	.hero-text {
+		padding: 3em 0;
+	}
+
+	.main-content,
+	.newsletter,
+	.footer {
+		text-align: center;
+	}
+
+
+
+	.feature-item .right-text {
+		margin-top: 50px;
+	}
+
+	.section.features-more .more-item  {
+		margin-bottom: 50px;
+	}
+
+	.full-width {
+		margin-left: -20px;
+		margin-right: -20px;
+		width: inherit;
+	}
+
+	.call-to-action .image-wrapper {
+		display: none;
+	}
+
+	.newsletter form {
+		float: none;
+		margin-top: 20px;
+	}
+
+	.newsletter form input[type="email"] {
+		width: 40%;
+		font-size: 1.2em;		
+	}
+
+	.social ul {
+		text-align: center;
+		margin: 10px 0 0 0;
+	}
+
+	.social ul li:first-child i {
+		margin-left: 0;
+	}
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+
+	.hero-text {
+		font-size: 0.8em;
+	}
+
+	.testimonials ul li i {
+		display: none;
+	}
+
+	.testimonials .testimonial-content {
+		padding-left: 0;
+		text-align: center;
+	}
+
+	.newsletter form input[type="email"],
+	.newsletter form input[type="submit"] {
+		margin-right: 0;
+		display: block;
+		margin: 0 auto;
+	}
+
+	.newsletter form input[type="email"] {
+		width: 70%;
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.alert {
+		width: 80%;
+	}
+}
+
+/* top nav */
+#top-nav .nav > li > a.btn {
+	padding: 10px 15px;
+	margin: 0 0 0 30px;
+}
+
+#top-nav .nav > li > a.btn:hover {
+	background-color: #0376DA;
+	color: #fff;
+}
+
+/* hero unit */
+.hero-unit {
+	padding-top: 7em;
+	text-align: center;
+}
+
+.hero-unit.video {
+	text-align: left;
+}
+
+.hero-unit .container .row-fluid {
+	min-height: 520px;
+}
+
+.hero-text {
+	padding: 0;
+}
+
+.hero-text .heading {
+	margin-top: 30px;
+	font-size: 3.5em; 
+}
+
+.hero-text .description {
+	margin-bottom: 75px;
+	font-size: 1.3em;
+}
+
+.hero-unit.video .hero-text .heading {
+	margin-top: 0;
+	font-size: 2.5em; 
+}
+
+.hero-unit.video .hero-text .description {
+	margin-bottom: 75px;
+	font-size: 1em;
+}
+
+.hero-video iframe {
+	width: 100%;
+}
+
+.hero-unit .btn {
+	font-size: 1.5em;
+	padding: 23px 78px;
+}
+
+
+
+/* Media Queries
+-------------------------------------------------- */
+
+/* Large desktop */
+@media (min-width: 1200px) {
+	
+}
+
+@media (min-width: 980px) {
+
+}
+
+@media (max-width: 979px) {
+	#top-nav .nav > li > a.btn {
+		margin: 0 30px;
+		font-weight: 300; 
+	}
+
+	.pricing .row-fluid {
+		width: 95%;
+	}
+}
+
+
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+	.hero-unit {
+		padding-top: 20px;
+	}
+
+	.hero-text {
+		margin: 20px 0;
+		text-align: center;
+	}
+
+
+}

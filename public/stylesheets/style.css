@@ -49,6 +49,7 @@ input:focus, textarea:focus, div.mugshot-box {
 
 div.user {
     line-height: 0px;
+    margin:5px;
 }
 
 div#user {
@@ -63,9 +64,16 @@ div#user input {
 }
 
 div#online-users {
+    margin:5px;
     width: 98%;
     height: 75px;
-    border-bottom: 1px solid #ccc;
+    /*border-bottom: 1px solid #ccc;*/
+}
+
+div#online-users p{
+    margin-top: 10px;
+    text-align: center;
+    font-size: 1.5em;
 }
 
 div#code-wrapper {
