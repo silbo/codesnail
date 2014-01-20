@@ -1,18 +1,10 @@
-extends layout
+extends layout2
 
 block content
 
-	input(type="button", value="Index" onclick="window.location.href='/'")
-	if !user.guest
-		input(type="button", value="Profile" onclick="window.location.href='/profile'")
-	input(type="button", value="Study" onclick="window.location.href='/study'")
-	input(type="button", value="Coding" onclick="window.location.href='/coding'")
-	input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
-	input(type="button", value="Chat" onclick="window.location.href='/chat'")
-
-	div#profile
+	.box-title
 		h3 #{user.name}'s profile:
-
+	.box-content
 		img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 
 		div#profile
