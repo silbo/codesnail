@@ -107,7 +107,7 @@ p.messages {
     color: green;
 }
 
-div#code-points, div#code-win {
+div#code-points, div#code-win, div#eCode-points, div#eCode-win {
     color: green;
     display: none;
     font-size: 2em;
