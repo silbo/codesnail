@@ -25,7 +25,7 @@ window.onload = function () {
             $("#online-users").html($("#online-users").html() +
                 '<div id="' + users[key].name.replace(/ /g, "") + '" class="user" onclick="javascript:getCode(\'' + users[key].email + '\')">' +
                 '<a class="mugshot-link" href="#" title="show code">' +
-                '<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
+                '<center><img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" /></center>' +
                 '<p>' + users[key].name + '</p><p>points: ' + users[key].profile.points + '</p></a></div>');
         }
     });
@@ -132,6 +132,7 @@ window.onload = function () {
     editor_other = ace.edit("code-message");
     editor_other.session.setMode("ace/mode/html");
     editor_other.setOptions({ maxLines: 10, minLines: 10 });
+    editor_other.setReadOnly(true);
 
     editor = ace.edit("code");
     editor.session.setMode("ace/mode/html");

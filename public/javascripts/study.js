@@ -15,7 +15,7 @@ window.onload = function() {
 			$("#online-users").html($("#online-users").html() + 
 			'<div id="'+users[key].name.replace(/ /g, "")+'" class="user" onclick="javascript:getCode(\'' + users[key].email + '\')">' +
 			'<a class="mugshot-link" href="#" title="show code">' +
-			'<img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" />' +
+			'<center><img class="mugshot" src="' + users[key].profile.mugshot + '" alt="mugshot" /></center>' +
 			'<p>' + users[key].name + '</p><p>points: ' + users[key].profile.points + '</p></a></div>');
 		}
 	});
