@@ -6,12 +6,16 @@ var crypto = require('crypto'),
 var tasks = [];
 var currentTask = 0;
 
+exports.getTasks = function getTasks() {
+    return tasks;
+}
+
 /* Get new task */
 exports.getTask = function getTask() {
     /* Update tasks */
     db.Task.find(function(err, db_tasks) {
         if (err) console.log("ERROR", "fetching all tasks:", err);
-        else tasks = db_tasks;
+        else tasks = etasks = db_tasks;
     });
     if (tasks.length == 0) return { name: "Currently no tasks available" };
     return { name: "Task " + (currentTask + 1) + ": " + tasks[currentTask].name, points: tasks[currentTask].points };
