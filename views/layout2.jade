@@ -33,9 +33,11 @@ head
     //from layout.jade
     script(type="text/javascript", src="/socket.io/socket.io.js")
     script(type="text/javascript", src="/ace/ace.js")
-    link(href="/stylesheets/style.css", rel="stylesheet")
-
     script(type="text/javascript", src="./jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js")
+
+    link(href="/stylesheets/style.css", rel="stylesheet")
+    link(href="/jquery-ui-1.10.4.custom/css/start/jquery-ui-1.10.4.custom.min.css", rel="stylesheet")
+
 
 
 body
@@ -81,7 +83,7 @@ body
                                 i.icon-cog
                                 | Account Settings
                             li
-                                a(href='#')
+                                a(href='javascript:window.location.href="/profile"')
                                     i.icon-user
                                     | Edit Profile
                             li
@@ -106,7 +108,7 @@ body
                                     span.badge.badge-success 5
                             li.divider
                             li
-                                a(href='#')
+                                a(href='javascript:window.location.href="/logout"')
                                     i.icon-off
                                     | Logout
                         //

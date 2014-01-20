@@ -24,7 +24,7 @@ if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	config.hostname = "https://codebuddy-students.rhcloud.com";
 /* For others */
 } else {
-	config.database_url = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "mongodb://127.0.0.1:3000/codesnail";
+	config.database_url = "mongodb://codesnail:*C0d3Sn41l*@ds061278.mongolab.com:61278/codesnail";
 	config.hostname = "http://www.codesnail.com";
 }
 

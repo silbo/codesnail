@@ -254,7 +254,7 @@ function initiateECode(on) {
         '<a class="mugshot-link" href="#" title="show code">' +
         '<img class="mugshot" src="' + opponent.profile.mugshot + '" alt="mugshot" />' +
         '<p>' + opponent.name + '</p><p>points: ' + opponent.profile.points + '</p></a></div>');
-    $(".user").css({ "padding-right": "510px" });
+
 
     var newAdd = window.location.protocol + "//" + window.location.host + "/" + on;
     ///window.console.log(newAdd);
