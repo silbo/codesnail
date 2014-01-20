@@ -1,23 +1,18 @@
-extends layout
+extends layout2
 
 block content
 
-	script(type="text/javascript", src="/socket.io/socket.io.js")
-	script(type="text/javascript", src="/ace/ace.js")
+	//script(type="text/javascript", src="/socket.io/socket.io.js")
+	//script(type="text/javascript", src="/ace/ace.js")
 	script(type="text/javascript", src="/javascripts/study.js")
 
-	input(type="button", value="Index" onclick="window.location.href='/'")
-	if !user.guest
+	//input(type="button", value="Index" onclick="window.location.href='/'")
+	//if !user.guest
 		input(type="button", value="Profile" onclick="window.location.href='/profile'")
-	input(type="button", value="Study" onclick="window.location.href='/study'")
-	input(type="button", value="Coding" onclick="window.location.href='/coding'")
-	input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
-	input(type="button", value="Chat" onclick="window.location.href='/chat'")
-
-	h3 Online users:
-	div#online-users
-		p Loading users ...
-	div.clear
+	//input(type="button", value="Study" onclick="window.location.href='/study'")
+	//input(type="button", value="Coding" onclick="window.location.href='/coding'")
+	//input(type="button", value="Sumorobot" onclick="window.location.href='/sumorobot'")
+	//input(type="button", value="Chat" onclick="window.location.href='/chat'")
 
 	h3 1. Basic html structure
 	p The basic html structure consists of several things

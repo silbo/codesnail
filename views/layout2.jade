@@ -1,0 +1,224 @@
+!!! 5
+html.no-js
+//
+    <![endif]
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title CodeSnail App
+    meta(name='description', content='')
+    meta(name='viewport', content='width=device-width')
+    //
+      base css styles
+    link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap.min.css')
+    link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/irfandesign/app/assets/font-awesome/css/font-awesome.min.css')
+    link(rel='stylesheet', href='/irfandesign/app/assets/normalize/normalize.css')
+    //
+      page specific css styles
+    //
+      flaty css styles
+    link(rel='stylesheet', href='/irfandesign/app/css/style.css')
+    link(rel='stylesheet', href='/irfandesign/app/css/responsive.css')
+
+    //script(src='/irfandesign/app/assets/jquery/jquery-1.10.1.min.js')
+    script(type="text/javascript", src="./jquery-ui-1.10.4.custom/js/jquery-1.10.2.js")
+    script(src='/irfandesign/app/assets/bootstrap/bootstrap.min.js')
+    script(src='/irfandesign/app/assets/nicescroll/jquery.nicescroll.min.js')
+    script(src='/irfandesign/app/js/custom.js')
+
+    script(src='/irfandesign/app/assets/modernizr/modernizr-2.6.2.min.js')
+
+
+    //from layout.jade
+    script(type="text/javascript", src="/socket.io/socket.io.js")
+    script(type="text/javascript", src="/ace/ace.js")
+    link(href="/stylesheets/style.css", rel="stylesheet")
+
+    script(type="text/javascript", src="./jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js")
+
+
+body
+    //if lt IE 7
+      p.chromeframe
+        | You are using an
+        strong outdated
+        | browser. Please
+        a(href='http://browsehappy.com/') upgrade your browser
+        | or
+        a(href='http://www.google.com/chromeframe/?redirect=true') activate Google Chrome Frame
+        | to improve your experience.
+    //
+       BEGIN Navbar
+    #navbar.navbar
+        .navbar-inner
+            .container-fluid
+                a.brand(href='#')
+                    img(src='/irfandesign/app/img/CS-Logo.png', width='200', height='20')
+                //
+                   BEGIN Responsive Sidebar Collapse
+                a.btn-navbar.collapsed(href='#', data-toggle='collapse', data-target='.nav-collapse')
+                    i.icon-reorder
+                //
+                   END Responsive Sidebar Collapse
+                //
+                   BEGIN Navbar Buttons
+                ul.nav.flaty-nav.pull-right
+                    li.user-profile
+                        a.user-menu.dropdown-toggle(data-toggle='dropdown', href='#')
+                            img.nav-user-photo(src='/irfandesign/app/img/demo/avatar/avatar1.jpg', alt='Penny\'s Photo')
+                            span#user_info.hidden-phone
+                            | Penny
+                            i.icon-caret-down
+                            //
+                               BEGIN User Dropdown
+                            ul#user_menu.dropdown-menu.dropdown-navbar
+                            li.nav-header
+                            i.icon-time
+                                | Logined From 20:45
+                            li
+                            a(href='#')
+                                i.icon-cog
+                                | Account Settings
+                            li
+                                a(href='#')
+                                    i.icon-user
+                                    | Edit Profile
+                            li
+                                a(href='#')
+                                    i.icon-question
+                                    | Help
+                            li.divider.visible-phone
+                            li.visible-phone
+                                a(href='#')
+                                    i.icon-tasks
+                                    | Tasks
+                                    span.badge.badge-warning 4
+                            li.visible-phone
+                                a(href='#')
+                                    i.icon-bell-alt
+                                    | Notifications
+                                    span.badge.badge-important 8
+                            li.visible-phone
+                                a(href='#')
+                                    i.icon-envelope
+                                    | Messages
+                                    span.badge.badge-success 5
+                            li.divider
+                            li
+                                a(href='#')
+                                    i.icon-off
+                                    | Logout
+                        //
+                           BEGIN User Dropdown
+                    //
+                       END Button User
+                //
+                   END Navbar Buttons
+            //
+              /.container-fluid
+        //
+          /.navbar-inner
+    //
+       END Navbar
+    //
+       BEGIN Container
+    #main-container.container-fluid
+        //
+           BEGIN Sidebar
+        #sidebar.nav-collapse
+            //
+               BEGIN Navlist
+            ul.nav.nav-list
+                li
+                    a(href='')
+                        i.icon-dashboard
+                        span Dashboard
+                li
+                    a(href='javascript:window.location.href="/study"')
+                        i.icon-text-width
+                        span Study
+                li
+                    a.dropdown-toggle(href='javascript:window.location.href="/coding"')
+                        i.icon-desktop
+                        span Coding
+                li
+                    a(href='javascript:window.location.href="/chat"')
+                        i.icon-edit
+                        span Code & Chat
+                li
+                    a(href='javascript:window.location.href="/sumorobot"')
+                        i.icon-th
+                        span Sumorobot
+            //
+               END Navlist
+            //
+               BEGIN Sidebar Collapse Button
+            #sidebar-collapse.visible-desktop
+                i.icon-double-angle-left
+            //
+               END Sidebar Collapse Button
+        //
+           END Sidebar
+        //
+           BEGIN Content
+        #main-content
+            //
+               BEGIN Page Title
+            .page-title
+                div
+                    h1
+                        i.icon-user
+                        | Online Users
+                    div#online-users
+                        p Loading users ...
+                    div.clear
+            //
+               END Page Title
+            //
+               END Breadcrumb
+            //
+               BEGIN Main Content
+            .row-fluid
+                .span12
+                    .box
+                        block content
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            //
+               END Main Content
+            footer
+                p Codesnail 2014 All Rights reserved
+            a#btn-scrollup.btn.btn-circle.btn-large(href='#')
+                i.icon-chevron-up
+        //
+           END Content
+    //
+       END Container
+    //
+      basic scripts
+    //
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+

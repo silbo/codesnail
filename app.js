@@ -41,6 +41,18 @@ if ('development' == app.get('env')) {
 }
 
 /* Login and registration */
+app.all("/",function(req,res){
+    res.render('index2',{});
+})
+
+app.all("/test",function(req,res){
+    res.render('test',{});
+})
+/*
+app.all("/login2",function(req,res){
+    res.render('login2',{});
+})*/
+//app.get("/login2", auth.checkLogin, user.login);
 app.get("/login", auth.checkLogin, user.login);
 app.all("/register", auth.checkLogin, user.register);
 app.get("/register/:id", auth.checkLogin, user.verify);
