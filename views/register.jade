@@ -42,16 +42,16 @@ html.no-js
         hr
         .control-group
           .controls
-            input.input-block-level(type='text', placeholder='Username')
+            input.input-block-level(type='text', name="username", placeholder='Username', value="#{username}")
         .control-group
           .controls
-            input.input-block-level(type='text', placeholder='Email')
+            input.input-block-level(type='text', name="email", placeholder='Email', value="#{email}")
         .control-group
           .controls
-            input.input-block-level(type='password', placeholder='Password')
+            input.input-block-level(type='password', name="password", placeholder='Password')
         .control-group
           .controls
-            input.input-block-level(type='password', placeholder='Repeat Password')
+            input.input-block-level(type='password', name="passwordConfirm", placeholder='Repeat Password')
         .control-group
           .controls
             button.btn.btn-primary.input-block-level(type='submit') Sign up

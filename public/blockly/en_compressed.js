@@ -208,7 +208,8 @@ Blockly.Language.controls_arduino_move = {
 };
 
 Blockly.Language.controls_arduino_move.OPERATORS =
-    [['FORWARD', 'forward'],
+    [['STOP', 'stop'],
+     ['FORWARD', 'forward'],
      ['BACKWARD', 'backward'],
      ['LEFT', 'left'],
      ['RIGHT', 'right']];
