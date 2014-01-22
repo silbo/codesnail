@@ -17,27 +17,27 @@ window.onload = function() {
 	box.on("drop", function(e) {
 		e.originalEvent.preventDefault();
 		var file = e.originalEvent.dataTransfer.files[0];
-		/* Max mugshot size 100KB */
-		if (file.size > 100000) {
-			$(".messages").html("Mugshot too large");
-			return;
-		}
-		/* Append the file path the the form */
-		$("form#profile").append('<input type="hidden" name="mugshot" value="'+file.name+'" />');
 
 		/* Upload a file to the server */
 		ss(socket).emit("mugshot", stream, { size: file.size, name: file.name });
 		ss.createBlobReadStream(file).pipe(stream);
 
-		/* Show progress */
-		ss(socket).on("data", function(message) {
-			$(".messages").text(message);
+		/* Show error message */
+		ss(socket).on("error-message", function(error) {
+			$("#forErrors").append('<p class="alert alert-error">' + error + '</p>');
+		});
+
+		/* Show success message */
+		ss(socket).on("message", function(message) {
+			$("#forErrors").append('<p class="alert alert-success">' + message + '</p>');
+			/* Append the file path the the form */
+			$("form#profile").append('<input type="hidden" name="mugshot" value="'+file.name+'" />');
 		});
 	}); 
 };
 
 /* Deal with DOM quirks */
-function doNothing (e) {
+function doNothing(e) {
 	/* Highlight input box */
 	$("#mugshot-box").addClass("mugshot-box");
 	e.preventDefault();
