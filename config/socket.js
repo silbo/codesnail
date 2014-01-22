@@ -177,10 +177,13 @@ io.sockets.on('connection', function(socket) {
 	ss(socket).on('mugshot', function(stream, meta) {
 		console.log("INFO", "incoming stream size:", meta.size, meta.name)
 		/* Drop the stream if the file is too large max 100KB allowed */
-		if (meta.size > 100000) return;
+		if (meta.size > 100000) {
+			ss(socket).emit('error-message', "Mugshot too large, max 100KB allowed");
+			return;
+		}
 		stream.pipe(fs.createWriteStream("public/images/" + meta.name));
 		// Send progress back
-		ss(socket).emit('data', "Mugshot uploaded, click save to update");
+		ss(socket).emit('message', "Mugshot uploaded successfully, click save to update");
 	});
 
 	/* User disconnected from socket */
