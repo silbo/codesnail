@@ -31,6 +31,14 @@ app.use(express.session({
 	store: SessionStore
 }));
 app.use(flash());
+/* Set the view variables */
+app.use(function(req, res, next) {
+  res.locals.error = req.flash('error');
+  res.locals.message = req.flash('message');
+  res.locals.username = req.flash('username');
+  res.locals.email = req.flash('email');
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
