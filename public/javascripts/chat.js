@@ -3,7 +3,8 @@ var editor = undefined;
 /* When DOM has been loaded */
 window.onload = function() {
     var contents = $('iframe').contents(),
-        ifbody = contents.find('body')
+    ifbody = contents.find('body')
+
 	socket = io.connect();
 
 	socket.emit("subscribe", "chat");
@@ -32,7 +33,7 @@ window.onload = function() {
 
 	/* Receive shared chat */
 	socket.on("receive-chat", function(userName, chat) {
-        //notifySound(); played twice ignore if from current user
+        notifySound(); //played twice ignore if from current user
 		$("#chat").append(userName + ": " + chat + "\n");
 		$('#chat').scrollTop($('#chat')[0].scrollHeight);
 	});
