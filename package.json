@@ -22,8 +22,8 @@
 
     "dependencies": {
         "jade": "0.35.0",
-	"node-uuid": "*",
-	"crypto": "0.0.3",
+        "node-uuid": "*",
+        "crypto": "0.0.3",
         "emailjs": "0.3.6",
         "express": "3.4.4",
         "mongoose": "3.8.0",
@@ -33,6 +33,7 @@
         "connect-mongo": "0.4.0",
         "passport-local": "0.1.6",
         "passport-github": "0.1.5",
+        "express-messages": "0.0.2",
         "socket.io-stream": "0.5.2",
         "passport-twitter": "1.0.2",
         "express-validator": "1.0.0",
