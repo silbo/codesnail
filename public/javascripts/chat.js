@@ -32,6 +32,7 @@ window.onload = function() {
 
 	/* Receive shared chat */
 	socket.on("receive-chat", function(userName, chat) {
+        //notifySound(); played twice ignore if from current user
 		$("#chat").append(userName + ": " + chat + "\n");
 		$('#chat').scrollTop($('#chat')[0].scrollHeight);
 	});

@@ -81,9 +81,11 @@ window.onload = function () {
         $("#incomingInvitation").dialog({
             title: "Want to compete?",
             open: function (eve, ui) {
+
                 var htm = '<div style="width:200px;"><div style="float:left;margin-right:20px; "><img class="mugshot" src="' + onlineUsers[data.email].profile.mugshot + '" alt="mugshot" /></div><div style="margin-left:30px;margin-top: 5px;"><div class="eUsername">' + onlineUsers[data.email].name + '</div><div style="font-size: 0.75em;">points:' + onlineUsers[data.email].profile.points + '</div></div></div>';
                 htm += "<div style='clear:left;'></div>";
                 $(this).html(htm);
+                notifySound();
             },
             buttons: {
                 "Accept": function () {
@@ -205,23 +207,25 @@ function inviteToECode() {
                 }
             });
         },
-        buttons: {
-            "Invite": function() {
-                /*var tmepUser={
-                 email:selectedUser,
-                 name:onlineUsers[selectedUser].name,
-                 }*/
+        buttons:[{
+            id:"btnInvite",
+            text: "Invite",
+            click: function() {
                 if(selectedUser.length>0){
                     socket.emit("sendExclusiveInvite", {email: selectedUser});
-                    $("#oUser").html("Please wait...");
+                    $("#btnInvite").fadeOut(function(){$("#oUser").html("Please wait...")});
                 }else{
                     alert("Select a user first");
                 }
-            },
-            Cancel: function () {
-                $(this).dialog("close");
             }
-        }
+        },
+            {
+                id:"btnCancel",
+                text: "Cancel",
+                click: function() {
+                    $(this).dialog("close");
+                }
+            }]
     });
 }
 
