@@ -32,9 +32,10 @@ html.no-js
       h1(align='center') CodeSnail Login / Sign Up
 
       div#forErrors(align='center')
-        each error in errors
-            p.errors(style="color:red;") #{error}
-        p.messages #{message}
+        each err in error
+          p.alert.alert-error #{err}
+        if message != ""
+          p.alert.alert-success #{message}
 
       // BEGIN Login Form
       form#form-login(name="login", action="/login", method="post")
@@ -55,7 +56,7 @@ html.no-js
           br
           br
           each login in logins
-                a(href="#{login[1]}") #{login[0]} |
+            a(href="#{login[1]}") #{login[0]} |
 
         hr
         p.clearfix
@@ -70,7 +71,7 @@ html.no-js
       window.jQuery || document.write('<script src="/irfandesign/code/assets/jquery/jquery-1.10.1.min.js"><\\/script>')
     script(src='/irfandesign/app/assets/jquery/jquery-1.10.1.min.js')
     script(src='/irfandesign/app/assets/bootstrap/bootstrap.min.js')
-    script(type='text/javascript')
+    script(type='text/javascript').
       function goToForm(form)
       {
       $('.login-wrapper > form:visible').fadeOut(500);

@@ -32,9 +32,10 @@ html.no-js
       h1(align='center') CodeSnail Login / Sign Up
 
       div#forErrors(align='center')
-        each error in errors
-            p.errors(style="color:red;") #{error.msg}
-        p.messages #{message}
+        each err in error
+          p.alert.alert-error #{err.msg}
+        if message != ""
+          p.alert.alert-success #{message}
 
       // BEGIN Forgot Password Form
       form#form-forgot(name="forgot", action='/forgot', method='post')
@@ -42,7 +43,7 @@ html.no-js
         hr
         .control-group
           .controls
-            input.input-block-level(type='text', placeholder='Email', value="#{email}")
+            input.input-block-level(type='text', name="email" placeholder='Email', value="#{email}")
         .control-group
           .controls
             button.btn.btn-primary.input-block-level(type='submit') Recover
@@ -58,7 +59,7 @@ html.no-js
       window.jQuery || document.write('<script src="/irfandesign/code/assets/jquery/jquery-1.10.1.min.js"><\\/script>')
     script(src='/irfandesign/app/assets/jquery/jquery-1.10.1.min.js')
     script(src='/irfandesign/app/assets/bootstrap/bootstrap.min.js')
-    script(type='text/javascript')
+    script(type='text/javascript').
       function goToForm(form)
       {
       $('.login-wrapper > form:visible').fadeOut(500);

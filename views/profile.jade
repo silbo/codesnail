@@ -6,8 +6,6 @@ block content
         h3 Profile
     .box-content
 
-
-
         //script(type="text/javascript", src="/socket.io/socket.io.js") its in layout2
         script(type="text/javascript", src="/javascripts/socket.io-stream.js")
         script(type="text/javascript", src="http://cdn.binaryjs.com/0/binary.js")
@@ -17,9 +15,11 @@ block content
         div#profile
             h3 Change profile:
 
-            p.messages #{message}
-            each error in errors
-                p.errors #{error.msg}
+            div#forErrors(align='center')
+                each err in error
+                  p.alert.alert-error #{err}
+                if message != ""
+                  p.alert.alert-success #{message}
 
             div#mugshot-box(style="height: 50px;") Connecting...
             img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")

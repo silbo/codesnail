@@ -7,8 +7,11 @@ block content
 	.box-title
 		h3 Dashboard
 	.box-content
-		each error in errors
-			p.errors #{error.msg}
+		div#forErrors(align='center')
+			each err in error
+				p.alert.alert-error #{err}
+			if message != ""
+				p.alert.alert-success #{message}
 
 		h3 Registered users:
 		div#online-users
