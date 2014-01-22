@@ -8,31 +8,41 @@ var flash = require('connect-flash'),
 /* Login page */
 exports.login = function(req, res) {
 	if (req.user && req.user.verification && req.user.verification.verified) return res.redirect("/profile");
-	res.render("login", { logins: config.logins, errors: req.flash('error') || [], message: req.flash('message') || "" });
+	
+	res.render("login", { logins: config.logins });
 };
 
 /* User registration */
 exports.register = function(req, res) {
 	/* When the submit was not pressed, do not process the form */
-	if (req.method == 'GET') return res.render("register", { errors: [], username: "", email: "" });
-	console.log("INFO", "register page yee2");
+	if (req.method == 'GET') return res.render("register");
 	/* Check for form errors */
 	req.assert("username", "A valid username of at least 4 and up to 15 characters is required").len(4, 15);
 	req.assert("email", "A valid email is required").isEmail();
 	req.assert("password", "A valid password of at least 8 and up to 50 characters is required").len(8, 50);
 	req.assert("passwordConfirm", "Passwords entered do not match").equals(req.body.password);
 	var errors = req.validationErrors();
+	
+	/* Pass variables to the view */
+	req.flash('error', errors);
+	req.flash('username', req.body.username);
+	req.flash('email', req.body.email);
+
 	/* When the form contains errors */
-	if (errors) return res.render("register", { errors: errors, username: req.body.username, email: req.body.email });
+	if (errors) return res.redirect("/register");
 
 	/* Find existing user */
 	db.User.findOne({ $or:[{ username: req.body.username }, { email: req.body.email }] }, function (err, user) {
 		if (err) console.log("ERROR", "error finding user:", err);
 		else if (user) console.log("INFO", "email already taken:", req.body.email);
 		if (err || (user && user.email == req.body.email)) {
-			return res.render("register", { errors: [{ msg: "Email already taken" }], username: req.body.username, email: req.body.email });
+			req.flash('error', "Email already taken");
+			//username: req.body.username, email: req.body.email
+			return res.redirect("/register");
 		} else if (user && user.username == req.body.username) {
-			return res.render("register", { errors: [{ msg: "Username already taken" }], username: req.body.username, email: req.body.email });
+			req.flash('error', "Username already taken");
+			//username: req.body.username, email: req.body.email
+			return res.redirect("/register");
 		}
 		/* When the email is not taken */
 		console.log("INFO", "user:", user);
@@ -41,7 +51,8 @@ exports.register = function(req, res) {
 			if (err) console.log("ERROR", "error saving user:", err);
 			else {
 				console.log("INFO", "user saved:", user.email);
-				return res.render("register", { message: "Successfully signed up, check your inbox", errors: [], username: "", email: "" });
+				req.flash('message', "Successfully signed up, check your inbox");
+				return res.redirect("/register");
 			}
 		});
 	});
@@ -50,28 +61,39 @@ exports.register = function(req, res) {
 /* Forgotten password */
 exports.forgotPassword = function(req, res) {
 	/* When the form was not submitted */
-	if (req.method == 'GET') return res.render("forgot", { errors: [], message: "", email: "" });
+	if (req.method == 'GET') return res.render("forgot");
 
 	/* Check for form errors */
 	req.assert("email", "A valid email is required").isEmail();
 	var errors = req.validationErrors();
-	var message = "";
-	/* Cehck if fields are valid and email is defined */
+	
+	/* Pass variables to the view */
+	req.flash('error', errors);
+	req.flash('email', req.body.email);
+
+	console.log("INFO", "email:", req.body.email);
+
+	/* Cehck if email was defined */
 	if (!errors) {
-		db.User.findOne({ email: req.body.email }, function (err, user) {
+		db.User.findOne({ email: req.body.email }, function(err, user) {
 			if (err) console.log("ERROR", "finding user:", err);
 			else if (!user) console.log("INFO", "user not found:", req.body.email);
 			else {
-				user.password = utils.calculateHash("sha256", user.email + user.joined_date);
+				/* Generate a "random" password for the user and email it to him/her */
+				user.password = utils.calculateHash("sha256", user.email + new Date().toString());
 				emailing.sendForgotPassword(user.name, user.email, user.password);
+				/* Hash it again and save it to the database */
 				user.password = utils.calculateHash("sha256", user.password + user.joined_date);
 				user.save();
+
+				req.flash('email', "");
+				req.flash('message', "Successfully resetted password, check your inbox");
+				res.redirect("/forgot");
 			}
 		});
-		message = "Successfully resetted password, check your inbox";
-		req.body.email = "";
+	} else {
+		res.redirect("/forgot");
 	}
-	res.render("forgot", { errors: errors || [], message: message, email: req.body.email || "" });
 };
 
 /* User verification */
