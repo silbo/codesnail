@@ -29,8 +29,8 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated() && req.user.verification.verified) {
         /* When guest user, the profile is not available */
         if (req.user.name.indexOf("Guest") != -1 && req.url == "/profile") {
-            req.flash('error', [{ msg: "Guest user has no profile" }]);
-            return res.redirect("/");
+            req.flash('error', ["Guest users have no profile"]);
+            return res.redirect("/dashboard");
         }
         return next();
     }
