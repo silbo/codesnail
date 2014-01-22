@@ -4,10 +4,9 @@ head
     title CodeSnail | Learn Code While Competing
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    meta(name='description', content='Codesnail the best way to learn technology by competing with others')
+    meta(name='description', content='Codesnail learn coding by competing with others')
     meta(name='author', content='Irfan Ullah')
-    //
-       Styles
+    // styles
     link(href='/irfandesign/css/bootstrap.css', rel='stylesheet')
     link(href='/irfandesign/css/bootstrap-responsive.css', rel='stylesheet')
     link(href='/irfandesign/css/font-awesome.min.css', rel='stylesheet')
@@ -15,10 +14,9 @@ head
     link(href='http://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,700', rel='stylesheet', type='text/css')
     body
         .wrapper
-            //begins header
+            // begins header
             header.header
-                //
-                   begins navbar
+                // begins navbar
                 #top-nav.navbar
                     .navbar-inner
                         .container
@@ -35,31 +33,25 @@ head
                                     li
                                         a(href='#features-section') Features
                                     li
-                                        a(href='javascript:window.location.href="/login";') Sign In / Sign Up
+                                        a(href="/login") Sign In / Sign Up
                                     li
-                                        a.btn.btn-primary(href="javascript:window.location.href='/study'") Guest Login
-                //
-                   ends navbar
-                //
-                   begins hero unit
+                                        a.btn.btn-primary(href="/study") Guest Login
+                // ends navbar
+                // begins hero unit
                 .hero-unit.video
                     .container
                         .row-fluid
                             .span5.hero-text
-                                h2.heading A Good Way to Learn Code by Doing at Your own Pace While Competing with others !
+                                h2.heading Learn to Code by Competing with others !
                                 p.description
-                                    | Code Snail teaches how to build website & web apps interactively in browser while competing with				                            others and earning points. Start Learning today without any setup!
-                                a.btn.btn-primary(href='javascript:window.location.href="/login";') Signup
-                                //
-                                   <a href="#" class="btn default">Get Free</a>
+                                    | Code Snail teaches how to build website & web apps interactively in browser. Start Learning today without any setup!
+                                a.btn.btn-primary(href="/login") Signup
+                                // <a href="#" class="btn default">Get Free</a>
                             .span7.hero-video
                                 iframe(src='http://player.vimeo.com/video/84581962?title=0&byline=0&portrait=0&color=ffffff', height='377', frameborder='0', webkitallowfullscreen='webkitAllowFullScreen', mozallowfullscreen='mozallowfullscreen', allowfullscreen='allowFullScreen')
-                //
-                   ends hero unit
-            //
-               ends header
-            //
-               begins main content
+                // ends hero unit
+            // ends header
+            // begins main content
             .main-content
                 section#features-section.container.section.features
                     .row-fluid.feature-item
@@ -74,8 +66,8 @@ head
                         .span6
                             h2.heading Work towards a goal
                             p.description
-                                | Practice what you've learned through quizzes and interactive Code Challenges. This style of practicing 	                        will allow you to retain information you've learned so you can apply it to your own future projects.
-                                | You'll earn badges as you journey through our extensive library of courses. These badges are an indicator                         of what skills you currently possess and are viewable by anyone online.
+                                | Practice what you've learned through quizzes and interactive Code Challenges. This style of practicing will allow you to retain information you've learned so you can apply it to your own future projects.
+                                | You'll earn badges as you journey through our extensive library of courses. These badges are an indicator of what skills you currently possess and are viewable by anyone online.
                         .span6
                             img(src='/irfandesign/img/badges.png', alt='Earn Badges')
                     hr
@@ -85,7 +77,7 @@ head
                         .span6.right-text
                             h2.heading What do you need ?
                             p.description
-                                | You will need a modern web browser. We rely on the latest browser technology to 	                        deliver our courses, so we suggest using an up-to-date version of your preferred browser.
+                                | You will need a modern web browser. We rely on the latest browser technology to deliver our courses, so we suggest using an up-to-date version of your preferred browser.
                     hr
                     .row-fluid.feature-item
                         .span6.right-text
@@ -94,10 +86,8 @@ head
                                 | Our tracks will give you guided pathway and teach you everything you need to know. We does not only teach with tutorials but you can also learn with interactive quizzes. If you get lost need help. you can use our form(coming soon).
                         .span6
                             img(src='/irfandesign/img/pathway.jpg', alt='Get Lastest Browser')
-            //
-               ends main content
-            //
-               begins footer
+            // ends main content
+            // begins footer
             section.full-width.newsletter
                 .container
                     .row-fluid
@@ -114,7 +104,7 @@ head
             footer.full-width.footer
                 .container
                     .row-fluid
-                        .span6.copyright Copyright 2014 Codesnail. All Rights Reserved.
+                        .span6.copyright Built by Students
                         .span6.social
                             ul
                                 li
