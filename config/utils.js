@@ -36,7 +36,7 @@ exports.taskComplete = function taskComplete(code) {
 exports.calculateHash = function calculateHash(type, text) {
     var shasum = crypto.createHash(type);
     shasum.update(text);
-    return shasum.digest("hex");
+    return shasum.digest('hex');
 }
 
 /* Random function */
@@ -50,7 +50,7 @@ exports.generateRandom = function generateRandom() {
 /* Generate a random guest account */
 exports.generateGuest = function generateGuest() {
     var random = exports.generateRandom();
-    var randomEmailHash = exports.calculateHash('md5', random + "@email.com");
+    var randomEmailHash = exports.calculateHash('md5', random + "@gmail.com");
     var user = {
         name: "Guest" + random,
         email: random + "@email.com",

@@ -1,89 +1,78 @@
 !!! 5
-html.no-js
+html.no-js(lang='en')
+    head
+        title CodeSnail | Learn Code While Competing
 
-  head
-    meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
-    title CodeSnail App
-    meta(name='description', content='')
-    meta(name='viewport', content='width=device-width')
-    // base css styles
-    link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap.min.css')
-    link(rel='stylesheet', href='/irfandesign/app/assets/bootstrap/bootstrap-responsive.min.css')
-    link(rel='stylesheet', href='/irfandesign/app/assets/font-awesome/css/font-awesome.min.css')
-    link(rel='stylesheet', href='/irfandesign/app/assets/normalize/normalize.css')
-    // page specific css styles
-    // flaty css styles
-    link(rel='stylesheet', href='/irfandesign/app/css/style.css')
-    link(rel='stylesheet', href='/irfandesign/app/css/responsive.css')
-    script(src='/irfandesign/app/assets/modernizr/modernizr-2.6.2.min.js')
-  body.login-page
-    //if lt IE 7
-      p.chromeframe
-        | You are using an
-        strong outdated
-        | browser. Please
-        a(href='http://browsehappy.com/') upgrade your browser
-        | or
-        a(href='http://www.google.com/chromeframe/?redirect=true') activate Google Chrome Frame
-        | to improve your experience.
-    // BEGIN Main Content
-    .login-wrapper
-      h1(align='center') CodeSnail Login / Sign Up
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+        meta(name='description', content='')
+        meta(name='viewport', content='width=device-width')
 
-      div#forErrors(align='center')
-        each err in error
-          p.alert.alert-error #{err}
-        if message != ""
-          p.alert.alert-success #{message}
+        // base css styles
+        link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap-responsive.min.css')
+        link(rel='stylesheet', href='/stylesheets/font-awesome/css/font-awesome.min.css')
+        link(rel='stylesheet', href='/stylesheets/normalize/normalize.css')
 
-      // BEGIN Login Form
-      form#form-login(name="login", action="/login", method="post")
-        h3 Login to your account
-        hr
-        .control-group
-          .controls
-            input.input-block-level(name="username", name="username", type='text', placeholder='Username')
-        .control-group
-          .controls
-            input.input-block-level(name="password", name="password", type='password', placeholder='Password')
-        .control-group
-          .controls
-            button.btn.btn-primary.input-block-level(type='submit') Sign In
-        hr
-        p
-          | Login with
-          br
-          br
-          each login in logins
-            a(href="#{login[1]}") #{login[0]} |
+        // flaty css styles
+        link(rel='stylesheet', href='/stylesheets/style.min.css')
+        link(rel='stylesheet', href='/stylesheets/responsive.css')
 
-        hr
-        p.clearfix
-          a.goto-forgot.pull-left(href='/forgot') Forgot Password?
-          a.goto-register.pull-right(href='/register') Sign up now
-      // END Login Form
-    // END Main Content
-    // basic scripts
+        // basic scripts
+        script(src='/javascripts/modernizr/modernizr-2.6.2.min.js')
+        script(src='/javascripts/jquery/jquery-1.10.1.min.js')
+        script(type='text/javascript').
+            $(function() {
+                $('.goto-forgot').click(function() {
+                    $('.login-wrapper > form:visible').fadeOut(500);
+                });
+                $('.goto-signup').click(function() {
+                    $('.login-wrapper > form:visible').fadeOut(500);
+                });
+            });
+    body.login-page
+        //if lt IE 7
+        p.chromeframe
+            | You are using an
+            strong outdated
+            | browser. Please
+            a(href='http://browsehappy.com/') upgrade your browser
+            | or
+            a(href='http://www.google.com/chromeframe/?redirect=true') activate Google Chrome Frame
+            | to improve your experience.
+        // BEGIN Main Content
+        .login-wrapper
+            h1(align='center') CodeSnail Login / Sign Up
 
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    //script
-      window.jQuery || document.write('<script src="/irfandesign/code/assets/jquery/jquery-1.10.1.min.js"><\\/script>')
-    script(src='/irfandesign/app/assets/jquery/jquery-1.10.1.min.js')
-    script(src='/irfandesign/app/assets/bootstrap/bootstrap.min.js')
-    script(type='text/javascript').
-      function goToForm(form)
-      {
-      $('.login-wrapper > form:visible').fadeOut(500);
-      }
-      $(function() {
-      $('.goto-login').click(function(){
-      goToForm('login');
-      });
-      $('.goto-forgot').click(function(){
-      goToForm('forgot');
-      });
-      $('.goto-register').click(function(){
-      goToForm('register');
-      });
-      });
+            div#forErrors(align='center')
+                each err in error
+                    p.alert.alert-error #{err}
+            if message != ""
+                p.alert.alert-success #{message}
+
+            // BEGIN Login Form
+            form#form-login(name="login", action="/login", method="post")
+                h3 Login to your account
+                hr
+                .control-group
+                    .controls
+                        input.input-block-level(name="username", name="username", type='text', placeholder='Username')
+                .control-group
+                    .controls
+                        input.input-block-level(name="password", name="password", type='password', placeholder='Password')
+                .control-group
+                    .controls
+                        button.btn.btn-primary.input-block-level(type='submit') Sign In
+                hr
+                p
+                    | Login with
+                    br
+                    br
+                    each login in logins
+                        a(href="#{login[1]}") #{login[0]} |
+                hr
+                p.clearfix
+                    a.goto-forgot.pull-left(href='/forgot') Forgot Password?
+                    a.goto-signup.pull-right(href='/signup') Sign up now
+            // END Login Form
+        // END Main Content

@@ -1,0 +1,26 @@
+extends layout
+
+block content
+
+	script(type="text/javascript", src="/javascripts/dashboard.js")
+
+	.box-title
+		h3 Dashboard
+	.box-content
+		div#forErrors(align='center')
+			each err in error
+				p.alert.alert-error #{err}
+			if message != ""
+				p.alert.alert-success #{message}
+
+		h3 Registered users:
+		div#online-users
+			each user in users
+				div.user
+					a(class="mugshot-link", href="/#{user.username}", title="profile")
+						center
+							img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+						p #{user.name}
+						p #{user.profile.description}
+						p points: #{user.profile.points}
+		div.clear

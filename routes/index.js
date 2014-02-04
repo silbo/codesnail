@@ -3,11 +3,20 @@ var db = require('../config/database'),
 	utils = require('../config/utils'),
 	config = require('../config/config');
 
-/* Homepage */
+/* Landingpage */
 exports.index = function(req, res) {
-	db.User.find(function (err, users) {
+	res.render('index', {});
+};
+
+/* Dashboard */
+exports.dashboard = function(req, res) {
+	if (!req.user) {
+		req.session.passport.user = utils.generateGuest();
+		req.user = req.session.passport.user;
+	}
+	db.User.find(function(err, users) {
 		if (err) console.log("ERROR", "fetching all users:", err);
-		res.render('index', { user: req.user, users: users, errors: req.flash('error') });
+		res.render('dashboard', { user: req.user, users: users, errors: req.flash('error') });
 	});
 };
 
