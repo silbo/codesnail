@@ -17,7 +17,7 @@ cd path/to/repo
 npm install
 node app
 ```
-* in browser type 127.0.0.1:3000
+* open http://127.0.0.1:3000
 
 LINUX
 -----
