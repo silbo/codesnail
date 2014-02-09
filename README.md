@@ -17,7 +17,7 @@ cd path/to/repo
 npm install
 node app
 ```
-* in browser type 127.0.0.1:3000
+* open http://127.0.0.1:3000
 
 LINUX
 -----
@@ -29,6 +29,10 @@ npm install
 node app
 firefox 127.0.0.1:3000
 ```
+
+LINKS
+=====
+* Report https://www.sharelatex.com/project/52e8420b7487ca4941000b9f
 
 CREDITS ^_^
 ===========
