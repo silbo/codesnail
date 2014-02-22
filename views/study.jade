@@ -7,30 +7,68 @@ block content
 	.box-title
 		h3 Study
 	.box-content
-		h3 1. Basic html structure
-		p The basic html structure consists of several things
-		div#basic-example
+		h3 Doctype
+		p The ﬁrst thing on an HTML page is the <strong>doctype</strong>, which as you might guess, tells the browser what type of document 
+			it's looking at, and how to read it.
+		p Thankfully, HTML5's doctype is extremely simple - it's just <code>html</code>.
+		div#doctype-example
+			&lt;!DOCTYPE html>
+
+		h3 Elements and Tags
+		p These are the basic building blocks of HTML.
+		p <strong>Elements</strong> are what makes up a HTML document. Because you can have zero, one or more elements inside another, this is 
+			what makes HTML heirarchical. An element can include three things: a tag, attributes, and content.
+		p A <strong>Tag</strong> is the thing that indicates an element's purpose. For example, the <code>&lt;p></code> tag indicates a paragraph of text 
+			is in that element, and the <code>&lt;li></code> represents a 'list item'. You'll notice they're always surrounded by angle 
+			backets. Opening and Closing tags mark the beginning and end of an element and wrap its content, like so:
+		div#elements-tags-example
+			&lt;p>This is a paragraph.&lt;/p>
+
+		p You can see the closing tag includes a <code>/</code> before its name; otherwise it would be another opening tag!
+		p <strong>Always</strong> double-check that you've closed all your elements; otherwise, a browser can and will get mixed up trying to 
+			understand your HTML document.
+		p There are some specific elements that are exceptions to this rule. When elements cannot contain anything else, then 
+			they don't need to be closed. For example, the following elements are referred to as 'self-closing':
+		div#self-closing-example
+			&lt;hr>
+			&lt;input>
+			&lt;img>
+
+		p There aren't so many of such elements, and you should easily pick up which are which by writing some more code :)
+		p Lastly, nesting elements isn't so hard, and is fundamental to how HTML works. It looks just like this:
+		div#nesting-example
+			&lt;p>This is a sentence, with a &lt;span>span&lt;/span> element inside it.&lt;/p>
+			&lt;div id="first-heading">
+			|	&lt;h1>The h1 tags indicates the primary header of the document&lt;/h1>
+			&lt;/div>
+
+		p You'll notice that HTML doesn't actually care about the whitespace or newlines between tags. It would end up looking 
+			the same if the above had been fit onto one line.
+		p In the above example, you can see our first case of an <strong>attribute</strong>. It starts with a lowercase name, and then is almost 
+			always followed by an <code>=</code> and a 'value' that's surrounded in double quotes, <code>"like this"</code>. An element can have many 
+			attributes, in which case you separate them by spaces, as you'll see soon. Attributes give information about an 
+			element in particular.
+		p In this case, the <code>&lt;div></code> tag (which is used to divide groups of elements up) has an <code>id</code> attribute assigned to 
+			<code>first-heading</code>. That's telling us that this section of the document is designed to hold the first heading shown on 
+			the page. You will learn more about specific attributes later!
+
+		h3 Html and Head Elements
+		p Coming back to our file (hope you're coding along!), after the doctype we begin our document with a root <code>html</code> element, 
+			just like so:
+		div#html-example
 			&lt;html>
-			|	&lt;head>
-			|		&lt;title>Title&lt;/title>
-			|	&lt;/head>
-			|	&lt;body>
-			|	&lt;/body>
 			&lt;/html>
 
-		h3 2. Headers
-		p The headers are awesome
-		div#header-example
-			&lt;h1>This is a header 1&lt;/h1>
-			&lt;h2>This is a header 2&lt;/h2>
-			&lt;h3>This is a header 3&lt;/h3>
+		p It encompasses every other element in our HTML document, nothing should go outside it! Next, the document is broken up 
+			into two important parts: The <strong>head</strong> and <strong>body</strong>.
+		p The head contains the title of the page & information <strong>about</strong> the page (meta information). Most meta information isn't 
+			visible to the user, but it has many purposes. For example, meta elements can tell search engines information about 
+			your page, such as who created it and a description of your page's content. Here's an example <code>head</code> element:
+		div#head-example
+			&lt;head>
+			|	&lt;meta charset="UTF-8"> 
+			|	&lt;meta name="description" content="Free Web tutorials">
+			|	&lt;title>My first Portfolio&lt;/title>
+			&lt;/head>
 
-		h3 3. Paragraphs
-		p Paragraphs contain cool text
-		div#paragraph-example
-			&lt;p>My paragraph text&lt;/p>
-
-		h3 4. Links
-		p Links are interesting
-		div#link-example
-			&lt;a href="http://www.website.com">My website&lt;/a>
+		
