@@ -132,11 +132,13 @@ window.onload = function () {
 
     /* ACE editor initialization */
     editor_other = ace.edit("code-message");
+    editor_other.setTheme("ace/theme/monokai");
     editor_other.session.setMode("ace/mode/html");
     editor_other.setOptions({ maxLines: 10, minLines: 10 });
     editor_other.setReadOnly(true);
 
     editor = ace.edit("code");
+    editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/html");
     editor.setOptions({ maxLines: 10, minLines: 10 });
     editor.setAutoScrollEditorIntoView(true);
@@ -236,11 +238,13 @@ function initiateECode(on) {
     $("#silverWraper").hide();
     $("#eCode").show();
     var p1 = ace.edit("player1");
+    p1.setTheme("ace/theme/monokai");
     p1.session.setMode("ace/mode/html");
     p1.setOptions({maxLines: 10, minLines: 15});
     p1.setAutoScrollEditorIntoView(true);
 
     var p2 = ace.edit("player2");
+    p2.setTheme("ace/theme/monokai");
     p2.session.setMode("ace/mode/html");
     p2.setOptions({ maxLines: 10, minLines: 15 });
     p2.setAutoScrollEditorIntoView(true);

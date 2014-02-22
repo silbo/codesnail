@@ -29,6 +29,7 @@ window.onload = function() {
 	/* ACE editor initialization */
 	$("[id$=example]").each(function() {
 		var temp_editor = ace.edit($(this).attr("id"));
+		temp_editor.setTheme("ace/theme/monokai");
 		temp_editor.session.setMode("ace/mode/html");
 		temp_editor.setOptions({ maxLines: 10, minLines: 1 });
 	});

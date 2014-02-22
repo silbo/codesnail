@@ -72,6 +72,7 @@ window.onload = function() {
 
 	/* ACE editor initialization */
 	editor = ace.edit("code");
+	editor.setTheme("ace/theme/monokai");
 	editor.session.setMode("ace/mode/html");
 	editor.setOptions({ maxLines: 10, minLines: 10 });
 	editor.setAutoScrollEditorIntoView(true);
