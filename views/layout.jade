@@ -9,17 +9,19 @@ html.no-js(lang='en')
         meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
         // base css styles
-        link(rel='stylesheet', href='/stylesheets/normalize/normalize.css')
-        link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.min.css')
-        link(rel='stylesheet', href='/stylesheets/jquery-ui/jquery-ui-1.10.3.min.css')
-        link(rel='stylesheet', href='/stylesheets/font-awesome/css/font-awesome.min.css')
-        link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap-responsive.min.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/prettify/prettify.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/normalize/normalize.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/bootstrap/bootstrap.min.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/jquery-ui/jquery-ui-1.10.3.min.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/font-awesome/css/font-awesome.min.css')
+        link(rel='stylesheet', type='text/css',href='/stylesheets/bootstrap/bootstrap-responsive.min.css')
 
         // flaty css styles
-        link(rel='stylesheet', href='/stylesheets/style.css')
-        link(rel='stylesheet', href='/stylesheets/style.min.css')
-        link(rel='stylesheet', href='/stylesheets/responsive.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/style.min.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/responsive.css')
 
+        script(type='text/javascript', src='/javascripts/prettify/prettify.js')
         script(type='text/javascript', src='/javascripts/jquery/jquery-1.10.1.min.js')
         script(type='text/javascript', src='/javascripts/modernizr/modernizr-2.6.2.min.js')
         script(type='text/javascript', src='/javascripts/jquery-ui/jquery-ui-1.10.3.min.js')
@@ -187,3 +189,10 @@ html.no-js(lang='en')
                     i.icon-chevron-up
             // END Content
         // END Container
+
+        script(type='text/javascript')
+            !function ($) {
+                $(function() {
+                    window.prettyPrint && prettyPrint()
+                })
+            }(window.jQuery)
