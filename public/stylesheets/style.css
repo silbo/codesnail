@@ -3,6 +3,12 @@ html, body, h1 {
     padding: 0px;
 }
 
+pre {
+    white-space: pre;
+    word-wrap: normal;
+    overflow: auto;
+}
+
 input, textarea, div#mugshot-box {
     width: 20%;
     outline: none;
@@ -163,15 +169,15 @@ div#footer {
     color: white;
 }
 
+#task {
+    text-align: center;
+}
+
 .ace_editor {
     margin-top: 5px;
-    border-radius: 4px;
     border: 1px solid #DDD;
-    border-bottom-right-radius: 0px;
 }
 
 .blocklySvg {
-    border-radius: 4px;
     border: 1px solid #DDD;
-    border-bottom-right-radius: 0px;
 }
