@@ -36,11 +36,11 @@ exports.signup = function(req, res) {
 		if (err) console.log("ERROR", "error finding user:", err);
 		else if (user) console.log("INFO", "email already taken:", req.body.email);
 		if (err || (user && user.email == req.body.email)) {
-			req.flash('error', "Email already taken");
+			req.flash('error', [{ msg: "Email already taken" }]);
 			//username: req.body.username, email: req.body.email
 			return res.redirect("/signup");
 		} else if (user && user.username == req.body.username) {
-			req.flash('error', "Username already taken");
+			req.flash('error', [{ msg: "Username already taken" }]);
 			//username: req.body.username, email: req.body.email
 			return res.redirect('/signup');
 		}
