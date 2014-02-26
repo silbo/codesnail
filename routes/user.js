@@ -34,8 +34,7 @@ exports.signup = function(req, res) {
 	/* Find existing user */
 	db.User.findOne({ $or:[{ username: req.body.username }, { email: req.body.email }] }, function(err, user) {
 		if (err) console.log("ERROR", "error finding user:", err);
-		else if (user) console.log("INFO", "email already taken:", req.body.email);
-		if (err || (user && user.email == req.body.email)) {
+		else if (user && user.email == req.body.email)) {
 			req.flash('error', [{ msg: "Email already taken" }]);
 			//username: req.body.username, email: req.body.email
 			return res.redirect("/signup");
@@ -46,7 +45,7 @@ exports.signup = function(req, res) {
 		}
 		/* When the email is not taken */
 		console.log("INFO", "user:", user);
-		var user = new db.User({ username: req.body.username, name: req.body.username, email: req.body.email, password: req.body.password });
+		var user = new db.User({ username: req.body.username.toLowerCase(), name: req.body.username, email: req.body.email, password: req.body.password });
 		user.save(function(err) {
 			if (err) console.log("ERROR", "error saving user:", err);
 			else {
