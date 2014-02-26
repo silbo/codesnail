@@ -83,7 +83,7 @@ passport.use(new LocalStrategy(
     function(username, password, done) {
         process.nextTick(function () {
             /* Find the user */
-            db.User.findOne({ $or:[{ username: username }, { email: username }] }).populate('profile.providers').exec(function (err, user) {
+            db.User.findOne({ $or:[{ username: username.toLowerCase() }, { email: username }] }).populate('profile.providers').exec(function (err, user) {
                 if (err) return done(err);
                 else if (!user) return done(null, false, { message: "Wrong username or password" });
                 else if (user.password != utils.calculateHash("sha256", password + user.joined_date)) 
