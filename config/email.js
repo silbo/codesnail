@@ -11,7 +11,7 @@ var server = emailing.server.connect({
 
 exports.sendRegistrationEmail = function sendEmail(name, email, hash) {
 	server.send({
-		text: "Welcome to CodeSnail, verify your registration under this link " + config.hostname + "/register/" + hash,
+		text: "Welcome to CodeSnail, verify your registration under this link " + config.hostname + "/signup/" + hash,
 		from: "CodeSnail <codebuddyweb@gmail.com>",
 		to: name + " <" + email + ">",
 		subject: "CodeSnail registration"
