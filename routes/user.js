@@ -33,8 +33,12 @@ exports.signup = function(req, res) {
 
 	/* Find existing user */
 	db.User.findOne({ $or:[{ username: req.body.username }, { email: req.body.email }] }, function(err, user) {
-		if (err) console.log("ERROR", "error finding user:", err);
-		else if (user && user.email == req.body.email)) {
+		if (err) {
+			console.log("ERROR", "error finding user:", err);
+			req.flash('error', [{ msg: "Databse error" }]);
+			return res.redirect("/signup");
+		}
+		else if (user && user.email == req.body.email) {
 			req.flash('error', [{ msg: "Email already taken" }]);
 			//username: req.body.username, email: req.body.email
 			return res.redirect("/signup");
