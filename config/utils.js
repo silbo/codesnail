@@ -14,7 +14,7 @@ exports.getTasks = function getTasks() {
 exports.getTask = function getTask() {
     /* Update tasks */
     db.Task.find(function(err, db_tasks) {
-        if (err) console.log("ERROR", "fetching all tasks:", err);
+        if (err) return new Error(err);
         else tasks = etasks = db_tasks;
     });
     if (tasks.length == 0) return { name: "Currently no tasks available" };
