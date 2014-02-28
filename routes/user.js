@@ -129,7 +129,7 @@ exports.detailed = function(req, res) {
 			console.log("ERROR", "error finding user:", err);
 			return res.redirect("/");
 		}
-		res.render('detailed', { user: user });
+		res.render('detailed', { user: req.user, other_user: user });
 	});
 };
 
