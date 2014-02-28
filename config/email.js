@@ -5,30 +5,38 @@ var config = require('./config');
 var server = emailing.server.connect({
 	user: config.smtp.username,
 	password: config.smtp.password,
-	host: "smtp.gmail.com",
+	
 	ssl: true
 });
 
-exports.sendRegistrationEmail = function sendEmail(name, email, hash) {
+var emailErrorFunction = function errorFunction(err, message) {
+	if (err) console.log("ERROR", "sending email:", err);
+	else console.log("INFO", "successfully sent email:", message);
+};
+
+exports.sendRegistration = function sendRegistration(name, email, hash) {
 	server.send({
-		text: "Welcome to CodeSnail, verify your registration under this link " + config.hostname + "/signup/" + hash,
-		from: "CodeSnail <codebuddyweb@gmail.com>",
+		text: "Welcome to " + config.app_name + ", verify your registration under this link " + config.hostname + "/signup/" + hash,
+		from: config.app_name + " <" + config.app_email + ">",
 		to: name + " <" + email + ">",
-		subject: "CodeSnail registration"
-	}, function(err, message) {
-		if (err) console.log("ERROR", "sending email:", err);
-		else console.log("INFO", "successfully sent email:", message);
-	});
+		subject: config.app_name + " registration"
+	}, emailErrorFunction);
 }
 
-exports.sendForgotPassword = function sendEmail(name, email, password) {
+exports.sendResetPassword = function sendForgotPassword(name, email, hash) {
 	server.send({
-		text: "CodeSnail, your new password is: " + password + " login at " + config.hostname + "/login",
-		from: "CodeSnail <codebuddyweb@gmail.com>",
+		text: "To reset you " + config.app_name + " password visit: " + config.hostname + "/login",
+		from: config.app_name + " <" + config.app_email + ">",
 		to: name + " <" + email + ">",
-		subject: "CodeSnail password"
-	}, function(err, message) {
-		if (err) console.log("ERROR", "sending email:", err);
-		else console.log("INFO", "successfully sent email:", message);
-	});
+		subject: config.app_name + " password"
+	}, emailErrorFunction);
+}
+
+exports.sendErrorReport = function sendErrorReport(name, email, error) {
+	server.send({
+		text: "The following error has occured: " + error,
+		from: config.app_name + " <" + config.app_email + ">",
+		to: name + " <" + email + ">",
+		subject: config.app_name + " error"
+	}, emailErrorFunction);
 }
