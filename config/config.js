@@ -2,7 +2,6 @@ var config = { smtp: {}, gravatar: {}, google: {}, twitter: {}, facebook: {}, li
 
 /* App hostname and port and session secret */
 config.app_name = process.env.APP_NAME || "default";
-config.app_email = process.env.APP_EMAIL || "default";
 config.admin_name = process.env.ADMIN_NAME || "default";
 config.admin_email = process.env.ADMIN_EMAIL || "default";
 config.hostname = process.env.HOSTNAME || "http://localhost:3000";
