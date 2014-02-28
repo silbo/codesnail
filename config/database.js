@@ -53,21 +53,21 @@ var TrackSchema = new Schema({
 var UserSchema = new Schema({
 	username: { type: String, unique: true, required: true, validate: /^[a-z0-9_-]{4,15}$/ },
 	name: { type: String, required: true },
-	email: { type: String, unique: true, lowercase: true, trim: true, required: true, validate: /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b/ },
+	email: { type: String, unique: true, lowercase: true, trim: true, required: true, validate: /\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}\b/ },
 	password: { type: String, required: true, default: "default" },
 	verification: {
-		verified: { type: Boolean, required: true, default: false }, 
+		verified: { type: Boolean, required: true, default: false },
 		verification_hash: { type: String, required: true, unique: true, default: "default" }
 	},
 	profile: {
 		joined_date: { type: Date, required: true, default: Date.now },
 		points: { type: Number, default: 0 },
-		location: { type: String, default: "" },
 		mugshot: { type: String, default: "" },
 		website: { type: String, default: "" },
+		location: { type: String, default: "" },
 		description: { type: String, default: "" },
-		providers: [{ type: ObjectId, ref: 'Provider' }],
 		badges: [{ type: ObjectId, ref: 'Badge' }],
+		providers: [{ type: ObjectId, ref: 'Provider' }],
 	},
 	tracks: [{ type: ObjectId, ref: 'Track' }]
 });
@@ -76,10 +76,11 @@ var UserSchema = new Schema({
 UserSchema.pre('save', function(next) {
 	/* When the user logs in with a provider first time */
 	if (this.password == "default") {
-		/* Calculate the password hash */
-		this.password = utils.calculateHash("sha256", this.email + this.joined_date);
 		/* Set user as verified */
 		this.verification.verified = true;
+		/* Calculate the password hash */
+		this.password = utils.calculateHash("sha256", this.password + this.joined_date);
+		/* Calculate the verification hash */
 		this.verification.verification_hash = utils.calculateHash("sha256", this.email + this.joined_date);
 	}
 	/* When the user registers first time */
@@ -89,8 +90,9 @@ UserSchema.pre('save', function(next) {
 		/* Calculate the verification hash */
 		this.verification.verification_hash = utils.calculateHash("sha256", this.email + this.joined_date);
 		/* Send the user the verification email */
-		emailing.sendRegistrationEmail(this.name, this.email, this.verification.verification_hash);
+		emailing.sendRegistration(this.name, this.email, this.verification.verification_hash);
 	}
+
 	/* Set the mugshot and website from gravatar */
 	this.profile.mugshot = this.profile.mugshot || config.gravatar.mugshot + utils.calculateHash("md5", this.email) + "?d=identicon";
 	this.profile.website = this.profile.website || "";
