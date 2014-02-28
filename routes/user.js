@@ -33,7 +33,7 @@ exports.signup = function(req, res) {
 
 	/* Apply some filters on email and username */
 	var filteredEmail = req.body.email.toLowerCase().replace(" ", "");
-	var filteredUsername2 = req.body.username.toLowerCase().replace(" ", "");
+	var filteredUsername = req.body.username.toLowerCase().replace(" ", "");
 
 	/* Find existing user */
 	db.User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
