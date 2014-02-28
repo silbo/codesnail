@@ -169,15 +169,26 @@ div#footer {
     color: white;
 }
 
-#task {
+#task, #eTask {
     text-align: center;
 }
 
 .ace_editor {
-    margin-top: 5px;
     border: 1px solid #DDD;
 }
 
 .blocklySvg {
     border: 1px solid #DDD;
+}
+
+div#player1, div#player2 {
+    width: 49%;
+    float: left;
+}
+
+@media (max-width: 600px) {
+    div#player1, div#player2 {
+        float: none;
+        width: 100%;
+    }
 }
