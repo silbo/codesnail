@@ -12,6 +12,7 @@ var express = require('express'),
 	flash = require('connect-flash'),
 	db = require('./config/database'),
 	config = require('./config/config'),
+	emailing = require('./config/email'),
 	auth = require('./config/authentication'),
 	MongoStore = require('connect-mongo')(express),
 	expressValidator = require('express-validator');
@@ -44,7 +45,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
 
-// development only
+/* Error handling */
+app.use(function(err, req, res, next) {
+    /* Check error information and respond accordingly */
+    console.log("ERROR", "app error:", err);
+    res.sendfile(__dirname + '/public/html/error.html');
+    /* Send the error report to the admin */
+    emailing.sendErrorReport(config.admin_name, config.admin_email, err);
+});
+
+/* Development only */
 if ('development' == app.get('env')) {
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 }
