@@ -29,8 +29,9 @@ app.use(express.logger('dev'));
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({
+	store: SessionStore,
 	secret: config.session_secret,
-	store: SessionStore
+	cookie: { maxAge : 3600000 * 24 * 3 }, // 3 days
 }));
 app.use(flash());
 /* Set the view variables */
