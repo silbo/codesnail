@@ -105,19 +105,19 @@ app.get('/profile/mugshot/:provider', auth.ensureAuthenticated, user.mugshotUpda
 
 /* Show all the users and providers and tasks */
 db.User.find(function(err, users) {
-	if (err) console.log("ERROR", "fetching all users:", err);
+	if (err) return new Error(err);
 	else users.forEach(function(user) {
 		console.log("INFO", "user name:", user.name);
 	});
 });
 db.Provider.find(function(err, providers) {
-	if (err) console.log("ERROR", "fetching all providers:", err);
+	if (err) return new Error(err);
 	else providers.forEach(function(provider) {
 		console.log("INFO", "provider url:", provider.url);
 	});
 });
 db.Task.find(function(err, tasks) {
-	if (err) console.log("ERROR", "fetching all tasks:", err);
+	if (err) return new Error(err);
 	else tasks.forEach(function(task) {
 		console.log("INFO", "task:", task.name);
 	});
