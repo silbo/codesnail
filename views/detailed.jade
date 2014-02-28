@@ -13,7 +13,8 @@ block content
 			div Display Name: #{other_user.name}
 			div Description: #{other_user.profile.description}
 			div Location: #{other_user.profile.location}
-			div Website: #{other_user.profile.website}
+			div Website: 
+				a(href="#{other_user.profile.website}") #{other_user.name}
 
 		h3 Other accounts:
 		each provider in other_user.profile.providers
