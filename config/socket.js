@@ -153,7 +153,7 @@ io.sockets.on('connection', function(socket) {
 		code = "#include <Servo.h>\n#include <Sumorobot.h>\n" + code;
 		/* Write the program to the file */
 		fs.writeFile("public/compiler/main.ino", code, function(err) {
-			if(err) console.log("ERROR", "failed to save sumorobot code:", err);
+			if (err) return new Error(err);
 			else console.log("INFO", "sumorobot code was saved");
 		});
 		/* Compile the program */
@@ -161,7 +161,7 @@ io.sockets.on('connection', function(socket) {
 			function (error, stdout, stderr) {
 				console.log("INFO", "stdout:", stdout);
 				console.log("INFO", "stderr:", stderr);
-				if (error !== null) console.log("INFO", "exec error:", error);
+				if (error !== null) return new Error(error);
 			}
 		);
 	});
@@ -198,7 +198,7 @@ io.sockets.on('connection', function(socket) {
 			/* When not a guest user */
 			if (socket.handshake.user.name.indexOf("Guest") == -1) {
 				db.User.findOne({ email: socket.handshake.user.email }, function(err, user) {
-					if (err) console.log("ERROR", "finding user:", err);
+					if (err) return new Error(err);
 					else {
 						user.profile.points = points;
 						user.save();
