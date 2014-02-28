@@ -54,10 +54,10 @@ var UserSchema = new Schema({
 	username: { type: String, unique: true, required: true, validate: /^[a-z0-9_-]{4,15}$/ },
 	name: { type: String, required: true },
 	email: { type: String, unique: true, lowercase: true, trim: true, required: true, validate: /\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}\b/ },
-	password: { type: String, required: true, default: "default" },
+	password: { type: String, default: "" },
 	verification: {
 		verified: { type: Boolean, required: true, default: false },
-		verification_hash: { type: String, required: true, unique: true, default: "default" }
+		verification_hash: { type: String, default: "" }
 	},
 	profile: {
 		joined_date: { type: Date, required: true, default: Date.now },
@@ -70,33 +70,6 @@ var UserSchema = new Schema({
 		providers: [{ type: ObjectId, ref: 'Provider' }],
 	},
 	tracks: [{ type: ObjectId, ref: 'Track' }]
-});
-
-/* Predave for user */
-UserSchema.pre('save', function(next) {
-	/* When the user logs in with a provider first time */
-	if (this.password == "default") {
-		/* Set user as verified */
-		this.verification.verified = true;
-		/* Calculate the password hash */
-		this.password = utils.calculateHash("sha256", this.password + this.joined_date);
-		/* Calculate the verification hash */
-		this.verification.verification_hash = utils.calculateHash("sha256", this.email + this.joined_date);
-	}
-	/* When the user registers first time */
-	else if (this.verification.verification_hash == "default") {
-		/* Calculate the password hash */
-		this.password = utils.calculateHash("sha256", this.password + this.joined_date);
-		/* Calculate the verification hash */
-		this.verification.verification_hash = utils.calculateHash("sha256", this.email + this.joined_date);
-		/* Send the user the verification email */
-		emailing.sendRegistration(this.name, this.email, this.verification.verification_hash);
-	}
-
-	/* Set the mugshot and website from gravatar */
-	this.profile.mugshot = this.profile.mugshot || config.gravatar.mugshot + utils.calculateHash("md5", this.email) + "?d=identicon";
-	this.profile.website = this.profile.website || "";
-	next();
 });
 
 /* Database objects */
