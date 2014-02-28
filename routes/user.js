@@ -38,21 +38,32 @@ exports.signup = function(req, res) {
 	/* Find existing user */
 	db.User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
 		if (err) return new Error(err);
-		/* When the email already exists */
-		else if (user && user.email == req.body.email) {
-			req.flash('error', [{ msg: "Email already taken" }]);
-			return res.redirect("/signup");
 		/* When the username already exists */
-		} else if (user && user.username == req.body.username) {
+		else if (user && user.username == req.body.username) {
 			req.flash('error', [{ msg: "Username already taken" }]);
 			return res.redirect('/signup');
 		}
 		/* When the email is not taken */
+		else if (user && user.email == req.body.email) {
+			req.flash('error', [{ msg: "Email already taken" }]);
+			return res.redirect("/signup");
+		}
+		/* When the username and email are not taken */
 		console.log("INFO", "user:", user);
 		var user = new db.User({ username: filteredUsername, name: req.body.username, email: req.body.email, password: req.body.password });
+		/* Set the gravatar mugshot */
+		user.profile.mugshot = config.gravatar.mugshot + utils.calculateHash("md5", user.email) + "?d=identicon";
+		user.joined_date = new Date();
+		/* Calculate the password hash */
+		user.password = utils.calculateHash("sha256", user.password + user.joined_date);
+		/* Calculate the verification hash */
+		user.verification.verification_hash = utils.calculateHash("sha256", user.email + user.joined_date);
 		user.save(function(err) {
 			if (err) return new Error(err);
 			else {
+				/* Send the user the verification email */
+				emailing.sendRegistration(user.name, user.email, user.verification.verification_hash);
+				/* Show success message to the user */
 				console.log("INFO", "user saved:", user.email);
 				req.flash('message', "Successfully signed up, check your inbox");
 				return res.redirect('/signup');
