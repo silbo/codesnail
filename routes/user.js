@@ -37,8 +37,8 @@ exports.signup = function(req, res) {
 
 	/* Find existing user */
 	db.User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
-		if (err) {
-			console.log("ERROR", "error finding user:", err);
+		if (err) return new Error(err);
+		else if (!user) {
 			req.flash('error', [{ msg: "Databse error" }]);
 			return res.redirect("/signup");
 		}
@@ -53,9 +53,9 @@ exports.signup = function(req, res) {
 		}
 		/* When the email is not taken */
 		console.log("INFO", "user:", user);
-		var user = new db.User({ username: req.body.username.toLowerCase(), name: req.body.username, email: req.body.email, password: req.body.password });
+		var user = new db.User({ username: filteredUsername, name: req.body.username, email: req.body.email, password: req.body.password });
 		user.save(function(err) {
-			if (err) console.log("ERROR", "error saving user:", err);
+			if (err) return new Error(err);
 			else {
 				console.log("INFO", "user saved:", user.email);
 				req.flash('message', "Successfully signed up, check your inbox");
@@ -85,8 +85,11 @@ exports.forgotPassword = function(req, res) {
 
 	/* Find the user and update */
 	db.User.findOne({ email: filteredEmail }, function(err, user) {
-		if (err) console.log("ERROR", "finding user:", err);
-		else if (!user) console.log("INFO", "user not found:", req.body.email);
+		if (err) return new Error(err);
+		else if (!user) {
+			console.log("INFO", "user not found:", req.body.email);
+			res.redirect('/forgot');
+		}
 		else {
 			/* Generate a verification hash for the user and send it by mail */
 			user.verification.verification_hash = utils.calculateHash('sha256', user.email + user.joined_date);
@@ -104,7 +107,8 @@ exports.forgotPassword = function(req, res) {
 /* User verification */
 exports.verify = function(req, res) {
 	db.User.findOne({ 'verification.verification_hash': req.params.id }, function(err, user) {
-		if (err || !user) {
+		if (err) return new Error(err);
+		else if (!user) {
 			console.log("ERROR", "error finding user:", err);
 			return res.redirect('/login');
 		/* When the user is already verified, log him/her in for forgotten password */
@@ -165,7 +169,7 @@ exports.profileUpdate = function(req, res) {
 
 	/* Find the user by email */
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
-		if (err) { console.log("ERROR", "finding user:", err); return res.redirect('/profile'); }
+		if (err) return new Error(err);
 		/* Update the user fields */
 		user.name = req.body.name;
 		user.profile.description = req.body.description;
@@ -186,7 +190,7 @@ exports.profileUpdate = function(req, res) {
 exports.mugshotUpdate = function(req, res) {
 	/* Find the user by email */
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
-		if (err) { console.log("ERROR", "finding user:", err); return res.redirect('/profile'); }
+		if (err) return new Error(err);
 		/* Update the user mugshot */
 		for (var i = 0; i < user.profile.providers.length; i++) {
 			if (user.profile.providers[i].name == req.params.provider)
@@ -211,10 +215,7 @@ exports.passwordUpdate = function(req, res) {
 
 	/* Find the user by email */
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
-		if (err) { 
-			console.log("ERROR", "finding user:", err);
-			return res.redirect('/profile');
-		}
+		if (err) return new Error(err);
 		/* Update the user fields */
 		user.password = utils.calculateHash('sha256', req.body.password + user.joined_date);
 		user.save();
@@ -235,10 +236,7 @@ exports.providerRemove = function(req, res) {
 			if (user.profile.providers[index].name == req.params.name) {
 				/* Find the provider in the database */
 				db.Provider.findOne({ _id: user.profile.providers[index]._id }, function(err, provider) {
-					if (err) { 
-						console.log("ERROR", "error finding provider:", err); 
-						return res.redirect('/profile');
-					}
+					if (err) return new Error(err);
 					/* Remove the provider */
 					provider.remove();
 					console.log("INFO", "successfully removed provider:", req.params.name);
