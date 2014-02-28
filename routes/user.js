@@ -160,7 +160,7 @@ exports.profile = function(req, res) {
 		if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
 			logins.push(config.logins[index]);
 	}
-	res.render('profile', { logins: logins, user: req.user, message: req.flash('message') || "", errors: req.flash('error') || [] });
+	res.render('profile', { logins: logins, user: req.user });
 };
 
 /* Update user profile */
@@ -203,11 +203,12 @@ exports.mugshotUpdate = function(req, res) {
 			if (user.profile.providers[i].name == req.params.provider)
 				user.profile.mugshot = user.profile.providers[i].mugshot;
 		}
-		user.save();
 
 		/* Update the user object in the session */
 		req.session.passport.user = user;
 		res.redirect('/profile');
+		/* Save udated user to database */
+		user.save();
 	});
 };
 
@@ -225,9 +226,11 @@ exports.passwordUpdate = function(req, res) {
 		if (err) return new Error(err);
 		/* Update the user fields */
 		user.password = utils.calculateHash('sha256', req.body.password + user.joined_date);
-		user.save();
+		/* Show success message */
 		req.flash('message', "Successfully changed password");
 		res.redirect('/profile');
+		/* Save updated user to database */
+		user.save();
 	});
 };
 
