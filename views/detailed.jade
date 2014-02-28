@@ -3,20 +3,20 @@ extends layout
 block content
 
 	.box-title
-		h3 #{user.name}'s profile:
+		h3 #{other_user.name}'s profile:
 	.box-content
-		img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
+		img(class="mugshot", src="#{other_user.profile.mugshot}", alt="mugshot")
 
 		div#profile
-			div Date joined: #{new Date(user.profile.joined_date).toDateString()}
-			div Points: #{user.profile.points}
-			div Display Name: #{user.name}
-			div Description: #{user.profile.description}
-			div Location: #{user.profile.location}
-			div Website: #{user.profile.website}
+			div Date joined: #{new Date(other_user.profile.joined_date).toDateString()}
+			div Points: #{other_user.profile.points}
+			div Display Name: #{other_user.name}
+			div Description: #{other_user.profile.description}
+			div Location: #{other_user.profile.location}
+			div Website: #{other_user.profile.website}
 
 		h3 Other accounts:
-		each provider in user.profile.providers
+		each provider in other_user.profile.providers
 			div
 				img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
 				div(style="text-transform:capitalize;") #{provider.name}
