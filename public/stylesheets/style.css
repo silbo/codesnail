@@ -186,9 +186,13 @@ div#player1, div#player2 {
     float: left;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 979px) {
     div#player1, div#player2 {
         float: none;
         width: 100%;
+    }
+
+    div#code-wrapper {
+        max-width: 100%;
     }
 }
