@@ -87,7 +87,7 @@ passport.use(new LocalStrategy(
     function(username, password, done) {
         process.nextTick(function () {
             /* Apply some filters on the username */
-            var filterestUsername = req.body.username.toLowerCase().replace(" ", "");
+            var filteredUsername = req.body.username.toLowerCase().replace(" ", "");
 
             /* Find the user (entered username is either a email or the username of the user) */
             db.User.findOne({ $or:[{ username: filteredUsername }, { email: filteredUsername }] }).populate('profile.providers').exec(function (err, user) {
