@@ -38,10 +38,6 @@ exports.signup = function(req, res) {
 	/* Find existing user */
 	db.User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
 		if (err) return new Error(err);
-		else if (!user) {
-			req.flash('error', [{ msg: "Databse error" }]);
-			return res.redirect("/signup");
-		}
 		/* When the email already exists */
 		else if (user && user.email == req.body.email) {
 			req.flash('error', [{ msg: "Email already taken" }]);
