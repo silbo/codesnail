@@ -52,12 +52,16 @@ var registerUser = function registerUser(name, email, provider_name, mugshot, li
         provider.save();
         /* When no user under this email was found */
         if (!user) {
-            var user = new db.User({ username: name.toLowerCase().replace(/ /g, "") , name: name, email: email });
+            user = new db.User({ username: name.toLowerCase().replace(/ /g, "") , name: name, email: email });
             user.profile.mugshot = mugshot;
             user.profile.website = link;
         }
         /* Register this provider for the user */
         user.profile.providers.push(provider);
+        /* Set the user as verified */
+        user.verification.verified = true;
+        /* Set the gravatar mugshot */
+        user.profile.mugshot = user.profile.mugshot || config.gravatar.mugshot + utils.calculateHash("md5", user.email) + "?d=identicon";
         user.save(function(err) {
             if (err) console.log("ERROR", "error saving user:", err);
             else {
