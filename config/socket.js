@@ -17,8 +17,8 @@ io.set('authorization', passportSocketIo.authorize({
     key: 'connect.sid',
     secret: config.session_secret,
     store: app.SessionStore,
-    fail: function(data, accept) {
-        console.log("ERROR", "scoket data:", data);
+    fail: function(data, message, error, accept) {
+        console.log("ERROR", "scoket message:", message, "error:", error);
         accept(null, false);
     },
     success: function(data, accept) {
