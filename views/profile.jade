@@ -6,18 +6,16 @@ block content
         h3 Profile
     .box-content
 
-        //script(type="text/javascript", src="/socket.io/socket.io.js") its in layout2
         script(type="text/javascript", src="/javascripts/socket.io-stream.js")
         script(type="text/javascript", src="http://cdn.binaryjs.com/0/binary.js")
         script(type="text/javascript", src="/javascripts/profile.js")
-
 
         div#profile
             h3 Change profile:
 
             div#forErrors(align='center')
                 each err in error
-                  p.alert.alert-error #{err}
+                  p.alert.alert-error #{err.msg}
                 if message != ""
                   p.alert.alert-success #{message}
 
@@ -41,15 +39,15 @@ block content
                 div Website:
                     br
                     input(type="text", name="website", placeholder="website", value="#{user.profile.website}")
-                input(type="submit", value="Save")
+                input(type="submit", class="btn btn-primary", value="Save")
 
             h3 Change password:
             form(name="password", action="/profile/password", method="post")
-                input(type="password" name="password" placeholder="New password")
+                input(type="password", name="password", placeholder="New password")
                 br
-                input(type="password" name="passwordConfirm" placeholder="Repeat new password")
+                input(type="password", name="passwordConfirm", placeholder="Repeat new password")
                 br
-                input(type="submit", value="Save")
+                input(type="submit", class="btn btn-primary", value="Save")
 
             h3 Other accounts:
             each provider in user.profile.providers
@@ -57,12 +55,12 @@ block content
                     img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
                     div(style="text-transform:capitalize;") #{provider.name}
                         br
-                        input(type="button", value="#{provider.display_name}" onclick="window.location.href='#{provider.url}'")
+                        input(type="button", class="btn btn-primary", value="#{provider.display_name}" onclick="window.location.href='#{provider.url}'")
                         &nbsp;
-                        input(type="button", value="Set as Mugshot" onclick="window.location.href='/profile/mugshot/#{provider.name}'")
+                        input(type="button", class="btn btn-primary", value="Set as Mugshot" onclick="window.location.href='/profile/mugshot/#{provider.name}'")
                         &nbsp;
-                        input(type="button", value="Disconnect" onclick="window.location.href='/profile/remove/#{provider.name}'")
+                        input(type="button", class="btn btn-primary", value="Disconnect" onclick="window.location.href='/profile/remove/#{provider.name}'")
             div#oauths
                 each login in logins
-                    input(type="button", value="Connect #{login[0]}" onclick="window.location.href='#{login[1]}'")
+                    input(type="button", class="btn btn-primary", value="Connect #{login[0]}" onclick="window.location.href='#{login[1]}'")
                     br
