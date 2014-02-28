@@ -57,7 +57,7 @@ exports.signup = function(req, res) {
 		/* Calculate the password hash */
 		user.password = utils.calculateHash("sha256", user.password + user.joined_date);
 		/* Calculate the verification hash */
-		user.verification.verification_hash = utils.calculateHash("sha256", user.email + user.joined_date);
+		user.verification.verification_hash = utils.calculateHash("sha256", user.email + utils.generateRandom());
 		user.save(function(err) {
 			if (err) return new Error(err);
 			else {
@@ -99,7 +99,7 @@ exports.forgotPassword = function(req, res) {
 		}
 		else {
 			/* Generate a verification hash for the user and send it by mail */
-			user.verification.verification_hash = utils.calculateHash('sha256', user.email + user.joined_date);
+			user.verification.verification_hash = utils.calculateHash('sha256', user.email + utils.generateRandom());
 			emailing.sendResetPassword(user.name, user.email, user.verification.verification_hash);
 			user.save();
 
