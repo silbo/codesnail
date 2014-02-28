@@ -31,20 +31,24 @@ exports.signup = function(req, res) {
 	/* When the form contains errors */
 	if (errors) return res.redirect('/signup');
 
+	/* Apply some filters on email and username */
+	var filteredEmail = req.body.email.toLowerCase().replace(" ", "");
+	var filteredUsername2 = req.body.username.toLowerCase().replace(" ", "");
+
 	/* Find existing user */
-	db.User.findOne({ $or:[{ username: req.body.username }, { email: req.body.email }] }, function(err, user) {
+	db.User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
 		if (err) {
 			console.log("ERROR", "error finding user:", err);
 			req.flash('error', [{ msg: "Databse error" }]);
 			return res.redirect("/signup");
 		}
+		/* When the email already exists */
 		else if (user && user.email == req.body.email) {
 			req.flash('error', [{ msg: "Email already taken" }]);
-			//username: req.body.username, email: req.body.email
 			return res.redirect("/signup");
+		/* When the username already exists */
 		} else if (user && user.username == req.body.username) {
 			req.flash('error', [{ msg: "Username already taken" }]);
-			//username: req.body.username, email: req.body.email
 			return res.redirect('/signup');
 		}
 		/* When the email is not taken */
@@ -74,29 +78,27 @@ exports.forgotPassword = function(req, res) {
 	req.flash('error', errors);
 	req.flash('email', req.body.email);
 
-	console.log("INFO", "email:", req.body.email);
+	/* When errors, show them */
+	if (errors) return res.redirect('/forgot');
 
-	/* Cehck if email was defined */
-	if (!errors) {
-		db.User.findOne({ email: req.body.email }, function(err, user) {
-			if (err) console.log("ERROR", "finding user:", err);
-			else if (!user) console.log("INFO", "user not found:", req.body.email);
-			else {
-				/* Generate a "random" password for the user and email it to him/her */
-				user.password = utils.calculateHash('sha256', user.email + new Date().toString());
-				emailing.sendForgotPassword(user.name, user.email, user.password);
-				/* Hash it again and save it to the database */
-				user.password = utils.calculateHash('sha256', user.password + user.joined_date);
-				user.save();
+	var filteredEmail = req.body.email.toLowerCase().replace(" ", "");
 
-				req.flash('email', "");
-				req.flash('message', "Successfully resetted password, check your inbox");
-				res.redirect('/forgot');
-			}
-		});
-	} else {
-		res.redirect('/forgot');
-	}
+	/* Find the user and update */
+	db.User.findOne({ email: filteredEmail }, function(err, user) {
+		if (err) console.log("ERROR", "finding user:", err);
+		else if (!user) console.log("INFO", "user not found:", req.body.email);
+		else {
+			/* Generate a verification hash for the user and send it by mail */
+			user.verification.verification_hash = utils.calculateHash('sha256', user.email + user.joined_date);
+			emailing.sendResetPassword(user.name, user.email, user.verification.verification_hash);
+			user.save();
+
+			/* Leave message and redirect */
+			req.flash('email', "");
+			req.flash('message', "Check your inbox to reset password");
+			res.redirect('/forgot');
+		}
+	});
 };
 
 /* User verification */
@@ -105,19 +107,23 @@ exports.verify = function(req, res) {
 		if (err || !user) {
 			console.log("ERROR", "error finding user:", err);
 			return res.redirect('/login');
-		/* When the user is already verified */
-		} else if (user.verification.verified) return res.redirect('/login');
-		/* Verify the user */
-		db.User.update({ 'verification.verification_hash': req.params.id }, { $set: { 'verification.verified': true } }, {upsert: true}, function(err) {
-			if (err) {
-				console.log("ERROR", "error verifing user:", err);
-				return res.redirect('/login');
-			}
-			console.log("INFO", "user successfully verified:", user.email);
-			/* Notify the user of successful verification */
-			req.flash('message', "Successfully verified");
-			res.redirect('/login');
-		});
+		/* When the user is already verified, log him/her in for forgotten password */
+		} else if (user.verification.verified) {
+			req.session.passport.user = user;
+			req.user = req.session.passport.user;
+			console.log("INFO", "user password reset:", user.email);
+		/* When the user is not verified */
+		} else {
+			user.verification.verified = true;
+			console.log("INFO", "user verification:", user.email);
+		}
+		/* Erease the users verification hash */
+		user.verification.verification_hash = "";
+		/* Notify the user of successful verification */
+		req.flash('message', "Successfully verified");
+		res.redirect('/login');
+		/* Save the updated user */
+		user.save();
 	});
 };
 
