@@ -52,7 +52,7 @@ var registerUser = function registerUser(name, email, provider_name, mugshot, li
         provider.save();
         /* When no user under this email was found */
         if (!user) {
-            user = new db.User({ username: name.toLowerCase().replace(/ /g, "") , name: name, email: email });
+            user = new db.User({ username: name.toLowerCase().replace(" ", "") , name: name, email: email });
             user.profile.mugshot = mugshot;
             user.profile.website = link;
         }
