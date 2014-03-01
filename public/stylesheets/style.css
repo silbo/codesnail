@@ -127,6 +127,14 @@ div#player1, div#player2 {
     float: left;
 }
 
+.box, .box-content {
+    padding: 10px;
+}
+
+#main-content {
+    padding:10px 20px 20px
+}
+
 @media (max-width: 979px) {
     div#player1, div#player2 {
         float: none;
@@ -135,5 +143,13 @@ div#player1, div#player2 {
 
     div#code-wrapper {
         max-width: 100%;
+    }
+
+    .box, .box-content {
+        padding: 10px 0px 10px 0px;
+    }
+
+    #main-content {
+        padding: 0px;
     }
 }
