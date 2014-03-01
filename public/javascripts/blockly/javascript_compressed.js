@@ -87,7 +87,7 @@ Blockly.JavaScript.text_prompt=function(){var a="window.prompt("+Blockly.JavaScr
 Blockly.JavaScript.controls_arduino_main = function() {
   var statements_setup = Blockly.JavaScript.statementToCode(this, 'setup');
   var statements_loop = Blockly.JavaScript.statementToCode(this, 'loop');
-  var code = 'void setup() {\ndelay(3000);\n'+statements_setup+'}\nvoid loop() {\n'+statements_loop+'}';
+  var code = 'void setup() {\n'+statements_setup+'}\nvoid loop() {\n'+statements_loop+'}';
   return code;
 };
 
