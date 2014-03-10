@@ -53,14 +53,9 @@ window.onload = function () {
         if (name) {
             /* Animate the user win */
             var offset = $("#" + name.replace(/ /g, "")).offset();
-            $("#code-win").css({ top: offset.top + 15, left: offset.left - 5 });
-            $("#code-win").fadeIn("fast");
-            setTimeout(function () {
-                $("#code-win").fadeOut("fast");
-            }, 2000);
-            /* Animate the use points */
-            $("#code-points").css({ top: offset.top, left: offset.left + 15 });
-            $("#code-points").html(points);
+            /* Animate the user points */
+            $("#code-points").css({ top: offset.top, left: offset.left });
+            $("#code-points").html("<img src='/images/" + points + "_points_badge.png' alt='points'>");
             $("#code-points").toggle("bounce", { times: 1 }, "slow");
             $("#code-points").fadeOut("fast");
         }
@@ -292,16 +287,11 @@ function initiateECode(on) {
         if (name) {
             /* Animate the user win */
             var offset = $("#" + name.replace(/ /g, "")).offset();
-            $("#eCode-win").css({ top: offset.top + 15, left: offset.left - 10 });
-            $("#eCode-win").fadeIn("fast");
-            setTimeout(function () {
-                $("#eCode-win").fadeOut("fast");
-            }, 2000);
-            /* Animate the use points */
-            $("#eCode-points").css({ top: offset.top, left: offset.left });
-            $("#eCode-points").html(points);
-            $("#eCode-points").toggle("bounce", { times: 1 }, "slow");
-            $("#eCode-points").fadeOut("fast");
+            /* Animate the userpoints */
+            $("#code-points").css({ top: offset.top, left: offset.left });
+            $("#code-points").html("<img src='/images/" + points + "_points_badge.png' alt='points'>");
+            $("#code-points").toggle("bounce", { times: 1 }, "slow");
+            $("#code-points").fadeOut("fast");
         }
     });
 
