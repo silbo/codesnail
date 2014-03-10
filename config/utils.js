@@ -18,7 +18,7 @@ exports.getTask = function getTask() {
         else tasks = etasks = db_tasks;
     });
     if (tasks.length == 0) return { name: "Currently no tasks available" };
-    return { name: "Task " + (currentTask + 1) + ": " + tasks[currentTask].name, points: tasks[currentTask].points };
+    return { name: tasks[currentTask].name, points: tasks[currentTask].points };
 }
 
 /* Check if task is complete */
