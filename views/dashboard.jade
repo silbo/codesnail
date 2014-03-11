@@ -17,7 +17,7 @@ block content
 		div#online-users
 			each user in users
 				div.user
-					a(class="mugshot-link", href="/#{user.username}", title="profile")
+					a(class="mugshot-link", href="/profile/#{user.username}", title="profile")
 						center
 							img(class="mugshot", src="#{user.profile.mugshot}", alt="mugshot")
 						p #{user.name}
