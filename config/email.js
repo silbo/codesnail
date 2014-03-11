@@ -10,7 +10,7 @@ var server = emailing.server.connect({
 });
 
 var emailErrorFunction = function errorFunction(err, message) {
-	if (err) return new Error(err);
+	if (err) console.log("INFO", "error sending email:", err);
 	else console.log("INFO", "successfully sent email:", message);
 };
 
