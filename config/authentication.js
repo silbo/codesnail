@@ -129,7 +129,7 @@ passport.use(new TwitterStrategy({
                 /* No user with this display name was found */
                 else if (!user) done(null, false, { message: "Twitter username must match your profiles: " + profile.displayName });
                 /* The user was found */
-                else registerUser(user.name, user.email, profile.provider, profile._json.profile_image_url, profile._json.url, done);
+                else registerUser(profile.displayName, user.email, profile.provider, profile._json.profile_image_url, profile._json.url, done);
             });
         });
     }
