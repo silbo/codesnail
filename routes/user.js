@@ -55,7 +55,7 @@ exports.signup = function(req, res) {
 		user.profile.mugshot = config.gravatar.mugshot + utils.calculateHash("md5", user.email) + "?d=identicon";
 		user.joined_date = new Date();
 		/* Calculate the password hash */
-		user.password = utils.calculateHash("sha256", user.password + user.joined_date);
+		user.password = utils.calculateHash("sha256", req.body.password + user.joined_date);
 		/* Calculate the verification hash */
 		user.verification.verification_hash = utils.calculateHash("sha256", user.email + utils.generateRandom());
 		user.save(function(err) {
@@ -107,6 +107,8 @@ exports.forgotPassword = function(req, res) {
 			req.flash('email', "");
 			req.flash('message', "Check your inbox to reset password");
 			res.redirect('/forgot');
+
+			console.log("INFO", "user not found:", user.email);
 		}
 	});
 };
