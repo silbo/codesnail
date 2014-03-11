@@ -98,7 +98,7 @@ app.get('/dashboard', auth.ensureAuthenticated, routes.dashboard);
 
 /* Profile pages */
 app.get('/profile', auth.ensureAuthenticated, user.profile);
-app.get('/:name', auth.ensureAuthenticated, user.detailed);
+app.get('/profile/:name', auth.ensureAuthenticated, user.detailed);
 app.post('/profile/update', auth.ensureAuthenticated, user.profileUpdate);
 app.post('/profile/password', auth.ensureAuthenticated, user.passwordUpdate);
 app.get('/profile/remove/:name', auth.ensureAuthenticated, user.providerRemove);
