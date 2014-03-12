@@ -53,13 +53,14 @@ exports.signup = function(req, res) {
 		var user = new db.User({ username: filteredUsername, name: req.body.username, email: req.body.email, password: req.body.password });
 		/* Set the gravatar mugshot */
 		user.profile.mugshot = config.gravatar.mugshot + utils.calculateHash("md5", user.email) + "?d=identicon";
-		user.joined_date = new Date();
+		user.profile.joined_date = new Date();
+		console.log("INFO", "user singup date:", user.profile.joined_date);
 		/* Calculate the password hash */
-		user.password = utils.calculateHash("sha256", req.body.password + user.joined_date);
+		user.password = utils.calculateHash("sha256", user.password + user.profile.joined_date);
 		/* Calculate the verification hash */
 		user.verification.verification_hash = utils.calculateHash("sha256", user.email + utils.generateRandom());
 		user.save(function(err) {
-			if (err) return new Error(err);
+			if (err) console.log("ERROR", "error signing up user:", user.email, "error:", err);
 			else {
 				/* Send the user the verification email */
 				emailing.sendRegistration(user.name, user.email, user.verification.verification_hash);
@@ -98,17 +99,17 @@ exports.forgotPassword = function(req, res) {
 			res.redirect('/forgot');
 		}
 		else {
-			/* Generate a verification hash for the user and send it by mail */
+			/* Generate a verifisilbocation hash for the user and send it by mail */
 			user.verification.verification_hash = utils.calculateHash('sha256', user.email + utils.generateRandom());
 			emailing.sendResetPassword(user.name, user.email, user.verification.verification_hash);
-			user.save();
 
 			/* Leave message and redirect */
 			req.flash('email', "");
 			req.flash('message', "Check your inbox to reset password");
 			res.redirect('/forgot');
 
-			console.log("INFO", "user not found:", user.email);
+			/* Save the updated user */
+			user.save();
 		}
 	});
 };
@@ -129,14 +130,17 @@ exports.verify = function(req, res) {
 		} else {
 			user.verification.verified = true;
 			console.log("INFO", "user verification:", user.email);
+			/* Notify the user of successful verification */
+			req.flash('message', "Successfully verified");
 		}
 		/* Erease the users verification hash */
 		user.verification.verification_hash = "";
-		/* Notify the user of successful verification */
-		req.flash('message', "Successfully verified");
+		/* Render login once again */
 		res.redirect('/login');
 		/* Save the updated user */
-		user.save();
+		user.save(function(err) {
+			if (err) console.log("ERROR", "error verifiying user:", user.email, "error:", err);
+		});
 	});
 };
 
@@ -227,7 +231,7 @@ exports.passwordUpdate = function(req, res) {
 	db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
 		if (err) return new Error(err);
 		/* Update the user fields */
-		user.password = utils.calculateHash('sha256', req.body.password + user.joined_date);
+		user.password = utils.calculateHash('sha256', req.body.password + user.profile.joined_date);
 		/* Show success message */
 		req.flash('message', "Successfully changed password");
 		res.redirect('/profile');
