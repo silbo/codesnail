@@ -18,14 +18,13 @@ block content
 
 		h3 Other accounts:
 		each provider in other_user.profile.providers
-			div
-				img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
-				div(style="text-transform:capitalize;") #{provider.name}
-					br
-					input(type="button", class="btn btn-primary", value="#{provider.display_name}" onclick="window.location.href='#{provider.url}'")
+			img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
+			div(style="text-transform:capitalize;") #{provider.name}
+			input(type="button", class="btn btn-primary", value="#{provider.display_name}" onclick="window.location.href='#{provider.url}'")
 
 		h3 Courses:
 		p No courses attended
 
 		h3 Badges:
 		p Early signup badge
+		img(src="/images/badges.png", alt="badge", width="50px")
