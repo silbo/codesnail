@@ -5,25 +5,26 @@ var fs = require('fs'),
     utils = require('./utils'),
     uuid = require('node-uuid'),
     config = require('./config'),
-    express = require('express'),
     ss = require('socket.io-stream'),
     exec = require('child_process').exec,
+    cookieParser = require('cookie-parser'),
     io = require('socket.io').listen(app.server),
     passportSocketIo = require('passport.socketio');
 
-io.set('log level', 1);
-io.set('authorization', passportSocketIo.authorize({
-    cookieParser: express.cookieParser,
+//io.set('log level', 1);
+io.use(passportSocketIo.authorize({
+    cookieParser: cookieParser,
     key: 'connect.sid',
     secret: config.session_secret,
     store: app.SessionStore,
     fail: function(data, message, error, accept) {
         console.log("ERROR", "scoket message:", message, "error:", error);
-        accept(null, false);
+        if(error) throw new Error(message);
+        return accept();
     },
     success: function(data, accept) {
         //console.log("INFO", "scoket:", data);
-        accept(null, true);
+        return accept();
     }
 }));
 
@@ -34,24 +35,24 @@ var eSocks = [];
 
 /* User initiated socket connection */
 io.sockets.on('connection', function(socket) {
-	
-	/* User connected to socketio */
+
+    /* User connected to socketio */
 	console.log("INFO", "socket connection established");
-	console.log("INFO", "socket user:", socket.handshake.user.email);
+	console.log("INFO", "socket user:", socket.request.user.email);
 	socket.heartbeatTimeout = 5000;
-	sockUsers[socket.handshake.user.email] = socket;
+	sockUsers[socket.request.user.email] = socket;
 
 	/* Subscribing and unsubscribing to rooms */
 	socket.on('subscribe', function(room) {
 		socket.join(room);
 		/* Add the user to the room he/she is now */
-		onlineUsers[room][socket.handshake.user.email] = {
-			name: socket.handshake.user.name,
-			email: socket.handshake.user.email,
+		onlineUsers[room][socket.request.user.email] = {
+			name: socket.request.user.name,
+			email: socket.request.user.email,
 			profile: {
-				points: socket.handshake.user.profile.points,
-				mugshot: socket.handshake.user.profile.mugshot,
-				description: socket.handshake.user.profile.description
+				points: socket.request.user.profile.points,
+				mugshot: socket.request.user.profile.mugshot,
+				description: socket.request.user.profile.description
 			}
 		};
 		/* Update the online users for every user in this room */
@@ -61,7 +62,7 @@ io.sockets.on('connection', function(socket) {
 
 	/* User sends ping */
 	socket.on('ping', function() {
-		console.log("INFO", "ping received from user:", socket.handshake.user.email);
+		console.log("INFO", "ping received from user:", socket.request.user.email);
 	});
 
 	/* User asks for someones code */
@@ -72,19 +73,19 @@ io.sockets.on('connection', function(socket) {
 
 	/* User shares his/her code */
 	socket.on('share-code', function(room, code) {
-		console.log("INFO", "share user code:", socket.handshake.user.email);
+		console.log("INFO", "share user code:", socket.request.user.email);
 		socket.broadcast.to(room).emit('receive-code', code);
 	});
 
 	/* User shares his/her chat */
 	socket.on('share-chat', function(room, chat) {
-		console.log("INFO", "user chat:", socket.handshake.user.email);
-		io.sockets.to(room).emit('receive-chat', socket.handshake.user.name, chat);
+		console.log("INFO", "user chat:", socket.request.user.email);
+		io.sockets.to(room).emit('receive-chat', socket.request.user.name, chat);
 	});
 
 	/* User asks for a task */
 	socket.on('get-task', function() {
-		console.log("INFO", "get task:", socket.handshake.user.email);
+		console.log("INFO", "get task:", socket.request.user.email);
 		socket.emit('receive-task', utils.getTask());
 	});
 
@@ -92,15 +93,15 @@ io.sockets.on('connection', function(socket) {
 	socket.on('verify-task', function(room, code) {
 		console.log("INFO", "verifiying task:", code.replace(/\s+/g, ''));
 		/* Save the users code */
-		onlineUsers[room][socket.handshake.user.email].code = code;
+		onlineUsers[room][socket.request.user.email].code = code;
 		var prev_task = utils.getTask();
 		/* Check if task has been completed */
 		if (utils.taskComplete(code)) {
 			/* Send the winner to everyone in the room and update their task */
-			io.sockets.to(room).emit('receive-task-verification', socket.handshake.user.name, prev_task.points);
+			io.sockets.to(room).emit('receive-task-verification', socket.request.user.name, prev_task.points);
 			io.sockets.to(room).emit('receive-task', utils.getTask());
 			/* Update user points in his session */
-			onlineUsers[room][socket.handshake.user.email].profile.points += prev_task.points;
+			onlineUsers[room][socket.request.user.email].profile.points += prev_task.points;
 			/* Update the online users for all users */
 			io.sockets.to(room).emit('users', onlineUsers[room]);
 		}
@@ -109,12 +110,12 @@ io.sockets.on('connection', function(socket) {
 	/* Send back the data for the user that this socket belongs to */
     socket.on('sendCurrentUser', function(data) {
         var cuser = {
-            email: socket.handshake.user.email,
-            name: socket.handshake.user.name,
+            email: socket.request.user.email,
+            name: socket.request.user.name,
             profile: {
-                points: socket.handshake.user.profile.points,
-                mugshot: socket.handshake.user.profile.mugshot,
-                description: socket.handshake.user.profile.description
+                points: socket.request.user.profile.points,
+                mugshot: socket.request.user.profile.mugshot,
+                description: socket.request.user.profile.description
             }
         }
         socket.emit('currentUser', {user: cuser});
@@ -125,7 +126,7 @@ io.sockets.on('connection', function(socket) {
         try {
             var newSockAdd = uuid.v1();
             eSocks.push(newSockAdd);
-            sockUsers[data.email].emit('exclusiveInvite', {email: socket.handshake.user.email, newSockAdd: newSockAdd});
+            sockUsers[data.email].emit('exclusiveInvite', {email: socket.request.user.email, newSockAdd: newSockAdd});
         } catch (error) {
             console.log("WARN", "error", error);
         }
@@ -137,7 +138,7 @@ io.sockets.on('connection', function(socket) {
             //start listening on new connection
             //only if(data.newSockadd is in esocket)
             //also check if its already in Ecode withsomeone
-            startECodeServer(data.newSockAdd,data.email,socket.handshake.user.email);
+            startECodeServer(data.newSockAdd,data.email,socket.request.user.email);
             sockUsers[data.email].emit('initiateECode', { on: data.newSockAdd });
             socket.emit('initiateECode', { on: data.newSockAdd });
         } else {
@@ -181,11 +182,11 @@ io.sockets.on('connection', function(socket) {
 
 	/* User disconnected from socket */
 	socket.on('disconnect', function() {
-		console.log("INFO", "socket user disconnected:", socket.handshake.user.email);
+		console.log("INFO", "socket user disconnected:", socket.request.user.email);
 		/* Save user points to his/her session */
-		if (onlineUsers['coding'][socket.handshake.user.email]) {
-			var sessionID = socket.handshake.sessionID;
-			var points = onlineUsers['coding'][socket.handshake.user.email].profile.points;
+		if (onlineUsers['coding'][socket.request.user.email]) {
+			var sessionID = socket.request.sessionID;
+			var points = onlineUsers['coding'][socket.request.user.email].profile.points;
 			app.SessionStore.get(sessionID, function(err, session) {
 				if (!err && session) {
 					session.passport.user.profile.points = points;
@@ -196,8 +197,8 @@ io.sockets.on('connection', function(socket) {
 				}
 			});
 			/* When not a guest user */
-			if (socket.handshake.user.name.indexOf("Guest") == -1) {
-				db.User.findOne({ email: socket.handshake.user.email }, function(err, user) {
+			if (socket.request.user.name.indexOf("Guest") == -1) {
+				db.User.findOne({ email: socket.request.user.email }, function(err, user) {
 					if (err) return new Error(err);
 					else {
 						user.profile.points = points;
@@ -209,7 +210,7 @@ io.sockets.on('connection', function(socket) {
 		/* Delete user from from every room, do not know where he is :P */
 		/* Update the online users for all users in every room */
 		for (var room in onlineUsers) {
-			delete onlineUsers[room][socket.handshake.user.email];
+			delete onlineUsers[room][socket.request.user.email];
 			io.sockets.to(room).emit('users', onlineUsers[room]);
 		}
 		/* TODO: When not a guest user, save the points */
@@ -245,19 +246,19 @@ function startECodeServer(on, pe1, pe2) {
 
 	var eSock = io.of('/' + on).on('connection', function (socket) {
 		//console.log("Threat detected")
-		if (socket.handshake.user.email == p1.email) {
+		if (socket.request.user.email == p1.email) {
 			p1.socket = socket;
 		} else {
 			p2.socket = socket;
 		}
 		/* User asks for a task */
 		socket.on('get-etask', function() {
-			console.log("INFO", "get etask:", socket.handshake.user.email);
+			console.log("INFO", "get etask:", socket.request.user.email);
 			socket.emit('receive-etask', geteTask());
 			//p2.socket.emit('receive-etask', utils.getTask());
 		});
 		socket.on('recieveClientCode', function(data) {
-			if (socket.handshake.user.email == p1.email) {
+			if (socket.request.user.email == p1.email) {
 				currentP = p1;
 				p1.code = data.code;
 				p2.socket.emit('p2Status', { code: data.code });
@@ -275,8 +276,8 @@ function startECodeServer(on, pe1, pe2) {
 			if (taskeComplete(data.code)) {
 				console.log("INFO", "task completed");
 				/* Send the winner to everyone in the room and update their task */
-				p1.socket.emit('receive-etask-verification', socket.handshake.user.name, prev_task.points);
-				p2.socket.emit('receive-etask-verification', socket.handshake.user.name, prev_task.points);
+				p1.socket.emit('receive-etask-verification', socket.request.user.name, prev_task.points);
+				p2.socket.emit('receive-etask-verification', socket.request.user.name, prev_task.points);
 				currentP.score += prev_task.points;
 				if (geteTask().name == "Done") {
 					var winner = undefined;
@@ -289,7 +290,7 @@ function startECodeServer(on, pe1, pe2) {
 					p2.socket.emit('receive-etask', geteTask());
 				}
 				/* Update user points in his session */
-				//onlineUsers[room][socket.handshake.user.email].profile.points += prev_task.points;
+				//onlineUsers[room][socket.request.user.email].profile.points += prev_task.points;
 				/* Update the online users for all users */
 				//io.sockets.to(room).emit('users', onlineUsers[room]);
 			}

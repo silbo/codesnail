@@ -13,8 +13,9 @@ var express = require('express'),
 	db = require('./config/database'),
 	config = require('./config/config'),
 	emailing = require('./config/email'),
+	session = require('express-session'),
 	auth = require('./config/authentication'),
-	MongoStore = require('connect-mongo')(express),
+	MongoStore = require('connect-mongo')(session),
 	expressValidator = require('express-validator');
 
 /* Create a session store that is connected to the users */
@@ -22,13 +23,8 @@ var SessionStore = new MongoStore({ url: config.database_url });
 /* Set app properties */
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + "/public"));
-app.use(express.json());
-app.use(express.urlencoded());
 app.use(expressValidator());
-app.use(express.logger('dev'));
-app.use(express.methodOverride());
-app.use(express.cookieParser());
-app.use(express.session({
+app.use(session({
 	store: SessionStore,
 	secret: config.session_secret,
 	cookie: { maxAge : 3600000 * 24 * 3 }, // 3 days
@@ -44,7 +40,6 @@ app.use(function(req, res, next) {
 });
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
 
 /* Error handling */
 app.use(function(err, req, res, next) {
@@ -54,11 +49,6 @@ app.use(function(err, req, res, next) {
     /* Send the error report to the admin */
     emailing.sendErrorReport(config.admin_name, config.admin_email, err);
 });
-
-/* Development only */
-if ('development' == app.get('env')) {
-	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-}
 
 /* Landingpage */
 app.get('/', routes.index);

@@ -24,6 +24,7 @@ exports.dashboard = function(req, res) {
 exports.study = function(req, res) {
 	if (!req.user) {
 		req.session.passport.user = utils.generateGuest();
+        console.log(req.session.passport.user);
 		req.user = req.session.passport.user;
 	}
 	res.render('study', { user: req.user });

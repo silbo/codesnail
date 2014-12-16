@@ -50,10 +50,10 @@ exports.generateRandom = function generateRandom() {
 /* Generate a random guest account */
 exports.generateGuest = function generateGuest() {
     var random = exports.generateRandom();
-    var randomEmailHash = exports.calculateHash('md5', random + "@gmail.com");
+    var randomEmailHash = exports.calculateHash('md5', random + "@mail.com");
     var user = {
         name: "Guest" + random,
-        email: random + "@email.com",
+        email: random + "@mail.com",
         guest: true,
         profile: {
             mugshot: config.gravatar.mugshot + randomEmailHash + "?d=identicon",
