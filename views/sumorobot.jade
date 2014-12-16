@@ -11,7 +11,7 @@ block content
 		h3 Sumorobot
 	.box-content
 		div#video
-			//img(src="http://149.222.37.120:8080/?action=stream")
+			img(src="http://localhost:8080/?action=stream")
 
 		div#blocklyDiv(style="height: 400px;")
 
@@ -24,5 +24,5 @@ block content
 			<block type="controls_arduino_line"></block>
 
 		div#buttons
-			input(type="button", class="btn btn-primary", value="Send Code", onclick="javascript:sendCode();") SEND
-			input(type="button", class="btn btn-primary", value="Show Code", onclick="javascript:showCode();") SHOW
+			input(type="button", class="btn btn-primary", value="Send Code", onclick="javascript:sendCode();") upload
+			input(type="button", class="btn btn-primary", value="Show Code", onclick="javascript:showCode();") show
