@@ -12,6 +12,8 @@ div#mugshot-box {
 }
 
 div.user {
+    width: 100px;
+    height: 100px;
     line-height: 0px;
     margin:5px;
 }
@@ -28,8 +30,6 @@ div#user input {
 }
 
 div#online-users {
-    width: 98%;
-    height: 75px;
 }
 
 div#online-users p{
