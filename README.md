@@ -1,4 +1,4 @@
-codesnail [![Build Status](https://travis-ci.org/silps/codesnail.svg?branch=master)](https://travis-ci.org/silps/codesnail)
+codesnail [![Build Status](https://travis-ci.org/silps/codesnail.svg?branch=master)](https://travis-ci.org/silps/codesnail) [![Dependency Status](https://www.versioneye.com/user/projects/549087169bc626ff60000010/badge.svg?style=flat)](https://www.versioneye.com/user/projects/549087169bc626ff60000010)
 =========
 
 A website where users learn to code while competing against each other
@@ -6,20 +6,12 @@ A website where users learn to code while competing against each other
 setup
 =====
 
-Windows and MAC OS
-------------------
 * install node.js http://nodejs.org/download/
-* download git repo https://github.com/silps/codebuddy/archive/master.zip
-* run cmd or terminal
-```bash
-cd path/to/repo
-npm install
-node app
-```
+* install mongoDB http://www.mongodb.org/downloads
+* download git repo https://github.com/silps/codesnail/archive/master.zip
+* run cmd or terminal and go to the project directory
+* run npm install and node app
 * open http://127.0.0.1:3000
-
-Linux
------
 ```bash
 sudo apt-get install nodejs npm mongodb
 git clone https://github.com/silps/codesnail.git
