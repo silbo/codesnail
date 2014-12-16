@@ -1,18 +1,18 @@
 {
     "name": "codesnail",
-    "version": "0.2.1", 
+    "version": "0.0.1", 
     "description": "A website where users learn to code while competing against each other",
   
     "keywords": [
-        "Node.js",
-        "challenge",
-        "teaching"
+        "STEM",
+        "teaching",
+        "challenges"
     ],
 
     "homepage": "http://www.codesnail.com/",
     "repository": {
         "type": "git",
-        "url": "http://github.com/silps/codebuddy.git"
+        "url": "http://github.com/silps/codesnail.git"
     },
 
     "engines": {
@@ -21,6 +21,7 @@
     },
 
     "dependencies": {
+        "share": "*",
         "jade": "0.35.0",
         "node-uuid": "*",
         "crypto": "0.0.3",
@@ -41,6 +42,10 @@
         "passport-facebook": "1.0.2",
         "passport-linkedin": "0.1.3",
         "passport-google-oauth": "0.1.5"
+    },
+
+    "scripts": {
+        "test": "node test/tests.js"
     },
 
     "private": true,
