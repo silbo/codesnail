@@ -1,5 +1,4 @@
-codesnail
-[![Build Status](https://travis-ci.org/silps/codesnail.svg?branch=master)](https://travis-ci.org/silps/codesnail)
+codesnail [![Build Status](https://travis-ci.org/silps/codesnail.svg?branch=master)](https://travis-ci.org/silps/codesnail)
 =========
 
 A website where users learn to code while competing against each other
