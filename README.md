@@ -1,7 +1,7 @@
 codesnail
 =========
 
-[![Build Status](https://travis-ci.org/silps/codesnail.svg?branch=master)](https://travis-ci.org/silps/codesnail)
+[![Build Status](https://travis-ci.org/silps/codesnail.svg?branch=master)](https://travis-ci.org/silps/codesnail) <br>
 A website where users learn to code while competing against each other
 
 setup
