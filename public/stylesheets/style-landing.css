@@ -24,7 +24,6 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'OstrichSansRoundedMedium';
-    font-weight: 300;
 }
 
 a:hover {
@@ -285,7 +284,7 @@ li[class^="socicon"].large:before, li[class*=" socicon"].large:before {
 
 .header {
     margin-bottom: 85px;
-    background-image: url(../images/hero.jpg);
+    background-image: url(../images/hero.png);
     background-position: top center;
     
     background-repeat: no-repeat;
@@ -293,6 +292,7 @@ li[class^="socicon"].large:before, li[class*=" socicon"].large:before {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    background-color: black;
 }
 
 /* top nav */
