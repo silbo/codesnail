@@ -4,7 +4,7 @@ var oldCode = undefined;
 /* When DOM has been loaded */
 window.onload = function() {
 	// initialize blockly
-	Blockly.inject(document.getElementById('blocklyDiv'), { path: '/blockly/', toolbox: document.getElementById('toolbox') });
+	//Blockly.inject(document.getElementById('blocklyDiv'), { path: '/blockly/', toolbox: document.getElementById('toolbox') });
 
 	socket = io.connect();
 

@@ -83,7 +83,7 @@ app.get('/logout', user.logout);
 app.get('/chat', routes.chat);
 app.get('/study', routes.study);
 app.all('/coding', routes.coding);
-app.get('/sumorobot', routes.sumorobot);
+app.get('/ninjasinthebox', routes.sumorobot);
 app.get('/dashboard', auth.ensureAuthenticated, routes.dashboard);
 
 /* Profile pages */
