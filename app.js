@@ -2,21 +2,21 @@
 
 /* Add modules */
 var express = require('express'),
-	app = express(),
-	fs = require('fs'),
-	http = require('http'),
-	jade = require('jade'),
-	routes = require('./routes'),
-	passport = require('passport'),
-	user = require('./routes/user'),
-	flash = require('connect-flash'),
-	db = require('./config/database'),
-	config = require('./config/config'),
-	emailing = require('./config/email'),
-	session = require('express-session'),
-	auth = require('./config/authentication'),
-	MongoStore = require('connect-mongo')(session),
-	expressValidator = require('express-validator');
+    app = express(),
+    fs = require('fs'),
+    http = require('http'),
+    jade = require('jade'),
+    routes = require('./routes'),
+    passport = require('passport'),
+    user = require('./routes/user'),
+    flash = require('connect-flash'),
+    db = require('./config/database'),
+    config = require('./config/config'),
+    emailing = require('./config/email'),
+    session = require('express-session'),
+    auth = require('./config/authentication'),
+    MongoStore = require('connect-mongo')(session),
+    expressValidator = require('express-validator');
 
 /* Create a session store that is connected to the users */
 var SessionStore = new MongoStore({ url: config.database_url });
@@ -25,9 +25,9 @@ app.set('view engine', 'jade');
 app.use(express.static(__dirname + "/public"));
 app.use(expressValidator());
 app.use(session({
-	store: SessionStore,
-	secret: config.session_secret,
-	cookie: { maxAge : 3600000 * 24 * 3 }, // 3 days
+    store: SessionStore,
+    secret: config.session_secret,
+    cookie: { maxAge : 3600000 * 24 * 3 }, // 3 days
 }));
 app.use(flash());
 /* Set the view variables */
@@ -96,28 +96,28 @@ app.get('/profile/mugshot/:provider', auth.ensureAuthenticated, user.mugshotUpda
 
 /* Show all the users and providers and tasks */
 db.User.find(function(err, users) {
-	if (err) return new Error(err);
-	else users.forEach(function(user) {
-		console.log("INFO", "user name:", user.name);
-	});
+    if (err) return new Error(err);
+    else users.forEach(function(user) {
+        console.log("INFO", "user name:", user.name);
+    });
 });
 db.Provider.find(function(err, providers) {
-	if (err) return new Error(err);
-	else providers.forEach(function(provider) {
-		console.log("INFO", "provider url:", provider.url);
-	});
+    if (err) return new Error(err);
+    else providers.forEach(function(provider) {
+        console.log("INFO", "provider url:", provider.url);
+    });
 });
 db.Task.find(function(err, tasks) {
-	if (err) return new Error(err);
-	else tasks.forEach(function(task) {
-		console.log("INFO", "task:", task.name);
-	});
+    if (err) return new Error(err);
+    else tasks.forEach(function(task) {
+        console.log("INFO", "task:", task.name);
+    });
 });
 
 /* Start the app and sockets */
 var server = http.createServer(app).listen(config.port, function() {
-	console.log("INFO", "express server listening on port:", config.port);
-	var socket = require('./config/socket');
+    console.log("INFO", "express server listening on port:", config.port);
+    var socket = require('./config/socket');
 });
 
 /* Export items for other modules */
