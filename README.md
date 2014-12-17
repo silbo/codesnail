@@ -24,7 +24,7 @@ firefox 127.0.0.1:3000
 links
 =====
 
-* Report https://www.sharelatex.com/project/52e8420b7487ca4941000b9f
+* report about codesnail https://www.sharelatex.com/project/52e8420b7487ca4941000b9f
 
 credits ^_^
 ===========
