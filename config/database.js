@@ -7,7 +7,12 @@ var utils = require('./utils'),
 var mongoose = require("mongoose");
 var collections = ["users", "providers", "courses", "badges"];
 console.log("INFO", "connecting to database on:", config.database_url);
-mongoose.connect(config.database_url, collections);
+try {
+    mongoose.connect(config.database_url, collections);
+} catch (error) {
+    console.log("ERROR", "failed to connect ot database: ", error);
+    process.exit(1);
+}
 /* Debug mode */
 mongoose.set('debug', true);
 
