@@ -20,39 +20,48 @@ exports.dashboard = function(req, res) {
     });
 };
 
-/* Study section */
-exports.study = function(req, res) {
+var checkUser = function(req) {
     if (!req.user) {
         req.session.passport.user = utils.generateGuest();
-        console.log(req.session.passport.user);
         req.user = req.session.passport.user;
     }
+};
+
+/* Study section */
+exports.study = function(req, res) {
+    checkUser(req);
     res.render('study', { user: req.user });
 }
 
 /* Coding section */
 exports.coding = function(req, res) {
-    if (!req.user) {
-        req.session.passport.user = utils.generateGuest();
-        req.user = req.session.passport.user;
-    }
+    checkUser(req);
     res.render('coding', { user: req.user });
-};
-
-/* Sumorobot programming section */
-exports.sumorobot = function(req, res) {
-    if (!req.user) {
-        req.session.passport.user = utils.generateGuest();
-        req.user = req.session.passport.user;
-    }
-    res.render('sumorobot', { user: req.user });
 };
 
 /* Chatting section */
 exports.chat = function(req, res) {
-    if (!req.user) {
-        req.session.passport.user = utils.generateGuest();
-        req.user = req.session.passport.user;
-    }
+    checkUser(req);
     res.render('chat', { user: req.user });
+};
+
+/* Sumorobot programming section */
+exports.sumorobot = function(req, res) {
+    checkUser(req);
+    res.render('sumorobot', { user: req.user });
+};
+
+exports.ninjasinthebox = function(req, res) {
+    checkUser(req);
+    res.render('ninjasinthebox', { user: req.user });
+};
+
+exports.lucy = function(req, res) {
+    checkUser(req);
+    res.render('lucy', { user: req.user });
+};
+
+exports.coddee = function(req, res) {
+    checkUser(req);
+    res.render('coddee', { user: req.user });
 };

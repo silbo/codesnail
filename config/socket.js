@@ -29,7 +29,7 @@ io.use(passportSocketIo.authorize({
 }));
 
 /* Online users */
-var onlineUsers = { 'dashboard': {}, 'study': {}, 'coding': {}, 'sumorobot': {}, 'chat': {} };
+var onlineUsers = { 'dashboard': {}, 'study': {}, 'coding': {}, 'chat': {}, 'sumorobot': {}, 'games': {} };
 var sockUsers = [];
 var eSocks = [];
 

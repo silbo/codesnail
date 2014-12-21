@@ -8,23 +8,21 @@ block content
     script(type='text/javascript', src='/javascripts/blockly/javascript_compressed.js')
 
     .box-title
-        h3 Ninjas In The Box
+        h3 Sumorobot
     .box-content
-        p Please resize the browser window to decrease the width for better playing.
-        iframe(src="http://morriswinkler.koding.io/" width="100%" height="1495px")
         div#video
             //img(src="http://localhost:8080/?action=stream")
 
-        //div#blocklyDiv(style="height: 400px;")
+        div#blocklyDiv(style="height: 400px;")
 
-        //xml#toolbox(style="display: none").
-        //    <block type="controls_arduino_main"></block>
-        //    <block type="controls_if"></block>
-        //    <block type="controls_arduino_motor"></block>
-        //    <block type="controls_arduino_move"></block>
-        //    <block type="controls_arduino_opponent"></block>
-        //    <block type="controls_arduino_line"></block>
+        xml#toolbox(style="display: none").
+            <block type="controls_arduino_main"></block>
+            <block type="controls_if"></block>
+            <block type="controls_arduino_motor"></block>
+            <block type="controls_arduino_move"></block>
+            <block type="controls_arduino_opponent"></block>
+            <block type="controls_arduino_line"></block>
 
-        //div#buttons
-        //    input(type="button", class="btn btn-primary", value="Send Code", onclick="javascript:sendCode();")
-        //    input(type="button", class="btn btn-primary", value="Show Code", onclick="javascript:showCode();")
+        div#buttons
+            input(type="button", class="btn btn-primary", value="Send Code", onclick="javascript:sendCode();")
+            input(type="button", class="btn btn-primary", value="Show Code", onclick="javascript:showCode();")
