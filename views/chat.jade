@@ -13,10 +13,12 @@ block content
     .box-title
         h3 Code & Chat
     .box-content
-        div#code(style="float:left;width:45%;")
-        iframe#prev(style="width:45%;margin-left:10px;")
+        div#code(style="float:left;width:49%;")
+        iframe#prev(style="float:right;width:49%;height:300px;padding:0px;margin:0px;")
         .clear
-        textarea#chat(style="width: 45%; height: 100px;", placeholder="Chat with other users", disabled="disabled")
-        .clear
-        input#message(style="width: 42%;", type="text", placeholder="Message")
-        input#submit-chat(type="submit", class="btn btn-primary", value="Send")
+        div(style="margin-top:1%;")
+            textarea#chat(style="width:100%;height:100px;padding:0px;", placeholder="Chat with other users", disabled="disabled")
+            div
+                input#message(style="float:left;width:100%;margin:0px;padding-right:0px;padding-left:0px;", type="text", placeholder="Message")
+                input#submit-chat(type="submit", class="btn btn-primary", value="Send")
+            .clear
