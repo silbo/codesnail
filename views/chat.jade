@@ -2,9 +2,13 @@ extends layout
 
 block content
 
-    script(type="text/javascript", src="/socket.io/socket.io.js")
-    script(type="text/javascript", src="/ace/ace.js")
-    script(type="text/javascript", src="/javascripts/chat.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/javascripts/ace/ace.js")
+    script(src="/channel/bcsocket.js")
+    script(src="text.js")
+    script(src="share.uncompressed.js")
+    script(src="/javascripts/sharejs_ace.js")
+    script(src="/javascripts/chat.js")
 
     .box-title
         h3 Code & Chat

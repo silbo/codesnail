@@ -19,7 +19,7 @@ var express = require('express'),
     expressValidator = require('express-validator');
 
 /* Create a session store that is connected to the users */
-var SessionStore = new MongoStore({ url: config.database_url });
+var SessionStore = new MongoStore({ url: config.database_url, auto_reconnect: true });
 /* Set app properties */
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + "/public"));
@@ -119,6 +119,43 @@ var server = http.createServer(app).listen(config.port, function() {
     console.log("INFO", "express server listening on port:", config.port);
     var socket = require('./config/socket');
 });
+
+/* sharejs */
+var share = require('share');
+var livedb = require('livedb');
+var Duplex = require('stream').Duplex;
+var browserChannel = require('browserchannel').server;
+var sharejs = share.server.createClient({ backend: livedb.client(livedb.memory()) });
+/* client libraries */
+app.use(express.static(share.scriptsDir));
+/* streaming events */
+app.use(browserChannel({webserver: app.server}, function(client) {
+    var stream = new Duplex({objectMode: true});
+
+    stream._read = function() {};
+    stream._write = function(chunk, encoding, callback) {
+        if (client.state !== 'closed') {
+            client.send(chunk);
+        }
+        callback();
+    };
+
+    client.on('message', function(data) {
+        stream.push(data);
+    });
+
+    client.on('close', function(reason) {
+        stream.push(null);
+        stream.emit('close');
+    });
+
+    stream.on('end', function() {
+        client.close();
+    });
+
+    /* Give the stream to sharejs */
+    return sharejs.listen(stream);
+}));
 
 /* Export items for other modules */
 exports.server = server;

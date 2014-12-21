@@ -25,23 +25,11 @@ window.onload = function() {
 		}
 	});
 
-	/* Receive shared code */
-	socket.on("receive-code", function(code) {
-		editor.setValue(code, 1);
-        ifbody.html(editor.getValue());
-	});
-
 	/* Receive shared chat */
 	socket.on("receive-chat", function(userName, chat) {
         notifySound(); //played twice ignore if from current user
 		$("#chat").append(userName + ": " + chat + "\n");
 		$('#chat').scrollTop($('#chat')[0].scrollHeight);
-	});
-
-	/* Execute when user types */
-	$("#code").keydown(function() {
-		/* Send the code to other users */
-		socket.emit("share-code", "chat", editor.getValue());
 	});
 
 	/* Execute when user presses enter */
@@ -77,28 +65,20 @@ window.onload = function() {
 	editor.setOptions({ maxLines: 12, minLines: 12 });
 	editor.setAutoScrollEditorIntoView(true);
 
-
-    editor.on("change",function(obj){
+    editor.on("change", function(obj) {
         ifbody.html(editor.getValue());
     });
 
-	/* Load emmet for fast coding */
-	ace.config.loadModule("ace/ext/emmet", function() {
-		ace.require("ace/lib/net").loadScript("http://nightwing.github.io/emmet-core/emmet.js", function() {
-			editor.setOption("enableEmmet", true);
-		});
-
-		editor.setOptions({
-			enableSnippets: true,
-			enableBasicAutocompletion: true
-		});
-	});
-
-	/* Enable autocomplete */
-	ace.config.loadModule("ace/ext/language_tools", function() {
-		editor.setOptions({
-			enableSnippets: true,
-			enableBasicAutocompletion: true
-		});
-	});
+    /* sharejs stuff */
+    var sucket = new BCSocket(null, {reconnect: true});
+    var sjs = new sharejs.Connection(sucket);
+    var doc = sjs.get('docs', 'hello');
+    // Subscribe to changes
+    doc.subscribe();
+    // This will be called when we have a live copy of the server's data.
+    doc.whenReady(function() {
+        console.log('doc ready, data: ', doc.getSnapshot());
+        if (!doc.type) doc.create('text');
+        doc.attach_ace(editor);
+    });
 }
