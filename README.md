@@ -24,10 +24,16 @@ firefox 127.0.0.1:3000
 links
 =====
 
-* report about codesnail https://www.sharelatex.com/project/52e8420b7487ca4941000b9f
+* report about codesnail on sharelatex https://www.sharelatex.com/project/52e8420b7487ca4941000b9f
 
 credits ^_^
 ===========
 
-* Node.js developers
-* node-passport developers
+* http://socket.io/
+* http://nodejs.org/
+* https://mongolab.com/
+* https://travis-ci.org/
+* http://www.mongodb.org/
+* https://www.sharelatex.com/
+* https://www.versioneye.com/
+* https://github.com/share/ShareJS/
