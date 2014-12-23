@@ -78,7 +78,7 @@ window.onload = function () {
             title: "Want to compete?",
             open: function (eve, ui) {
 
-                var htm = '<div style="width:200px;"><div style="float:left;margin-right:20px; "><img class="mugshot" src="' + onlineUsers[data.email].profile.mugshot + '" alt="mugshot" /></div><div style="margin-left:30px;margin-top: 5px;"><div class="eUsername">' + onlineUsers[data.email].name + '</div><div style="font-size: 0.75em;">points:' + onlineUsers[data.email].profile.points + '</div></div></div>';
+                var htm = '<div style="width:200px;"><div style="float:left;margin-right:20px; "><center><img class="mugshot" src="' + onlineUsers[data.email].profile.mugshot + '" alt="mugshot" /></center></div><div style="margin-left:30px;margin-top: 5px;"><div class="eUsername">' + onlineUsers[data.email].name + '</div><div style="font-size: 0.75em;">points:' + onlineUsers[data.email].profile.points + '</div></div></div>';
                 htm += "<div style='clear:left;'></div>";
                 $(this).html(htm);
                 notifySound();
@@ -186,7 +186,7 @@ function inviteToECode() {
             for (var user in onlineUsers) {
                 //window.console.log(user);
                 if (user != currentUser.email) {
-                    var htm = '<div style="width:200px;"><div style="float:left;"><img class="mugshot" src="' + onlineUsers[user].profile.mugshot + '" alt="mugshot" /></div><div style="margin-left:20px;margin-top: 5px;"><div class="eUsername">' + onlineUsers[user].name + '</div><div style="font-size: 0.75em;">points:' + onlineUsers[user].profile.points + '</div></div></div>';
+                    var htm = '<div style="width:200px;"><div style="float:left;"><center><img class="mugshot" src="' + onlineUsers[user].profile.mugshot + '" alt="mugshot" /></center></div><div style="margin-left:20px;margin-top: 5px;"><div class="eUsername">' + onlineUsers[user].name + '</div><div style="font-size: 0.75em;">points:' + onlineUsers[user].profile.points + '</div></div></div>';
                     htm += "<div style='clear:left;'></div>"
                     $("#oUser").append("<li userdata='" + user + "'>" + htm + "</li>");
                 }
