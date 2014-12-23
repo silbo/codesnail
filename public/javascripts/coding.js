@@ -252,12 +252,12 @@ function initiateECode(on) {
     $("#online-users").append(
         '<div id="' + currentUser.name.replace(/ /g, "") + '" class="user" onclick="javascript:getCode(\'' + currentUser.email + '\')">' +
         '<a class="mugshot-link" href="#" title="show code">' +
-        '<img class="mugshot" src="' + currentUser.profile.mugshot + '" alt="mugshot" />' +
+        '<center><img class="mugshot" src="' + currentUser.profile.mugshot + '" alt="mugshot" /></center>' +
         '<p>' + currentUser.name + '</p><p>points: ' + currentUser.profile.points + '</p></a></div>');
     $("#online-users").append(
         '<div id="' + opponent.name.replace(/ /g, "") + '" class="user" onclick="javascript:getCode(\'' + opponent.email + '\')">' +
         '<a class="mugshot-link" href="#" title="show code">' +
-        '<img class="mugshot" src="' + opponent.profile.mugshot + '" alt="mugshot" />' +
+        '<center><img class="mugshot" src="' + opponent.profile.mugshot + '" alt="mugshot" /></center>' +
         '<p>' + opponent.name + '</p><p>points: ' + opponent.profile.points + '</p></a></div>');
 
     var newAdd = window.location.protocol + "//" + window.location.host + "/" + on;
@@ -289,7 +289,7 @@ function initiateECode(on) {
             /* Animate the user win */
             var offset = $("#" + name.replace(/ /g, "")).offset();
             /* Animate the userpoints */
-            $("#code-points").css({ top: offset.top, left: offset.left });
+            $("#code-points").css({ top: offset.top, left: offset.left+24 });
             $("#code-points").html("<img src='/images/" + points + "_points_badge.png' alt='points'>");
             $("#code-points").toggle("bounce", { times: 1 }, "slow");
             $("#code-points").fadeOut("fast");
