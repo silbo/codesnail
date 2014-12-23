@@ -44,6 +44,7 @@ window.onload = function () {
         $('#task').fadeOut("slow", function () {
             $("#task").html("<h3>" + task.name + "</h3>");
             $("#task").fadeIn("slow");
+            editor.setValue(task.initial);
         });
     });
 
@@ -54,7 +55,7 @@ window.onload = function () {
             /* Animate the user win */
             var offset = $("#" + name.replace(/ /g, "")).offset();
             /* Animate the user points */
-            $("#code-points").css({ top: offset.top, left: offset.left });
+            $("#code-points").css({ top: offset.top, left: offset.left+24 });
             $("#code-points").html("<img src='/images/" + points + "_points_badge.png' alt='points'>");
             $("#code-points").toggle("bounce", { times: 1 }, "slow");
             $("#code-points").fadeOut("fast");

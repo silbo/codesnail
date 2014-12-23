@@ -17,8 +17,8 @@ exports.getTask = function getTask() {
         if (err) return new Error(err);
         else tasks = etasks = db_tasks;
     });
-    if (tasks.length == 0) return { name: "Currently no tasks available" };
-    return { name: tasks[currentTask].name, points: tasks[currentTask].points };
+    if (tasks.length == 0) return { name: "Please refresh the broswer to load the tasks" };
+    return { name: tasks[currentTask].name, points: tasks[currentTask].points, initial: tasks[currentTask].initial };
 }
 
 /* Check if task is complete */

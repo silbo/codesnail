@@ -88,8 +88,9 @@ div#code-points, div#eCode-points {
 }
 
 div#code-message {
-    height: 125px;
+    height: 200px;
     display: none;
+    margin-top: 10px;
 }
 
 div#content {

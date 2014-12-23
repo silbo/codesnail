@@ -34,6 +34,7 @@ var ProviderSchema = new Schema({
 
 var TaskSchema = new Schema({
 	name: { type: String, unique: true, required: true },
+    initial: String,
 	description: String,
 	verification: String,
 	points: { type: Number, required: true, default: 0 },
