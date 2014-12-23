@@ -226,7 +226,7 @@ function startECodeServer(on, pe1, pe2) {
 	function geteTask() {
 		if (etasks.length == 0) return { name: "Currently no tasks available" };
 		if (etasks.length == currenteTask) return { name: "Done" };
-		return { name: "Task " + (currenteTask + 1) + ": " + etasks[currenteTask].name, points: etasks[currenteTask].points };
+		return { name: "Task " + (currenteTask + 1) + ": " + etasks[currenteTask].name, points: etasks[currenteTask].points, initial: etasks[currentTask].initial };
 	}
 
 	/* Check if task is complete */

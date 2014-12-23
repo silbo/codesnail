@@ -260,7 +260,6 @@ function initiateECode(on) {
         '<img class="mugshot" src="' + opponent.profile.mugshot + '" alt="mugshot" />' +
         '<p>' + opponent.name + '</p><p>points: ' + opponent.profile.points + '</p></a></div>');
 
-
     var newAdd = window.location.protocol + "//" + window.location.host + "/" + on;
     ///window.console.log(newAdd);
     eSock = io.connect(newAdd); //all ecomunication on this sock now
@@ -279,6 +278,7 @@ function initiateECode(on) {
         $('#eTask').fadeOut("slow", function() {
             $("#eTask").html("<h3>" + task.name + "</h3>");
             $("#eTask").fadeIn("slow");
+            p1.setValue(task.initial);
         });
     });
 
