@@ -128,7 +128,11 @@ var share = require('share');
 var livedb = require('livedb');
 var Duplex = require('stream').Duplex;
 var browserChannel = require('browserchannel').server;
-var sharejs = share.server.createClient({ backend: livedb.client(livedb.memory()) });
+
+var livedbmongo = require('livedb-mongo');
+var mongo = livedbmongo(config.database_url, {safe:true});
+
+var sharejs = share.server.createClient({ backend: livedb.client(mongo) });
 /* client libraries */
 app.use(express.static(share.scriptsDir));
 /* streaming events */
