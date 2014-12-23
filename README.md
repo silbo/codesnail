@@ -6,6 +6,8 @@ A website where users learn to code while competing against each other
 setup
 =====
 
+basic setup
+-----------
 * install node.js http://nodejs.org/download/
 * install mongoDB http://www.mongodb.org/downloads
 * download git repo https://github.com/silps/codesnail/archive/master.zip
@@ -23,7 +25,9 @@ export MONGOLAB_URI="mongodb://dbuser:dbpass@host:port/dbname"
 node app
 firefox 127.0.0.1:3000
 ```
-* additional environment variables
+
+additional setup
+----------------
 ```bash
 # APP CONF #
 export APP_NAME="CodeSnail"
@@ -58,8 +62,8 @@ credits ^_^
 
 * http://socket.io/
 * http://nodejs.org/
-* https://mongolab.com/
 * https://travis-ci.org/
+* https://mongolab.com/
 * http://www.mongodb.org/
 * https://www.sharelatex.com/
 * https://www.versioneye.com/
