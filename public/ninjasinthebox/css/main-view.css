@@ -1,0 +1,74 @@
+#main-view {
+    z-index: 999;
+    height: auto;
+	background: #950723;
+}
+
+#main-view .title {
+	width: 96%;
+	height: auto;
+	margin: 2%;
+}
+
+#main-view .bg {
+	width: 96%;
+	margin: 2%;
+	height: auto;
+}
+
+#main-view .ninja {
+	text-align: center;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+}
+
+#main-view .ninja img {
+	width: 35%;
+}
+
+#main-view .play-btn {
+	position: relative;
+	top: 75%;
+	z-index: 10;
+	text-align: center;
+	margin-top: 7%;
+	width: 100%;
+}
+
+#main-view .row {
+	margin-bottom: 5px;
+}
+
+#main-view .team-up-body {
+	margin-top: 20px;
+}
+
+#main-view .team-up-body .btn-sm {
+	font-family: 'OpenSans', sans-serif;
+	font-size: 12px;
+	padding: 2px 15px;
+}
+
+#main-view ul {
+	padding-left: 30px;
+}
+
+#main-view ul.room-user-list {
+	list-style: none;
+	margin: 0;
+	margin-top: 7px;
+	padding: 0;
+}
+
+#main-view .room-user-list li {
+	list-style: none;
+	font-family: 'OpenSans';
+	font-size: 12px;
+	color: #001231;
+	line-height: 14px;
+	margin: 0;
+	margin-bottom: 5px;
+	padding: 0;
+}
