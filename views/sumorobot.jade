@@ -4,11 +4,12 @@ block content
 
     script(type='text/javascript', src='/javascripts/sumorobot.js')
     script(type='text/javascript', src='/javascripts/blockly/blockly_compressed.js')
-    script(type='text/javascript', src='/javascripts/blockly/en_compressed.js')
     script(type='text/javascript', src='/javascripts/blockly/javascript_compressed.js')
+    script(type='text/javascript', src='/javascripts/blockly/blocks_compressed.js')
+    script(type='text/javascript', src='/javascripts/blockly/msg/js/en.js')
 
     .box-title
-        h3 Sumorobot
+        h3 Sumo robot
     .box-content
         p This is the 
             a(href="https://developers.google.com/blockly/") Blockly 
@@ -22,14 +23,6 @@ block content
             //img(src="http://localhost:8080/?action=stream")
 
         div#blocklyDiv(style="height: 400px;")
-
-        xml#toolbox(style="display: none").
-            <block type="controls_arduino_main"></block>
-            <block type="controls_if"></block>
-            <block type="controls_arduino_motor"></block>
-            <block type="controls_arduino_move"></block>
-            <block type="controls_arduino_opponent"></block>
-            <block type="controls_arduino_line"></block>
 
         div#buttons
             input(type="button", class="btn btn-primary", value="Send Code", onclick="javascript:sendCode();")
