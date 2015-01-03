@@ -19,13 +19,15 @@ var express = require('express'),
     expressValidator = require('express-validator');
 
 /* Create a session store that is connected to the users */
-var SessionStore = new MongoStore({ url: config.database_url, auto_reconnect: true });
+var SessionStore = new MongoStore({ url: config.database_url, autoReconnect: true });
 /* Set app properties */
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + "/public"));
 app.use(expressValidator());
 app.use(session({
+    resave: true,
     store: SessionStore,
+    saveUninitialized: true,
     secret: config.session_secret,
     cookie: { maxAge : 3600000 * 24 * 3 }, // 3 days
 }));
