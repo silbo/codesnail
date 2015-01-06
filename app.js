@@ -85,10 +85,12 @@ app.get('/logout', user.logout);
 app.get('/chat', routes.chat);
 app.get('/study', routes.study);
 app.all('/coding', routes.coding);
-app.get('/sumorobot', routes.sumorobot);
-app.get('/ninjasinthebox', routes.ninjasinthebox);
+
+/* External projects and games */
 app.get('/lucy', routes.lucy);
 app.get('/coddee', routes.coddee);
+app.get('/robokoding', routes.robokoding);
+app.get('/ninjasinthebox', routes.ninjasinthebox);
 app.get('/dashboard', auth.ensureAuthenticated, routes.dashboard);
 
 /* Profile pages */
@@ -125,47 +127,11 @@ var server = http.createServer(app).listen(config.port, function() {
     var socket = require('./config/socket');
 });
 
-/* sharejs */
-var share = require('share');
-var livedb = require('livedb');
-var Duplex = require('stream').Duplex;
-var browserChannel = require('browserchannel').server;
-
-var livedbmongo = require('livedb-mongo');
-var mongo = livedbmongo(config.database_url, {safe:true});
-
-var sharejs = share.server.createClient({ backend: livedb.client(mongo) });
-/* client libraries */
-app.use(express.static(share.scriptsDir));
-/* streaming events */
-app.use(browserChannel({webserver: app.server}, function(client) {
-    var stream = new Duplex({objectMode: true});
-
-    stream._read = function() {};
-    stream._write = function(chunk, encoding, callback) {
-        if (client.state !== 'closed') {
-            client.send(chunk);
-        }
-        callback();
-    };
-
-    client.on('message', function(data) {
-        stream.push(data);
-    });
-
-    client.on('close', function(reason) {
-        stream.push(null);
-        stream.emit('close');
-    });
-
-    stream.on('end', function() {
-        client.close();
-    });
-
-    /* Give the stream to sharejs */
-    return sharejs.listen(stream);
-}));
-
 /* Export items for other modules */
 exports.server = server;
+exports.express = express;
+exports.application = app;
 exports.SessionStore = SessionStore;
+
+/* load share.js */
+var share = require('./config/share');
