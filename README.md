@@ -50,7 +50,7 @@ export FACEBOOK_KEY="<facebook-key>"
 export FACEBOOK_SECRET="<facebook-secret>"
 export LINKEDIN_KEY="<linkedin-key>"
 export LINKEDIN_SECRET="<linkedin-secret>"
-# DataBase
+# DATABASE
 export MONGOLAB_URI="mongodb://dbuser:dbpass@host:port/dbname"
 ```
 
