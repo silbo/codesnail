@@ -13,7 +13,7 @@ var db = require('./database'),
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 /* Simple route middleware to ensure user does not go back to login or register after login. */
-exports.checkLogin = function ensureAuthenticated(req, res, next) {
+exports.checkLogin = function checkLogin(req, res, next) {
     /* When user is logged in */
     if (req.isAuthenticated() && req.user.verification.verified) {
         return res.redirect("/profile");

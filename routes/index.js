@@ -45,10 +45,10 @@ exports.chat = function(req, res) {
     res.render('chat', { user: req.user });
 };
 
-/* Sumorobot programming section */
-exports.sumorobot = function(req, res) {
+/* RoboKoding section */
+exports.robokoding = function(req, res) {
     checkUser(req);
-    res.render('sumorobot', { user: req.user });
+    res.render('robokoding', { user: req.user });
 };
 
 exports.ninjasinthebox = function(req, res) {
