@@ -13,6 +13,8 @@ window.onload = function() {
 	socket.on("users", function(users) {
 		/* When the online users div does not exist */
 		if ($("#online-users") == null) return;
+		/* Show the room name */
+        $("#room").html("(in room chat)");
 		/* Empty the online users div */
 		$("#online-users").html("");
 		/* Populate all the online users */
@@ -81,4 +83,17 @@ window.onload = function() {
         if (!doc.type) doc.create('text');
         doc.attach_ace(editor);
     });
+
+    /* sharejs stuff */
+    /*var sucket = new BCSocket(null, {reconnect: true});
+    var sjs = new sharejs.Connection(sucket);
+    var doc = sjs.get('docs', 'hello');
+    // Subscribe to changes
+    doc.subscribe();
+    // This will be called when we have a live copy of the server's data.
+    doc.whenReady(function() {
+        console.log('doc ready, data: ', doc.getSnapshot());
+        if (!doc.type) doc.create('json0');
+        doc.attach_ace(editor);
+    });*/
 }

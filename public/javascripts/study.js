@@ -8,6 +8,8 @@ window.onload = function() {
 	socket.on("users", function(users) {
 		/* When the online users div does not exist */
 		if ($("#online-users") == null) return;
+		/* Show the room name */
+        $("#room").html("(in room study)");
 		/* Empty the online users div */
 		$("#online-users").html("");
 		/* Populate all the online users */
