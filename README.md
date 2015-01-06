@@ -13,7 +13,7 @@ basic setup
 * download git repo https://github.com/silps/codesnail/archive/master.zip
 * run cmd or terminal and go to the project directory
 * run npm install
-* set the MONGOLAB_URI environment variable
+* create a directory for mongoDB
 * run node app
 * open http://127.0.0.1:3000
 ```bash
@@ -21,7 +21,7 @@ sudo apt-get install nodejs npm mongodb
 git clone https://github.com/silps/codesnail.git
 cd codesnail
 npm install
-export MONGOLAB_URI="mongodb://dbuser:dbpass@host:port/dbname"
+sudo mkdir -p /data/db && sudo chmod 777 /data/db
 node app
 firefox 127.0.0.1:3000
 ```
@@ -33,7 +33,7 @@ additional setup
 export APP_NAME="CodeSnail"
 export ADMIN_NAME="John Schmidt"
 export HOSTNAME="http://localhost:3000"
-export ADMIN_EMAIL="<admin-email>"
+export ADMIN_EMAIL="john.schmidt@mail.com"
 export SESSION_SECRET="mega-awesome-secret-yay"
 # SMTP CONF #
 export SMTP_HOST="<smtp-host>"
@@ -50,6 +50,8 @@ export FACEBOOK_KEY="<facebook-key>"
 export FACEBOOK_SECRET="<facebook-secret>"
 export LINKEDIN_KEY="<linkedin-key>"
 export LINKEDIN_SECRET="<linkedin-secret>"
+# DATABASE
+export MONGOLAB_URI="mongodb://dbuser:dbpass@host:port/dbname"
 ```
 
 links
