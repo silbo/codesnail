@@ -173,7 +173,7 @@ function codeChanged() {
 }
 
 /* Connect */
-function onConnect() {
+function connect() {
     Blockly.addChangeListener(codeChanged);
     var host = $("#host").val();
     sumorobot = new Sumorobot('ws://' + host + ':8899/websocket');
