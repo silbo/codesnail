@@ -1,5 +1,7 @@
+var prev_code = "";
 var socket = undefined;
 var oldCode = undefined;
+var sumorobot = undefined;
 
 /* When DOM has been loaded */
 window.onload = function() {
@@ -142,6 +144,39 @@ window.onload = function() {
             '<block type="enemy"><title name="ENEMY">ENEMY_FRONT</title></block>' +
             '<block type="line"><title name="LINE">LINE_FRONT</title></block></xml>'
     });
+}
+
+function codeChanged() {
+    var code = Blockly.JavaScript.workspaceToCode();
+    if (code !== prev_code) {
+        console.log("changed");
+        pre_code = code;
+
+        if (code.match(/test/)) {
+            code = code.replace("ENEMY_LEFT\)", "sumorobot.isSensor('enemy', 'left', function()");
+            code = code.replace("ENEMY_RIGHT\)", "sumorobot.isSensor('enemy', 'right', function()");
+            code = code.replace("ENEMY_FRONT\)", "sumorobot.isSensor('enemy', 'front', function()");
+            code = code.replace("LINE_LEFT\)", "sumorobot.isSensor('line', 'left', function()");
+            code = code.replace("LINE_RIGHT\)", "sumorobot.isSensor('line', 'right', function()");
+            code = code.replace("LINE_FRONT\)", "sumorobot.isSensor('line', 'front', function()");
+            code = code.replace("if\(", "");
+            code = code.replace("else if\(", "");
+        }
+        code = code.replace("forward\(\)", "sumorobot.move('forward')");
+        code = code.replace("backward\(\)", "sumorobot.move('backward')");
+        code = code.replace("left\(\)", "sumorobot.move('left')");
+        code = code.replace("right\(\)", "sumorobot.move('right')");
+        code = code.replace("stop\(\)", "sumorobot.move('stop')");
+        console.log(code);
+        eval(code);
+    }
+}
+
+/* Connect */
+function onConnect() {
+    Blockly.addChangeListener(codeChanged);
+    var host = $("#host").val();
+    sumorobot = new Sumorobot('ws://' + host + ':8899/websocket');
 }
 
 /* Send the code */
