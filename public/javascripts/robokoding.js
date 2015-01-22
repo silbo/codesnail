@@ -1,7 +1,7 @@
-var prev_code = "";
+var sumorobot_code = "";
 var socket = undefined;
-var oldCode = undefined;
 var sumorobot = undefined;
+var sumorobot_version = "unknown";
 
 /* When DOM has been loaded */
 window.onload = function() {
@@ -144,39 +144,130 @@ window.onload = function() {
             '<block type="enemy"><title name="ENEMY">ENEMY_FRONT</title></block>' +
             '<block type="line"><title name="LINE">LINE_FRONT</title></block></xml>'
     });
+    /* When local storage available */
+    if (supportsLocalStorage && localStorage['sumorobot.currentProgram']) {
+        console.log(localStorage['sumorobot.currentProgram']);
+        var xml = Blockly.Xml.textToDom(localStorage['sumorobot.currentProgram']);
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+    }
+    /* Add a change listener to Blockly */
+    Blockly.addChangeListener(codeChanged);
+}
+
+function supportsLocalStorage() {
+    try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+    } catch (e) {
+        return false;
+    }
+}
+
+function executeCode() {
+    var code = sumorobot_code;
+    /* Replace functions with WebSocket calls */
+    code = code.replace(/forward\(\)/g, "sumorobot.move('forward')");
+    code = code.replace(/backward\(\)/g, "sumorobot.move('backward')");
+    code = code.replace(/left\(\)/g, "sumorobot.move('left')");
+    code = code.replace(/right\(\)/g, "sumorobot.move('right')");
+    code = code.replace(/stop\(\)/g, "sumorobot.move('stop')");
+
+    /* When there is a if clause */
+    if (code.match(/if/)) {
+        /* Replace if clauses with WebSocket calls */
+        code = code.replace(/\(ENEMY_LEFT\) \{/g, "sumorobot.isSensor('enemy', 'left', checkResponse);");
+        code = code.replace(/\(ENEMY_RIGHT\) \{/g, "sumorobot.isSensor('enemy', 'right', checkResponse);");
+        code = code.replace(/\(ENEMY_FRONT\) \{/g, "sumorobot.isSensor('enemy', 'front', checkResponse);");
+        code = code.replace(/\(LINE_LEFT\) \{/g, "sumorobot.isSensor('line', 'left', checkResponse);");
+        code = code.replace(/\(LINE_RIGHT\) \{/g, "sumorobot.isSensor('line', 'right', checkResponse);");
+        code = code.replace(/\(LINE_FRONT\) \{/g, "sumorobot.isSensor('line', 'front', checkResponse);");
+        /* Construct a if call loop */
+        var functions = [];
+        var conditions = [];
+        var temp_functions = "";
+        var program_lines = code.split('\n');
+        for (var i = 0; i < program_lines.length; i++) {
+            /* When if or else line */
+            if (program_lines[i].match(/(if|else)/g)) {
+                /* Store the condition */
+                if (program_lines[i].match(/if/g)) conditions.push(program_lines[i].replace(/(if|\} else if)/g, ""));
+                /* Store the functions for the previous condition */
+                if (program_lines[i].match(/else/g)) {
+                    functions.push(temp_functions);
+                    temp_functions = "";
+                }
+            /* When functions */
+            } else {
+                /* Append the program */
+                temp_functions += program_lines[i].trim();
+            }
+        }
+        /* Store the functions for the else condition */
+        functions.push(temp_functions.substring(0, temp_functions.length - 1));
+        console.log("conditions: " + conditions);
+        console.log("functions: " + functions);
+        var index = 0;
+        /* Called with the sensor response */
+        var checkResponse = function(state, msg) {
+            console.log(msg);
+            /* When the condition was true */
+            if (msg.msg === "true") {
+                /* Execute the specified functions */
+                console.log("condition true: " + conditions[index]);
+                eval(functions[index]);
+                executeCode();
+            /* When there are more conditions */
+            } else if (index < conditions.length - 1) {
+                console.log("executing next condition");
+                /* Evaluate the next condition */
+                eval(conditions[++index]);
+            /* When we reached the else condition */
+            } else if (index == conditions.length - 1) {
+                console.log("executing else condition");
+                eval(functions[++index]);
+                executeCode();
+            }
+        };
+        /* Evaluate the first conditions */
+        console.log("executing first condition");
+        eval(conditions[index]);
+    } else {
+        console.log("evaluating: " + code);
+        eval(code);
+        executeCode();
+    }
 }
 
 function codeChanged() {
-    var code = Blockly.JavaScript.workspaceToCode();
-    if (code !== prev_code) {
-        console.log("changed");
-        pre_code = code;
-
-        if (code.match(/test/)) {
-            code = code.replace("ENEMY_LEFT\)", "sumorobot.isSensor('enemy', 'left', function()");
-            code = code.replace("ENEMY_RIGHT\)", "sumorobot.isSensor('enemy', 'right', function()");
-            code = code.replace("ENEMY_FRONT\)", "sumorobot.isSensor('enemy', 'front', function()");
-            code = code.replace("LINE_LEFT\)", "sumorobot.isSensor('line', 'left', function()");
-            code = code.replace("LINE_RIGHT\)", "sumorobot.isSensor('line', 'right', function()");
-            code = code.replace("LINE_FRONT\)", "sumorobot.isSensor('line', 'front', function()");
-            code = code.replace("if\(", "");
-            code = code.replace("else if\(", "");
+    var current_code = Blockly.JavaScript.workspaceToCode();
+    /* Check if code changed, while whitespace removed */
+    if (current_code.replace(/ /g, "") !== sumorobot_code.replace(/ /g, "")) {
+        /* Store the change */
+        sumorobot_code = current_code;
+        console.log("changed: " + current_code);
+        /* When local storage available */
+        if (supportsLocalStorage) {
+            var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+            localStorage['sumorobot.currentProgram'] = Blockly.Xml.domToText(xml);
         }
-        code = code.replace("forward\(\)", "sumorobot.move('forward')");
-        code = code.replace("backward\(\)", "sumorobot.move('backward')");
-        code = code.replace("left\(\)", "sumorobot.move('left')");
-        code = code.replace("right\(\)", "sumorobot.move('right')");
-        code = code.replace("stop\(\)", "sumorobot.move('stop')");
-        console.log(code);
-        eval(code);
     }
+}
+
+/* Get the Sumorobot version */
+function getSumorobotVersion() {
+    sumorobot.version(function(state, msg) {
+        if (msg.msg) {
+            sumorobot_version = msg.msg;
+            $("#host").val("Sumorobot version: " + sumorobot_version);
+            executeCode();
+        }
+    });
 }
 
 /* Connect */
 function connect() {
-    Blockly.addChangeListener(codeChanged);
     var host = $("#host").val();
     sumorobot = new Sumorobot('ws://' + host + ':8899/websocket');
+    window.setTimeout(function() { getSumorobotVersion(); }, 1000);
 }
 
 /* Send the code */
