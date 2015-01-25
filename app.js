@@ -122,7 +122,7 @@ db.Task.find(function(err, tasks) {
 });
 
 /* Start the app and sockets */
-var server = http.createServer(app).listen(config.port, function() {
+var server = http.createServer(app).listen(config.port, config.host, function() {
     console.log("INFO", "express server listening on port:", config.port);
     var socket = require('./config/socket');
 });
