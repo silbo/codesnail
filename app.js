@@ -19,7 +19,6 @@ var express = require('express'),
     expressValidator = require('express-validator');
 
 /* Create a session store that is connected to the users */
-console.log("INFO", "connecting to database:", config.database_url);
 var SessionStore = new MongoStore({ url: config.database_url, autoReconnect: true });
 /* Set app properties */
 app.set('view engine', 'jade');

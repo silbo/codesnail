@@ -8,16 +8,19 @@ config.session_secret = process.env.SESSION_SECRET || "default";
 config.hostname = process.env.HOSTNAME || "http://localhost:3000";
 config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;
 config.host = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "localhost";
-config.database_url = process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || "mongodb://localhsot:27017/codesnail";
+config.database_url = process.env.MONGOLAB_URI || "mongodb://localhsot:27017/codesnail";
 
-/* Database For Openshift */
-if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
+/* Database for Heroku */
+//config.database_url = process.env.MONGOHQ_URL
+
+/* Database for Openshift */
+/*if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	config.database_url = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
 	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
 	process.env.OPENSHIFT_APP_NAME;
-}
+}*/
 
 /* Email SMTP */
 config.smtp.host = process.env.SMTP_HOST || "default";
