@@ -1,6 +1,8 @@
 codesnail [![Build Status](https://travis-ci.org/silps/codesnail.svg?branch=master)](https://travis-ci.org/silps/codesnail) [![Coverage Status](https://coveralls.io/repos/silps/codesnail/badge.svg)](https://coveralls.io/r/silps/codesnail) [![Dependency Status](https://www.versioneye.com/user/projects/549087169bc626ff60000010/badge.svg?style=flat)](https://www.versioneye.com/user/projects/549087169bc626ff60000010)
 =========
 
+<img src="https://lh5.googleusercontent.com/-n-pB36SUv1k/VMrcm8hX5eI/AAAAAAAAKYw/Zgvc7U29AlU/w1518-h767-no/interface.png" alt="interface" height="300px">
+
 A website where users learn to code while competing against each other
 
 setup
