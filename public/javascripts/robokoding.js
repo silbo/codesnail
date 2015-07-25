@@ -1,3 +1,4 @@
+
 var sumorobot_code = "";
 var socket = undefined;
 var sumorobot = undefined;
