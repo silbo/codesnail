@@ -49,7 +49,7 @@ app.use(function(err, req, res, next) {
     console.log("ERROR", "app error:", err);
     res.sendfile(__dirname + '/public/html/error.html');
     /* Send the error report to the admin */
-    emailing.sendErrorReport(config.admin_name, config.admin_email, err);
+    emailing.sendErrorReport(config.admin_name, config.admin_email, err, req.user);
 });
 
 /* Landingpage */
