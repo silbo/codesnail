@@ -32,9 +32,9 @@ exports.sendResetPassword = function sendForgotPassword(name, email, hash) {
 	}, emailErrorFunction);
 }
 
-exports.sendErrorReport = function sendErrorReport(name, email, error) {
+exports.sendErrorReport = function sendErrorReport(name, email, error, user) {
 	server.send({
-		text: "The following error has occured: " + error,
+		text: "The following error has occured: " + error + " from user: " + user.email,
 		from: config.app_name + " <" + config.smtp.username + ">",
 		to: name + " <" + email + ">",
 		subject: config.app_name + " error"
