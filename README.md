@@ -15,7 +15,7 @@ basic setup
 * run cmd or terminal and go to the project directory
 * run npm install
 * create a directory for mongoDB
-* run node app
+* run mongodb and node app
 * open http://127.0.0.1:3000
 ```bash
 sudo apt-get install nodejs npm mongodb
@@ -23,7 +23,7 @@ git clone https://github.com/silps/codesnail.git
 cd codesnail
 npm install
 sudo mkdir -p /data/db && sudo chmod 777 /data/db
-node app
+mongod & node app
 firefox 127.0.0.1:3000
 ```
 
