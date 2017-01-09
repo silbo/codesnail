@@ -8,7 +8,7 @@ config.session_secret = process.env.SESSION_SECRET || "default";
 config.hostname = process.env.HOSTNAME || "http://localhost:3000";
 config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;
 config.host = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "localhost";
-config.database_url = process.env.MONGOLAB_URI || "mongodb://localhsot:27017/codesnail";
+config.database_url = process.env.MONGOLAB_URI || "mongodb://" + config.host + ":27017/codesnail";
 
 /* Database for Heroku */
 //config.database_url = process.env.MONGOHQ_URL
