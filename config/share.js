@@ -1,19 +1,26 @@
-var app = require('../app'),
-    config = require('./config');
+'use strict';
+
+/* Load modules */
+const app = require('../app');
+const config = require('./config');
+
 /* sharejs */
-var share = require('share');
-var livedb = require('livedb');
-var Duplex = require('stream').Duplex;
-var browserChannel = require('browserchannel').server;
+const share = require('share');
+const livedb = require('livedb');
 
-var livedbmongo = require('livedb-mongo');
-var mongo = livedbmongo(config.database_url, {safe:true});
+const Duplex = require('stream').Duplex;
+const browserChannel = require('browserchannel').server;
 
-var sharejs = share.server.createClient({ backend: livedb.client(mongo) });
-/* client libraries */
+const backend = livedb.client(livedb.memory());
+const sharejs = share.server.createClient({backend: backend});
+
+/* Client libraries */
 app.application.use(app.express.static(share.scriptsDir));
-/* streaming events */
+
+/* Streaming events */
 app.application.use(browserChannel({webserver: app.application.server}, function(client) {
+
+    /*  */
     var stream = new Duplex({objectMode: true});
 
     stream._read = function() {};

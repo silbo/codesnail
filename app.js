@@ -1,137 +1,54 @@
-#!/bin/env node
+'use strict';
 
 /* Add modules */
-var express = require('express'),
-    app = express(),
-    fs = require('fs'),
-    http = require('http'),
-    jade = require('jade'),
-    routes = require('./routes'),
-    passport = require('passport'),
-    user = require('./routes/user'),
-    flash = require('connect-flash'),
-    db = require('./config/database'),
-    config = require('./config/config'),
-    emailing = require('./config/email'),
-    session = require('express-session'),
-    auth = require('./config/authentication'),
-    MongoStore = require('connect-mongo')(session),
-    expressValidator = require('express-validator');
+const fs = require("fs");
+const join = require("path").join;
+const express = require('express');
+const config = require('./config/');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const expressSession = require('express-session');
+const mongoStore = require('connect-mongo')(expressSession);
 
-/* Create a session store that is connected to the users */
-var SessionStore = new MongoStore({ url: config.database_url, autoReconnect: true });
-/* Set app properties */
-app.set('view engine', 'jade');
-app.use(express.static(__dirname + "/public"));
-app.use(expressValidator());
-app.use(session({
-    resave: true,
-    store: SessionStore,
-    saveUninitialized: true,
-    secret: config.session_secret,
-    cookie: { maxAge : 3600000 * 24 * 3 }, // 3 days
-}));
-app.use(flash());
-/* Set the view variables */
-app.use(function(req, res, next) {
-  res.locals.error = req.flash('error');
-  res.locals.email = req.flash('email');
-  res.locals.message = req.flash('message');
-  res.locals.username = req.flash('username');
-  next();
-});
-app.use(passport.initialize());
-app.use(passport.session());
+/* Initialize express, the http server and socket.io server */
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io').listen(server);
 
-/* Error handling */
-app.use(function(err, req, res, next) {
-    /* Check error information and respond accordingly */
-    console.log("ERROR", "app error:", err);
-    res.sendfile(__dirname + '/public/html/error.html');
-    /* Send the error report to the admin */
-    emailing.sendErrorReport(config.admin_name, config.admin_email, err, req.user);
+/* Create a session store using MongoDB */
+var sessionStore = new mongoStore({
+    autoReconnect: true,
+    clear_interval: 60*60, /* hour */
+    mongooseConnection: mongoose.connection
 });
 
-/* Landingpage */
-app.get('/', routes.index);
+/* Expose */
+module.exports = app;
 
-/* Login and registration */
-app.get('/login', auth.checkLogin, user.login);
-app.all('/signup', auth.checkLogin, user.signup);
-app.get('/signup/:id', auth.checkLogin, user.verify);
-app.all('/forgot', auth.checkLogin, user.forgotPassword);
+/* Load database models */
+var normalizedPath = join(__dirname, "app/models");
+fs.readdirSync(normalizedPath).forEach(function(file) {
+    require("./app/models/" + file);
+});
 
-app.post('/login', passport.authenticate('local', { successRedirect: '/profile', failureRedirect: '/login', failureFlash: true }));
+/* Additional configuration */
+require('./config/passport')(passport);
+require('./config/express')(app, passport, sessionStore);
+require('./config/routes')(app, passport);
+require('./config/socket')(app, passport, sessionStore, io);
 
-app.get(config.google.auth, passport.authenticate('google', { scope: config.google.gdata_scopes }));
-app.get(config.google.callback, passport.authenticate('google', { successRedirect: '/profile', failureRedirect: '/login', failureFlash: true }));
-
-app.get(config.twitter.auth, passport.authenticate('twitter'));
-app.get(config.twitter.callback, passport.authenticate('twitter', { successRedirect: '/profile', failureRedirect: '/login', failureFlash: true }));
-
-/* Facebook Oauth2 bug appends #_=_ to the callback URL */
-app.get(config.facebook.auth, passport.authenticate('facebook', { scope: ['email'] }));
-app.get(config.facebook.callback, passport.authenticate('facebook', { successRedirect: '/profile', failureRedirect: '/login', failureFlash: true }));
-
-app.get(config.linkedin.auth, passport.authenticate('linkedin', { scope: ['r_basicprofile', 'r_emailaddress'] }));
-app.get(config.linkedin.callback, passport.authenticate('linkedin', { successRedirect: '/profile', failureRedirect: '/login', failureFlash: true }));
-
-app.get(config.github.auth, passport.authenticate('github'));
-app.get(config.github.callback, passport.authenticate('github', { successRedirect: '/profile', failureRedirect: '/login', failureFlash: true }));
-
-app.get('/logout', user.logout);
-
-/* Different tabs */
-app.get('/chat', routes.chat);
-app.get('/study', routes.study);
-app.all('/coding', routes.coding);
-
-/* External projects and games */
-app.get('/lucy', routes.lucy);
-app.get('/coddee', routes.coddee);
-app.get('/robokoding', routes.robokoding);
-app.get('/ninjasinthebox', routes.ninjasinthebox);
-app.get('/dashboard', auth.ensureAuthenticated, routes.dashboard);
-
-/* Profile pages */
-app.get('/profile', auth.ensureAuthenticated, user.profile);
-app.get('/profile/:name', auth.ensureAuthenticated, user.detailed);
-app.post('/profile/update', auth.ensureAuthenticated, user.profileUpdate);
-app.post('/profile/password', auth.ensureAuthenticated, user.passwordUpdate);
-app.get('/profile/remove/:name', auth.ensureAuthenticated, user.providerRemove);
-app.get('/profile/mugshot/:provider', auth.ensureAuthenticated, user.mugshotUpdate);
-
-/* Show all the users and providers and tasks */
-db.User.find(function(err, users) {
-    if (err) return new Error(err);
-    else users.forEach(function(user) {
-        console.log("INFO", "user name:", user.name);
+/* Establish a connection to the database */
+console.log("INFO connecting to database on:", config.database_url);
+const options = { server: { socketOptions: { keepAlive: 1 } } };
+mongoose.connect(config.database_url, options);
+/* Register database connection events */
+//mongoose.connection.on('disconnect', mongoose.connect(config.database_url, options));
+mongoose.connection.on('error', console.log.bind(console, "ERROR database connection:"));
+mongoose.connection.once('open', function() {
+	/* Successfully connected to the database */
+	console.log("INFO successfully connected to the database");
+    /* Start the app */
+    server.listen(config.port, config.ip, function() {
+        console.log("INFO express server listening on ip:", config.ip, "port:", config.port);
     });
 });
-db.Provider.find(function(err, providers) {
-    if (err) return new Error(err);
-    else providers.forEach(function(provider) {
-        console.log("INFO", "provider url:", provider.url);
-    });
-});
-db.Task.find(function(err, tasks) {
-    if (err) return new Error(err);
-    else tasks.forEach(function(task) {
-        console.log("INFO", "task:", task.name);
-    });
-});
-
-/* Start the app and sockets */
-var server = http.createServer(app).listen(config.port, config.host, function() {
-    console.log("INFO", "express server listening on port:", config.port);
-    var socket = require('./config/socket');
-});
-
-/* Export items for other modules */
-exports.server = server;
-exports.express = express;
-exports.application = app;
-exports.SessionStore = SessionStore;
-
-/* load share.js */
-var share = require('./config/share');

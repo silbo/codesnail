@@ -5,7 +5,7 @@ block content
 	.box-title
 		h3 #{other_user.name}'s profile:
 	.box-content
-		img(class="mugshot", src="#{other_user.profile.mugshot}", alt="mugshot")
+		img(class="mugshot", src=other_user.profile.mugshot, alt="mugshot")
 
 		div#profile
 			div Date joined: #{new Date(other_user.profile.joined_date).toDateString()}
@@ -13,14 +13,14 @@ block content
 			div Display Name: #{other_user.name}
 			div Description: #{other_user.profile.description}
 			div Location: #{other_user.profile.location}
-			div Website: 
-				a(href="#{other_user.profile.website}") #{other_user.name}
+			div Website:
+				a(href=other_user.profile.website) #{other_user.name}
 
 		h3 Other accounts:
 		each provider in other_user.profile.providers
-			img(class="mugshot", src="#{provider.mugshot}", alt="mugshot")
+			img(class="mugshot", src=provider.mugshot, alt="mugshot")
 			div(style="text-transform:capitalize;") #{provider.name}
-			input(type="button", class="btn btn-primary", value="#{provider.display_name}" onclick="window.location.href='#{provider.url}'")
+			input(type="button", class="btn btn-primary", value=provider.display_name onclick="window.location.href='" + provider.url + "'")
 
 		h3 Courses:
 		p No courses attended

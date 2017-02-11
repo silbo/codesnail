@@ -1,4 +1,4 @@
-doctype
+doctype html
 html.no-js(lang='en')
     head
         title CodeSnail | Learn Code While Competing
@@ -61,7 +61,7 @@ html.no-js(lang='en')
                     ul.nav.flaty-nav.pull-right
                         li.user-profile
                             a.user-menu.dropdown-toggle(data-toggle='dropdown', href='#')
-                                img.nav-user-photo(src='#{user.profile.mugshot}', alt='#{user.name}')
+                                img.nav-user-photo(src=user.profile.mugshot, alt=user.name)
                                 span#user_info.hidden-phone
                                 | #{user.name}
                                 i.icon-caret-down
@@ -132,21 +132,9 @@ html.no-js(lang='en')
                             i.icon-edit
                             span Code & Chat
                     li
-                        a(href="/robokoding")
+                        a(href="/sumorobot")
                             i.icon-th
-                            span RoboKoding
-                    li
-                        a(href="/ninjasinthebox")
-                            i.icon-th
-                            span Ninjas In The Box
-                    li
-                        a(href="/lucy")
-                            i.icon-th
-                            span Lucy
-                    li
-                        a(href="/coddee")
-                            i.icon-th
-                            span CODDEE
+                            span Sumorobot
                 // END Navlist
                 // BEGIN Sidebar Collapse Button
                 #sidebar-collapse.visible-desktop
@@ -159,8 +147,8 @@ html.no-js(lang='en')
                 .page-title
                     h1
                         i.icon-user
-                        span Online Users 
-                            small#room 
+                        span Online Users
+                            small#room
                     div#online-users
                         p Loading users ...
                     div.clear
@@ -200,8 +188,8 @@ html.no-js(lang='en')
                     a(rel="license", href="http://creativecommons.org/licenses/by-sa/4.0/")
                         img(alt="Creative Commons License", style="border-width:0", src="http://i.creativecommons.org/l/by-sa/4.0/88x31.png")
                     br
-                    span(xmlns:dct="http://purl.org/dc/terms/", property="dct:title") CodeSnail 
-                    | is licensed under a 
+                    span(xmlns:dct="http://purl.org/dc/terms/", property="dct:title") CodeSnail
+                    | is licensed under a
                     a(rel="license", href="http://creativecommons.org/licenses/by-sa/4.0/") Creative Commons Attribution 4.0 International License
                     | .
                 a#btn-scrollup.btn.btn-circle.btn-large(href='#')

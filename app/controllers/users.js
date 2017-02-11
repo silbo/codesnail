@@ -1,18 +1,57 @@
-/* Add modules */
-var flash = require('connect-flash'),
-    db = require('../config/database'),
-    utils = require('../config/utils'),
-    config = require('../config/config'),
-    emailing = require('../config/email');
+'use strict';
+
+/* Load modules */
+const utils = require('../utils');
+const mongoose = require('mongoose');
+const flash = require('connect-flash');
+const config = require('../../config/');
+const emailing = require('../utils/mailer');
+
+/* Load database models */
+const User = mongoose.model('User');
+const Provider = mongoose.model('Provider');
+
+/* Landingpage */
+exports.index = function(req, res) {
+    console.log("INFO", "rendering index");
+    res.render('index', {});
+};
+
+/* Dashboard */
+exports.dashboard = function(req, res) {
+    User.find(function(err, users) {
+        if (err) console.log("ERROR", "fetching all users:", err);
+        res.render('dashboard', { user: req.user, users: users, errors: req.flash('error') });
+    });
+};
+
+/* Study section */
+exports.study = function(req, res) {
+    res.render('study', { user: req.user });
+}
+
+/* Coding section */
+exports.coding = function(req, res) {
+    res.render('coding', { user: req.user });
+};
+
+/* Chatting section */
+exports.chat = function(req, res) {
+    res.render('chat', { user: req.user });
+};
+
+/* Sumorobot section */
+exports.sumorobot = function(req, res) {
+    res.render('sumorobot', { user: req.user });
+};
+
 
 /* Login page */
 exports.login = function(req, res) {
-    if (req.user && req.user.verification && req.user.verification.verified) return res.redirect('/profile');
-
     res.render('login', { logins: config.logins });
 };
 
-/* User signup */
+/* User signup from the form */
 exports.signup = function(req, res) {
     /* When the submit was not pressed, do not process the form */
     if (req.method == 'GET') return res.render('signup');
@@ -36,7 +75,7 @@ exports.signup = function(req, res) {
     var filteredUsername = req.body.username.toLowerCase().replace(" ", "");
 
     /* Find existing user */
-    db.User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
+    User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
         if (err) return new Error(err);
         /* When the username already exists */
         else if (user && user.username == req.body.username) {
@@ -50,7 +89,7 @@ exports.signup = function(req, res) {
         }
         /* When the username and email are not taken */
         console.log("INFO", "user:", user);
-        var user = new db.User({ username: filteredUsername, name: req.body.username, email: req.body.email, password: req.body.password });
+        var user = new User({ username: filteredUsername, name: req.body.username, email: req.body.email, password: req.body.password });
         /* Set the gravatar mugshot */
         user.profile.mugshot = config.gravatar.mugshot + utils.calculateHash("md5", user.email) + "?d=identicon";
         user.profile.joined_date = new Date();
@@ -68,6 +107,44 @@ exports.signup = function(req, res) {
                 console.log("INFO", "user saved:", user.email);
                 req.flash('message', "Successfully signed up, check your inbox");
                 return res.redirect('/signup');
+            }
+        });
+    });
+};
+
+/* Signup from passport OAuth */
+exports.registerUser = function (name, email, provider_name, mugshot, link, done) {
+    /* Find user by email */
+    db.User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
+        if (err) return done(err);
+        /* When the user with the email was found and the provider is registered */
+        else if (user && user.profile.providers.map(function(elem) { return elem.name; }).join(",").indexOf(provider_name) > -1) return done(null, user);
+
+        /* Register a new provider */
+        var provider = new db.Provider({ name: provider_name, mugshot: mugshot, display_name: name, url: link });
+        provider.save();
+        /* When no user under this email was found */
+        if (!user) {
+            user = new db.User({ username: name.toLowerCase().replace(" ", "") , name: name, email: email });
+            user.profile.mugshot = mugshot;
+            user.profile.website = link;
+        }
+        /* Register this provider for the user */
+        user.profile.providers.push(provider);
+        /* Set the user as verified */
+        user.verification.verified = true;
+        /* Set the gravatar mugshot */
+        user.profile.mugshot = user.profile.mugshot || config.gravatar.mugshot + utils.calculateHash("md5", user.email) + "?d=identicon";
+        /* Save the user */
+        user.save(function(err) {
+            if (err) console.log("ERROR", "error saving user:", err);
+            else {
+                console.log("INFO", "user saved:", user.email);
+                /* Fetch the information again, for the new provider information */
+                db.User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
+                    if (err) console("ERROR", "error finding user:", err);
+                    return done(err, user);
+                });
             }
         });
     });
@@ -92,7 +169,7 @@ exports.forgotPassword = function(req, res) {
     var filteredEmail = req.body.email.toLowerCase().replace(" ", "");
 
     /* Find the user and update */
-    db.User.findOne({ email: filteredEmail }, function(err, user) {
+    User.findOne({ email: filteredEmail }, function(err, user) {
         if (err) return new Error(err);
         else if (!user) {
             console.log("INFO", "user not found:", req.body.email);
@@ -116,7 +193,7 @@ exports.forgotPassword = function(req, res) {
 
 /* User verification */
 exports.verify = function(req, res) {
-    db.User.findOne({ 'verification.verification_hash': req.params.id }, function(err, user) {
+    User.findOne({ 'verification.verification_hash': req.params.id }, function(err, user) {
         if (err) return new Error(err);
         else if (!user) {
             console.log("ERROR", "error finding user:", err);
@@ -146,7 +223,7 @@ exports.verify = function(req, res) {
 
 /* User detailed page */
 exports.detailed = function(req, res) {
-    db.User.findOne({ 'username': req.params.name }).populate('profile.providers').exec(function (err, user) {
+    User.findOne({ 'username': req.params.name }).populate('profile.providers').exec(function (err, user) {
         /* When the user is does not exist */
         if (err || !user) {
             console.log("ERROR", "error finding user:", err);
@@ -181,7 +258,7 @@ exports.profileUpdate = function(req, res) {
     }
 
     /* Find the user by email */
-    db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
+    User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
         if (err) return new Error(err);
         /* Update the user fields */
         user.name = req.body.name;
@@ -202,7 +279,7 @@ exports.profileUpdate = function(req, res) {
 /* Update user profile */
 exports.mugshotUpdate = function(req, res) {
     /* Find the user by email */
-    db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
+    User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
         if (err) return new Error(err);
         /* Update the user mugshot */
         for (var i = 0; i < user.profile.providers.length; i++) {
@@ -228,7 +305,7 @@ exports.passwordUpdate = function(req, res) {
     if (errors) return res.redirect('/profile');
 
     /* Find the user by email */
-    db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
+    User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
         if (err) return new Error(err);
         /* Update the user fields */
         user.password = utils.calculateHash('sha256', req.body.password + user.profile.joined_date);
@@ -243,7 +320,7 @@ exports.passwordUpdate = function(req, res) {
 /* Remove provider */
 exports.providerRemove = function(req, res) {
     /* Find the user by email */
-    db.User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
+    User.findOne({ email: req.user.email }).populate('profile.providers').exec( function(err, user) {
         if (err || !user) return res.redirect("/profile");
         console.log("INFO", "providers before:", user.profile.providers);
         /* Check which provider to remove */
@@ -251,7 +328,7 @@ exports.providerRemove = function(req, res) {
             /* When the correct provider was found */
             if (user.profile.providers[index].name == req.params.name) {
                 /* Find the provider in the database */
-                db.Provider.findOne({ _id: user.profile.providers[index]._id }, function(err, provider) {
+                Provider.findOne({ _id: user.profile.providers[index]._id }, function(err, provider) {
                     if (err) return new Error(err);
                     /* Remove the provider */
                     provider.remove();

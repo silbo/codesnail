@@ -1,4 +1,4 @@
-doctype
+doctype html
 html.no-js
     <![endif]
     head
@@ -33,7 +33,7 @@ html.no-js
             | to improve your experience.
         // BEGIN Main Content
         .login-wrapper
-            h1(align='center') CodeSnail Forgotten Password
+            h1(align='center') CodeSnail Sign Up
 
             div#forErrors(align='center')
                 each err in error
@@ -41,21 +41,30 @@ html.no-js
             if message != ""
                 p.alert.alert-success #{message}
 
-            // BEGIN Forgot Password Form
-            form#form-forgot(name="forgot", action='/forgot', method='post')
-                h3 Get back your password
+            // BEGIN Register Form
+            form#form-register(name="signup", action='/signup', method='post')
+                h3 Sign up
                 hr
                 .control-group
                     .controls
-                        input.input-block-level(type='text', name="email" placeholder='Email', value="#{email}")
+                        input.input-block-level(type='text', name="username", placeholder="Username", value=username)
                 .control-group
                     .controls
-                        button.btn.btn-primary.input-block-level(type='submit') Recover
+                        input.input-block-level(type='text', name="email", placeholder="Email", value=email)
+                .control-group
+                    .controls
+                        input.input-block-level(type='password', name="password", placeholder="Password")
+                .control-group
+                    .controls
+                        input.input-block-level(type='password', name="passwordConfirm", placeholder="Repeat Password")
+                .control-group
+                    .controls
+                        button.btn.btn-primary.input-block-level(type='submit') Sign up
                 hr
                 p.clearfix
                     a.goto-login.pull-left(href='/login') ← Back to login form
-            // END Forgot Password Form
-        // END Main Content
+                // END Register Form
+            // END Main Content
 
         // basic scripts
         script(src='/javascripts/jquery/jquery-1.11.2.min.js')

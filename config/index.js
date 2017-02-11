@@ -1,26 +1,28 @@
+'use strict';
+
 var config = { smtp: {}, gravatar: {}, google: {}, twitter: {}, facebook: {}, linkedin: {},	github: {} };
 
-/* App hostname and port and session secret */
-config.app_name = process.env.APP_NAME || "default";
-config.admin_name = process.env.ADMIN_NAME || "default";
-config.admin_email = process.env.ADMIN_EMAIL || "default";
-config.session_secret = process.env.SESSION_SECRET || "default";
-config.hostname = process.env.HOSTNAME || "http://localhost:3000";
-config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;
-config.host = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "localhost";
-config.database_url = process.env.MONGOLAB_URI || "mongodb://" + config.host + ":27017/codesnail";
+/* Environment */
+config.env = process.env.NODE_ENV || "development";
 
-/* Database for Heroku */
-//config.database_url = process.env.MONGOHQ_URL
+/* Session */
+config.session_secret = process.env.SESSION_SECRET || "default";
+
+/* Port and IP */
+config.port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;
+config.ip = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "localhost";
+
+/* Database URI */
+config.database_url = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || "mongodb://" + config.ip + ":27017/codesnail";
 
 /* Database for Openshift */
-/*if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
+if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	config.database_url = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
 	process.env.OPENSHIFT_MONGODB_DB_HOST + ":" +
 	process.env.OPENSHIFT_MONGODB_DB_PORT + "/" +
 	process.env.OPENSHIFT_APP_NAME;
-}*/
+}
 
 /* Email SMTP */
 config.smtp.host = process.env.SMTP_HOST || "default";
@@ -48,12 +50,14 @@ config.twitter.consumer_key = process.env.TWITTER_KEY || "default";
 config.twitter.consumer_secret = process.env.TWITTER_SECRET || "default";
 
 /* Facebook OAuth2 */
+config.facebook.scopes = ["email"];
 config.facebook.auth = "/auth/facebook";
 config.facebook.callback = "/auth/facebook/callback";
 config.facebook.consumer_key = process.env.FACEBOOK_KEY || "default";
 config.facebook.consumer_secret = process.env.FACEBOOK_SECRET || "default";
 
 /* Linkedin OAuth */
+config.linkedin.scopes = ["r_basicprofile", "r_emailaddress"];
 config.linkedin.auth = "/auth/linkedin";
 config.linkedin.callback = "/auth/linkedin/callback";
 config.linkedin.consumer_key = process.env.LINKEDIN_KEY || "default";
@@ -74,4 +78,5 @@ config.logins = [
 	["LinkedIn", config.linkedin.auth],
 ];
 
+/* Expose */
 module.exports = config;

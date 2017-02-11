@@ -1,52 +1,48 @@
 {
     "name": "codesnail",
-    "version": "0.0.1", 
+    "version": "0.0.1",
     "description": "A website where users learn to code while competing against each other",
-  
+
     "keywords": [
         "STEM",
         "teaching",
         "challenges"
     ],
 
-    "homepage": "http://www.codesnail.com/",
+    "homepage": "http://github.com/silps/codesnail.git",
     "repository": {
         "type": "git",
         "url": "http://github.com/silps/codesnail.git"
     },
 
-    "engines": {
-        "node": ">=0.10.0"
-    },
-
     "dependencies": {
-        "jade": "^1.8.0",
-        "share": "^0.7.3",
-        "stream": "^0.0.2",
-        "crypto": "^0.0.3",
-        "livedb": "^0.4.10",
-        "emailjs": "^0.3.12",
-        "express": "^4.10.7",
-        "mongoose": "^3.9.6",
-        "passport": "^0.2.1",
-        "socket.io": "^1.2.1",
-        "node-uuid": "^1.4.2",
-        "livedb-mongo": "^0.4.1",
-        "cookie-parser": "^1.3.3",
-        "connect-flash": "^0.1.1",
-        "connect-mongo": "^0.5.3",
-        "browserchannel": "^2.0.0",
-        "passport-local": "^1.0.0",
-        "passport-github": "^0.1.5",
-        "express-session": "^1.9.3",
-        "express-messages": "^0.0.2",
-        "socket.io-stream": "^0.6.0",
-        "passport-twitter": "^1.0.2",
-        "express-validator": "^2.7.0",
-        "passport.socketio": "^3.4.1",
-        "passport-facebook": "^1.0.3",
-        "passport-linkedin": "^0.1.3",
-        "passport-google-oauth": "^0.1.5"
+        "cors": "~2.8.1",
+        "uuid": "~3.0.1",
+        "stream": "~0.0.2",
+        "crypto": "~0.0.3",
+        "share": "~0.7.40",
+        "emailjs": "~1.0.8",
+        "express": "~4.14.0",
+        "passport": "~0.3.2",
+        "mongoose": "~4.8.1",
+        "socket.io": "~1.7.2",
+        "pug": "~2.0.0-beta11",
+        "cookie-parser": "~1.4.3",
+        "connect-flash": "~0.1.1",
+        "connect-mongo": "~1.3.2",
+        "browserchannel": "~2.0.0",
+        "passport-local": "~1.0.0",
+        "passport-github": "~1.1.0",
+        "express-session": "~1.15.0",
+        "express-messages": "~1.0.1",
+        "socket.io-stream": "~0.9.0",
+        "passport-twitter": "~1.0.4",
+        "express-validator": "~2.20.8",
+        "passport.socketio": "~3.6.2",
+        "passport-facebook": "~2.1.1",
+        "passport-linkedin": "~1.0.0",
+        "passport-google-oauth": "~1.0.0",
+        "cookie-session": "~2.0.0-alpha.2"
     },
 
     "scripts": {

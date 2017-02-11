@@ -1,7 +1,12 @@
-/* Add modules */
-var crypto = require('crypto'),
-    db = require('./database'),
-    config = require('./config');
+'use strict';
+
+/* Load modules */
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+const config = require('../../config/');
+
+/* Load database models */
+const Task = mongoose.model('Task');
 
 var tasks = [];
 var currentTask = 0;
@@ -13,9 +18,9 @@ exports.getTasks = function getTasks() {
 /* Get new task */
 exports.getTask = function getTask() {
     /* Update tasks */
-    db.Task.find(function(err, db_tasks) {
+    Task.find(function(err, db_tasks) {
         if (err) return new Error(err);
-        else tasks = etasks = db_tasks;
+        else tasks = db_tasks;
     });
     if (tasks.length == 0) return { name: "Please refresh the broswer to load the tasks" };
     return { name: tasks[currentTask].name, points: tasks[currentTask].points, initial: tasks[currentTask].initial };

@@ -1,35 +1,44 @@
-/* Add modules */
-var fs = require('fs'),
-    app = require('../app'),
-    db = require('./database'),
-    utils = require('./utils'),
-    uuid = require('node-uuid'),
-    config = require('./config'),
-    ss = require('socket.io-stream'),
-    exec = require('child_process').exec,
-    cookieParser = require('cookie-parser'),
-    io = require('socket.io').listen(app.server),
-    passportSocketIo = require('passport.socketio');
+'use strict';
 
+/* Load modules */
+const fs = require('fs');
+const config = require('./');
+const uuidV1 = require('uuid/v1');
+const mongoose = require('mongoose');
+const utils = require('../app/utils/');
+const ss = require('socket.io-stream');
+const exec = require('child_process').exec;
+const cookieParser = require('cookie-parser');
+const passportSocketIo = require('passport.socketio');
+
+/* Load database models */
+const User = mongoose.model('User');
+
+/* Expose */
+module.exports = function(app, passport, sessionStore, io) {
+
+/* Setup socket.io */
 //io.set('log level', 1);
 io.use(passportSocketIo.authorize({
-    cookieParser: cookieParser,
     key: 'connect.sid',
+    store: sessionStore,
+    cookieParser: cookieParser,
     secret: config.session_secret,
-    store: app.SessionStore,
-    fail: function(data, message, error, accept) {
-        console.log("ERROR", "scoket message:", message, "error:", error);
-        if(error) throw new Error(message);
-        return accept();
-    },
     success: function(data, accept) {
         //console.log("INFO", "scoket:", data);
         return accept();
+    },
+    fail: function(data, message, error, accept) {
+        console.log("ERROR", "scoket message:", message, "error:", error);
+        if(error) {
+          throw new Error(message);
+          return accept(new Error(message));
+        }
     }
 }));
 
 /* Online users */
-var onlineUsers = { 'dashboard': {}, 'study': {}, 'coding': {}, 'chat': {}, 'robokoding': {}, 'games': {} };
+var onlineUsers = { 'dashboard': {}, 'study': {}, 'coding': {}, 'chat': {}, 'sumorobot': {} };
 var sockUsers = [];
 var eSocks = [];
 
@@ -37,8 +46,8 @@ var eSocks = [];
 io.sockets.on('connection', function(socket) {
 
     /* User connected to socketio */
-	console.log("INFO", "socket connection established");
-	console.log("INFO", "socket user:", socket.request.user.email);
+    console.log("INFO", "socket connection established");
+    console.log("INFO", "socket user:", socket.request.user, "email:", socket.request.user.email);
 	socket.heartbeatTimeout = 5000;
 	sockUsers[socket.request.user.email] = socket;
 
@@ -124,7 +133,7 @@ io.sockets.on('connection', function(socket) {
     /* Send a exclusive invitation for the selected user */
     socket.on('sendExclusiveInvite', function(data) {
         try {
-            var newSockAdd = uuid.v1();
+            var newSockAdd = uuidV1();
             eSocks.push(newSockAdd);
             sockUsers[data.email].emit('exclusiveInvite', {email: socket.request.user.email, newSockAdd: newSockAdd});
         } catch (error) {
@@ -187,17 +196,17 @@ io.sockets.on('connection', function(socket) {
 		if (onlineUsers['coding'][socket.request.user.email]) {
 			var sessionID = socket.request.sessionID;
 			var points = onlineUsers['coding'][socket.request.user.email].profile.points;
-			app.SessionStore.get(sessionID, function(err, session) {
+			sessionStore.get(sessionID, function(err, session) {
 				if (!err && session) {
 					session.passport.user.profile.points = points;
-					app.SessionStore.set(sessionID, session);
+					sessionStore.set(sessionID, session);
 					console.log ("INFO", "successfully saved user points");
 				} else {
 					console.log ("ERROR", "saving user points");
 				}
 			});
 			/* When not a guest user */
-			if (socket.request.user.name.indexOf("Guest") == -1) {
+			if (socket.request.user.guest == false) {
 				db.User.findOne({ email: socket.request.user.email }, function(err, user) {
 					if (err) return new Error(err);
 					else {
@@ -296,4 +305,6 @@ function startECodeServer(on, pe1, pe2) {
 			}
 		});
 	});
+}
+
 }

@@ -1,4 +1,4 @@
-doctype
+doctype html
 html.no-js(lang='en')
     head
         title CodeSnail | Learn Code While Competing
@@ -57,20 +57,20 @@ html.no-js(lang='en')
                 hr
                 .control-group
                     .controls
-                        input.input-block-level(name="username", type='text', placeholder='Username')
+                        input.input-block-level(name="username", type="text", placeholder="Username")
                 .control-group
                     .controls
-                        input.input-block-level(name="password", type='password', placeholder='Password')
+                        input.input-block-level(name="password", type="password", placeholder="Password")
                 .control-group
                     .controls
-                        button.btn.btn-primary.input-block-level(type='submit') Sign In
+                        button.btn.btn-primary.input-block-level(type="submit") Sign In
                 hr
                 p
                     | Login with
                     br
                     br
                     each login in logins
-                        a(href="#{login[1]}") #{login[0]} |
+                        a(href=login[1]) #{login[0]} |
                 hr
                 p.clearfix
                     a.goto-forgot.pull-left(href='/forgot') Forgot Password?
