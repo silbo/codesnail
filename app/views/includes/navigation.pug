@@ -1,0 +1,64 @@
+// BEGIN Navbar
+#navbar.navbar
+    .navbar-inner
+        .container-fluid
+            a.brand(href='/')
+                img(src='/img/CS-Logo.png', width='200', height='20')
+            // BEGIN Responsive Sidebar Collapse
+            a.btn-navbar.collapsed(href='#', data-toggle='collapse', data-target='.nav-collapse')
+                i.icon-reorder
+            // END Responsive Sidebar Collapse
+            // BEGIN Navbar Buttons
+            if user
+                ul.nav.flaty-nav.pull-right
+                    li.user-profile
+                        a.user-menu.dropdown-toggle(data-toggle='dropdown', href='#')
+                            img.nav-user-photo(src=user.profile.mugshot, alt=user.name)
+                            span#user_info.hidden-phone
+                            | #{user.name}
+                            i.icon-caret-down
+                            // BEGIN User Dropdown
+                            ul#user_menu.dropdown-menu.dropdown-navbar
+                                li.nav-header
+                                    i.icon-time
+                                    | Logined From 20:45
+                                if !user.guest
+                                    li
+                                        a(href='#')
+                                            i.icon-cog
+                                            | Account Settings
+                                    li
+                                        a(href="/profile")
+                                            i.icon-user
+                                            | Edit Profile
+                                li
+                                    a(href='#')
+                                        i.icon-question
+                                        | Help
+                                li.divider.visible-phone
+                                li.visible-phone
+                                    a(href='#')
+                                        i.icon-tasks
+                                        | Tasks
+                                        span.badge.badge-warning 4
+                                li.visible-phone
+                                    a(href='#')
+                                        i.icon-bell-alt
+                                        | Notifications
+                                        span.badge.badge-important 8
+                                li.visible-phone
+                                    a(href='#')
+                                        i.icon-envelope
+                                        | Messages
+                                        span.badge.badge-success 5
+                                li.divider
+                                li
+                                    a(href="/logout")
+                                        i.icon-off
+                                        | Logout
+                        // BEGIN User Dropdown
+                    // END Button User
+            // END Navbar Buttons
+        // /.container-fluid
+    // /.navbar-inner
+// END Navbar

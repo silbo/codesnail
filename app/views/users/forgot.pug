@@ -1,0 +1,36 @@
+doctype html
+html(lang="en")
+
+    head
+        include ../includes/head.pug
+
+    body.login-page
+
+        include ../includes/browser.pug
+
+        // BEGIN Main Content
+        .login-wrapper
+            h1(align='center') CodeSnail Forgotten Password
+
+            div#forErrors(align='center')
+                each err in error
+                    p.alert.alert-error #{err.msg}
+            if message
+                p.alert.alert-success #{message}
+
+            // BEGIN Forgot Password Form
+            form#form-forgot(name="forgot", action="/forgot", method="post")
+                h3 Get back your password
+                hr
+                input(type="hidden" name="_csrf" value=csrfToken)
+                .control-group
+                    .controls
+                        input.input-block-level(type="text", name="email" placeholder="Email", value=email)
+                .control-group
+                    .controls
+                        button.btn.btn-primary.input-block-level(type='submit') Recover
+                hr
+                p.clearfix
+                    a.goto-login.pull-left(href='/login') ← Back to login form
+            // END Forgot Password Form
+        // END Main Content

@@ -1,0 +1,67 @@
+extends ../layouts/default
+
+block head
+
+    script(type="text/javascript", src="/js/socket.io-stream.js")
+    script(type="text/javascript", src="/js/profile.js")
+
+block content
+
+    .box-title
+        h3 Profile
+
+    .box-content
+        div#profile
+            h3 Change profile:
+
+            div#forErrors(align='center')
+                each err in error
+                  p.alert.alert-error #{err.msg}
+                if message != ""
+                  p.alert.alert-success #{message}
+
+            div#mugshot-box(style="height: 50px;") Connecting...
+            img(class="mugshot", src=user.profile.mugshot, alt="mugshot")
+
+            form#profile(name="profile", action="/profile/update", method="post")
+                div Username: #{user.username}
+                div Email: #{user.email}
+                div Date joined: #{new Date(user.profile.joined_date).toDateString()}
+                div Points: #{user.profile.points}
+                div Display Name:
+                    br
+                    input(type="text", name="name", value=user.name)
+                div Short BIO:
+                textarea(type="text", name="description", placeholder="personal info")
+                    | #{user.profile.description}
+                div Location:
+                    br
+                    input(type="text", name="location", placeholder="location", value=user.profile.location)
+                div Website:
+                    br
+                    input(type="text", name="website", placeholder="website", value=user.profile.website)
+                input(type="submit", class="btn btn-primary", value="Save")
+
+            h3 Change password:
+            form(name="password", action="/profile/password", method="post")
+                input(type="password", name="password", placeholder="New password")
+                br
+                input(type="password", name="passwordConfirm", placeholder="Repeat new password")
+                br
+                input(type="submit", class="btn btn-primary", value="Save")
+
+            h3 Other accounts:
+            each provider in user.profile.providers
+                div
+                    img(class="mugshot", src=provider.mugshot, alt="mugshot")
+                    div(style="text-transform:capitalize;") #{provider.name}
+                        br
+                        input(type="button", class="btn btn-primary", value=provider.display_name onclick="window.location.href=provider.url")
+                        &nbsp;
+                        input(type="button", class="btn btn-primary", value="Set as Mugshot" onclick="window.location.href='/profile/mugshot/' + provider.name")
+                        &nbsp;
+                        input(type="button", class="btn btn-primary", value="Disconnect" onclick="window.location.href='/profile/remove/' + provider.name")
+            div#oauths
+                each login in logins
+                    input(type="button", class="btn btn-primary", value="Connect " + login[0] onclick="window.location.href=login[1]")
+                    br

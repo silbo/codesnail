@@ -1,0 +1,46 @@
+doctype html
+html(lang="en")
+
+    head
+        include ../includes/head.pug
+
+    body.login-page
+
+        include ../includes/browser.pug
+
+        .login-wrapper
+            h1(align='center') CodeSnail Login
+
+            div#forErrors(align='center')
+                each err in error
+                    p.alert.alert-error #{err}
+            if message
+                p.alert.alert-success #{message}
+
+            // BEGIN Login Form
+            form#form-login(name="login", action="/login", method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                h3 Login to your account
+                hr
+                .control-group
+                    .controls
+                        input.input-block-level(name="username", type="text", placeholder="Username", value=username)
+                .control-group
+                    .controls
+                        input.input-block-level(name="password", type="password", placeholder="Password")
+                .control-group
+                    .controls
+                        button.btn.btn-primary.input-block-level(type="submit") Sign In
+                hr
+                p
+                    | Login with
+                    br
+                    br
+                    each login in logins
+                        a(href=login[1]) #{login[0]} |
+                hr
+                p.clearfix
+                    a.goto-forgot.pull-left(href='/forgot') Forgot Password?
+                    a.goto-signup.pull-right(href='/signup') Sign up now
+            // END Login Form
+        // END Main Content

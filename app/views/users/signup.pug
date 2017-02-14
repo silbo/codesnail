@@ -1,0 +1,45 @@
+doctype html
+html(lang="en")
+
+    head
+        include ../includes/head.pug
+
+    body.login-page
+
+        include ../includes/browser.pug
+
+        // BEGIN Main Content
+        .login-wrapper
+            h1(align='center') CodeSnail Sign Up
+
+            div#forErrors(align='center')
+                each err in error
+                    p.alert.alert-error #{err.msg}
+            if message
+                p.alert.alert-success #{message}
+
+            // BEGIN Register Form
+            form#form-register(name="signup", action='/signup', method='post')
+                h3 Sign up
+                hr
+                input(type="hidden" name="_csrf" value=csrfToken)
+                .control-group
+                    .controls
+                        input.input-block-level(type='text', name="username", placeholder="Username", value=username)
+                .control-group
+                    .controls
+                        input.input-block-level(type='text', name="email", placeholder="Email", value=email)
+                .control-group
+                    .controls
+                        input.input-block-level(type='password', name="password", placeholder="Password")
+                .control-group
+                    .controls
+                        input.input-block-level(type='password', name="passwordConfirm", placeholder="Repeat Password")
+                .control-group
+                    .controls
+                        button.btn.btn-primary.input-block-level(type='submit') Sign up
+                hr
+                p.clearfix
+                    a.goto-login.pull-left(href='/login') ← Back to login form
+                // END Register Form
+            // END Main Content

@@ -3,7 +3,7 @@
 /* Load modules */
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-const config = require('../../config/');
+const config = require('../config/');
 
 /* Load database models */
 const Task = mongoose.model('Task');

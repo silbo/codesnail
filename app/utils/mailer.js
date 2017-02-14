@@ -1,8 +1,8 @@
 'use strict';
 
 /* Load modules */
-const pkg = require('../../package');
-const config = require('../../config/');
+const config = require('../config/');
+const pkg = require('../../package.json');
 const emailing = require('../../node_modules/emailjs/email');
 
 /* Connect to the mailing server */

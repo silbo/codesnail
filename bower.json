@@ -1,0 +1,34 @@
+{
+  "name": "CodeSnail",
+  "description": "A website where users learn to code while competing against each other.",
+  "main": "app.js",
+  "authors": [
+    "Silver Kuusik <silver.kuusik@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "STEM",
+    "teaching",
+    "challenges"
+  ],
+  "homepage": "https://github.com/silps/codesnail",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ace": "^1.2.6",
+    "jquery": "^3.1.1",
+    "bootstrap": "^3.3.7",
+    "prettify": "*",
+    "jquery-ui": "^1.12.1",
+    "font-awesome": "^4.7.0",
+    "modernizr": "^3.3.1",
+    "jquery.nicescroll": "^3.6.8",
+    "normalize-strings": "normalize#^1.1.0",
+    "ace-builds": "^1.2.6"
+  }
+}

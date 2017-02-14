@@ -4,7 +4,7 @@
 const fs = require("fs");
 const join = require("path").join;
 const express = require('express');
-const config = require('./config/');
+const config = require('./app/config/');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const expressSession = require('express-session');
@@ -32,10 +32,12 @@ fs.readdirSync(normalizedPath).forEach(function(file) {
 });
 
 /* Additional configuration */
-require('./config/passport')(passport);
-require('./config/express')(app, passport, sessionStore);
-require('./config/routes')(app, passport);
-require('./config/socket')(app, passport, sessionStore, io);
+require('./app/config/passport')(passport);
+require('./app/config/share')(app, express, server);
+require('./app/config/express')(app, passport, sessionStore);
+require('./app/config/routes')(app, passport);
+require('./app/config/socket')(app, passport, sessionStore, io);
+
 
 /* Establish a connection to the database */
 console.log("INFO connecting to database on:", config.database_url);

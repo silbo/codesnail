@@ -1,0 +1,138 @@
+doctype html
+html(lang="en")
+
+    head
+        title CodeSnail | Learn Code While Competing
+
+        meta(charset='utf-8')
+        meta(name='author', content='Built by Students')
+        meta(name='keywords', content='Learning, HTML, CSS, JavaScript, Website, Competition')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        meta(name='description', content='Codesnail learn coding by competing with others')
+        link(rel="shortcut icon", type="image/ico", href="/img/teacher.png")
+
+        // styles
+        link(href='/css/bootstrap/bootstrap.min.css', rel='stylesheet')
+        link(href='/css/bootstrap/bootstrap-responsive.min.css', rel='stylesheet')
+        link(href='/css/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        link(href='/css/style-landing.css', rel='stylesheet')
+
+        script(type='text/javascript', src='/js/jquery/jquery.min.js')
+        script(type='text/javascript', src='/js/bootstrap/bootstrap.min.js')
+    body
+        .wrapper
+            // begins header
+            header.header
+                // begins navbar
+                #top-nav.navbar
+                    .navbar-inner
+                        .container
+                            a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+                                span.icon-bar
+                                span.icon-bar
+                                span.icon-bar
+                            a.brand(data-section='body', href='index.html')
+                                img(src='/img/CS-Logo.png', alt='CodeSnail Logo')
+                                h1.hide CodeSnail | Learn Coding While Competing with others
+                            nav#main-menu.nav-collapse.collapse
+                                h2.hide Main Navigation
+                                ul.nav.pull-right
+                                    li
+                                        a(href='https://github.com/silps/codesnail') Source code
+                                    li
+                                        a(href='https://github.com/silps/codesnail/issues') Feedback
+                                    li
+                                        a(href='#features-section') Features
+                                    li
+                                        a(href="/login") Sign In / Sign Up
+                                    li
+                                        a.btn.btn-primary(href="/guest") Guest Login
+                // ends navbar
+                // begins hero unit
+                .hero-unit.video
+                    .container
+                        .row-fluid
+                            .span5.hero-text
+                                h2.heading Learn to Code by Competing with others!
+                                p.description
+                                    | CodeSnail teaches how to code interactively in browser. Start Learning today without any setup!
+                                a.btn.btn-primary(href="/signup") Signup
+                                // <a href="#" class="btn default">Get Free</a>
+                            .span7.hero-video
+                                iframe(src='https://www.youtube.com/embed/QBikLyv9FB8', height='377', frameborder='0', webkitallowfullscreen='webkitAllowFullScreen', mozallowfullscreen='mozallowfullscreen', allowfullscreen='allowFullScreen')
+                // ends hero unit
+            // ends header
+            // begins main content
+            .main-content
+                section#features-section.container.section.features
+                    .row-fluid.feature-item
+                        .span6
+                            img(src='/img/code.png', alt='Experiement with Code')
+                        .span6.right-text
+                            h2.heading Experiment with code
+                            p.description
+                                | You will follow the learn-by-doing concept. You will learn everything trough hands-on experience.
+                    hr
+                    .row-fluid.feature-item
+                        .span6
+                            h2.heading Work towards a goal
+                            p.description
+                                | You will complete many interactive Code Challenges to earn badges and points, which you can share with your friends.
+                        .span6
+                            img(src='/img/badges.png', alt='Earn Badges')
+                    hr
+                    .row-fluid.feature-item
+                        .span6
+                            img(src='/img/browser.png', alt='Get Lastest Browser')
+                        .span6.right-text
+                            h2.heading What do you need ?
+                            p.description
+                                | You just need enthusiasm and a updated broswer :)
+                    hr
+                    .row-fluid.feature-item
+                        .span6.right-text
+                            h2.heading Not sure where to start
+                            p.description
+                                | You will be guided by tracks and can always collaborate with other online users.
+                        .span6
+                            img(src='/img/teacher.png', alt='Get Lastest Browser')
+            // ends main content
+            // begins footer
+            section.full-width.newsletter
+                .container
+                    .row-fluid
+                        .span6
+                            h3.heading Join Our Newsletter
+                            p.description Stay up to date with the latest news by subscribing to our newsletter.
+                        .span6
+                            .alert
+                                button.close(type='button') ×
+                                p
+                            form.form-inline.pull-right(action="/", method="post")
+                                input#email(type='email', name='email', placeholder='youremail@domain.com')
+                                input#submit.btn.btn-primary(type='button', value='Subscribe Now')
+            footer.full-width.footer
+                .container
+                    .row-fluid
+                        .span6.copyright
+                            a(rel="license", href="http://creativecommons.org/licenses/by-sa/4.0/")
+                                img(alt="Creative Commons License", style="border-width:0", src="http://i.creativecommons.org/l/by-sa/4.0/88x31.png")
+                            br
+                            span(xmlns:dct="http://purl.org/dc/terms/", property="dct:title") CodeSnail
+                            | is licensed under a
+                            a(rel="license", href="http://creativecommons.org/licenses/by-sa/4.0/") Creative Commons Attribution 4.0 International License
+                            | .
+                        .span6.social
+                            ul
+                                li
+                                    a(href='#')
+                                        i.socicon.facebookcircle
+                                li
+                                    a(href='#')
+                                        i.socicon.twittercircle
+                                li
+                                    a(href='#')
+                                        i.socicon.dribbblecircle
+                                li
+                                    a(href='#')
+                                        i.socicon.googlecircle

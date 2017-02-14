@@ -3,9 +3,9 @@
 /* Load modules */
 const utils = require('../utils');
 const mongoose = require('mongoose');
+const config = require('../config/');
 const flash = require('connect-flash');
-const config = require('../../config/');
-const emailing = require('../utils/mailer');
+const mailer = require('../utils/mailer');
 
 /* Load database models */
 const User = mongoose.model('User');
@@ -14,47 +14,47 @@ const Provider = mongoose.model('Provider');
 /* Landingpage */
 exports.index = function(req, res) {
     console.log("INFO", "rendering index");
-    res.render('index', {});
+    res.render('users/index', {});
 };
 
 /* Dashboard */
 exports.dashboard = function(req, res) {
     User.find(function(err, users) {
         if (err) console.log("ERROR", "fetching all users:", err);
-        res.render('dashboard', { user: req.user, users: users, errors: req.flash('error') });
+        res.render('users/dashboard', { user: req.user, users: users, errors: req.flash('error') });
     });
 };
 
 /* Study section */
 exports.study = function(req, res) {
-    res.render('study', { user: req.user });
+    res.render('users/study', { user: req.user });
 }
 
 /* Coding section */
 exports.coding = function(req, res) {
-    res.render('coding', { user: req.user });
+    res.render('users/coding', { user: req.user });
 };
 
 /* Chatting section */
 exports.chat = function(req, res) {
-    res.render('chat', { user: req.user });
+    res.render('users/chat', { user: req.user });
 };
 
 /* Sumorobot section */
 exports.sumorobot = function(req, res) {
-    res.render('sumorobot', { user: req.user });
+    res.render('users/sumorobot', { user: req.user });
 };
 
 
 /* Login page */
 exports.login = function(req, res) {
-    res.render('login', { logins: config.logins });
+    res.render('users/login', { logins: config.logins });
 };
 
 /* User signup from the form */
 exports.signup = function(req, res) {
     /* When the submit was not pressed, do not process the form */
-    if (req.method == 'GET') return res.render('signup');
+    if (req.method == 'GET') return res.render('users/signup');
     /* Check for form errors */
     req.assert('username', "A valid username of at least 4 and up to 15 characters is required").len(4, 15);
     req.assert('email', "A valid email is required").isEmail();
@@ -102,7 +102,7 @@ exports.signup = function(req, res) {
             if (err) console.log("ERROR", "error signing up user:", user.email, "error:", err);
             else {
                 /* Send the user the verification email */
-                emailing.sendRegistration(user.name, user.email, user.verification.verification_hash);
+                mailer.sendRegistration(user.name, user.email, user.verification.verification_hash);
                 /* Show success message to the user */
                 console.log("INFO", "user saved:", user.email);
                 req.flash('message', "Successfully signed up, check your inbox");
@@ -153,7 +153,7 @@ exports.registerUser = function (name, email, provider_name, mugshot, link, done
 /* Forgotten password */
 exports.forgotPassword = function(req, res) {
     /* When the form was not submitted */
-    if (req.method == 'GET') return res.render('forgot');
+    if (req.method == 'GET') return res.render('users/forgot');
 
     /* Check for form errors */
     req.assert('email', "A valid email is required").isEmail();
@@ -178,7 +178,7 @@ exports.forgotPassword = function(req, res) {
         else {
             /* Generate a verifisilbocation hash for the user and send it by mail */
             user.verification.verification_hash = utils.calculateHash('sha256', user.email + utils.generateRandom());
-            emailing.sendResetPassword(user.name, user.email, user.verification.verification_hash);
+            mailer.sendResetPassword(user.name, user.email, user.verification.verification_hash);
 
             /* Leave message and redirect */
             req.flash('email', "");
