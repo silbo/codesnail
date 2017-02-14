@@ -115,17 +115,17 @@ exports.signup = function(req, res) {
 /* Signup from passport OAuth */
 exports.registerUser = function (name, email, provider_name, mugshot, link, done) {
     /* Find user by email */
-    db.User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
+    User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
         if (err) return done(err);
         /* When the user with the email was found and the provider is registered */
         else if (user && user.profile.providers.map(function(elem) { return elem.name; }).join(",").indexOf(provider_name) > -1) return done(null, user);
 
         /* Register a new provider */
-        var provider = new db.Provider({ name: provider_name, mugshot: mugshot, display_name: name, url: link });
+        var provider = new Provider({ name: provider_name, mugshot: mugshot, display_name: name, url: link });
         provider.save();
         /* When no user under this email was found */
         if (!user) {
-            user = new db.User({ username: name.toLowerCase().replace(" ", "") , name: name, email: email });
+            user = new User({ username: name.toLowerCase().replace(" ", "") , name: name, email: email });
             user.profile.mugshot = mugshot;
             user.profile.website = link;
         }
@@ -141,7 +141,7 @@ exports.registerUser = function (name, email, provider_name, mugshot, link, done
             else {
                 console.log("INFO", "user saved:", user.email);
                 /* Fetch the information again, for the new provider information */
-                db.User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
+                User.findOne({ email: email }).populate('profile.providers').exec(function (err, user) {
                     if (err) console("ERROR", "error finding user:", err);
                     return done(err, user);
                 });

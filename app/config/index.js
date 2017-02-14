@@ -24,6 +24,8 @@ if (typeof process.env.OPENSHIFT_APP_NAME !== "undefined") {
 	process.env.OPENSHIFT_APP_NAME;
 }
 
+config.database_url = "mongodb://codesnail123:CodeSnail123@ds061278.mlab.com:61278/codesnail";
+
 /* Email SMTP */
 config.smtp.host = process.env.SMTP_HOST || "default";
 config.smtp.username = process.env.SMTP_USERNAME || "default";
