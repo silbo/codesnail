@@ -71,9 +71,10 @@ exports.signup = function(req, res) {
     if (errors) return res.redirect('/signup');
 
     /* Apply some filters on email and username */
-    var filteredEmail = req.body.email.toString().toLowerCase().replace(" ", "");
-    var filteredUsername = req.body.username.toString().toLowerCase().replace(" ", "");
+    var filteredEmail = req.body.email.toLowerCase().replace(" ", "");
+    var filteredUsername = req.body.username.toLowerCase().replace(" ", "");
 
+    /* TODO this should go to the user model */
     /* Find existing user */
     User.findOne({ $or:[{ username: filteredUsername }, { email: filteredEmail }] }, function(err, user) {
         if (err) return new Error(err);
@@ -112,6 +113,7 @@ exports.signup = function(req, res) {
     });
 };
 
+/* TODO this should go into the user model */
 /* Signup from passport OAuth */
 exports.registerUser = function (name, email, provider_name, mugshot, link, done) {
     /* Find user by email */
@@ -125,7 +127,7 @@ exports.registerUser = function (name, email, provider_name, mugshot, link, done
         provider.save();
         /* When no user under this email was found */
         if (!user) {
-            user = new User({ username: name.toString().toLowerCase().replace(" ", "") , name: name, email: email });
+            user = new User({ username: name.toLowerCase().replace(" ", "") , name: name, email: email });
             user.profile.mugshot = mugshot;
             user.profile.website = link;
         }
@@ -166,7 +168,7 @@ exports.forgotPassword = function(req, res) {
     /* When errors, show them */
     if (errors) return res.redirect('/forgot');
 
-    var filteredEmail = req.body.email.toString().toLowerCase().replace(" ", "");
+    var filteredEmail = req.body.email.toLowerCase().replace(" ", "");
 
     /* Find the user and update */
     User.findOne({ email: filteredEmail }, function(err, user) {
@@ -240,10 +242,10 @@ exports.profile = function(req, res) {
     var logins = [];
     var providers = req.user.profile.providers.map(function(elem) { return elem.name; }).join(",");
     for(var index = 0; index < config.logins.length; index++) {
-        if (providers.indexOf(config.logins[index][0].toString().toLowerCase()) == -1)
+        if (providers.indexOf(config.logins[index][0].toLowerCase()) == -1)
             logins.push(config.logins[index]);
     }
-    res.render('profile', { logins: logins, user: req.user });
+    res.render('users/profile', { logins: logins, user: req.user });
 };
 
 /* Update user profile */

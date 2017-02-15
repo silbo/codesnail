@@ -12,13 +12,13 @@ module.exports = new GoogleStrategy({
     },
     function(accessToken, refreshToken, profile, done) {
         process.nextTick(function () {
-            console.log("INFO google user info:", profile);
+            console.log("INFO google user info:", profile._json.urls);
             users.registerUser(
-                profile._json.name,
-                profile._json.email,
+                profile.displayName,
+                profile.emails[0].value,
                 profile.provider,
-                profile._json.picture,
-                profile._json.link,
+                profile.photos[0].value,
+                profile._json.url,
                 done
             );
         });

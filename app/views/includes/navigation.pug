@@ -35,23 +35,24 @@
                                     a(href='#')
                                         i.icon-question
                                         | Help
-                                li.divider.visible-phone
-                                li.visible-phone
-                                    a(href='#')
-                                        i.icon-tasks
-                                        | Tasks
-                                        span.badge.badge-warning 4
-                                li.visible-phone
-                                    a(href='#')
-                                        i.icon-bell-alt
-                                        | Notifications
-                                        span.badge.badge-important 8
-                                li.visible-phone
-                                    a(href='#')
-                                        i.icon-envelope
-                                        | Messages
-                                        span.badge.badge-success 5
-                                li.divider
+                                if !user.guest
+                                    li.divider.visible-phone
+                                    li.visible-phone
+                                        a(href='#')
+                                            i.icon-tasks
+                                            | Tasks
+                                            span.badge.badge-warning 4
+                                    li.visible-phone
+                                        a(href='#')
+                                            i.icon-bell-alt
+                                            | Notifications
+                                            span.badge.badge-important 8
+                                    li.visible-phone
+                                        a(href='#')
+                                            i.icon-envelope
+                                            | Messages
+                                            span.badge.badge-success 5
+                                    li.divider
                                 li
                                     a(href="/logout")
                                         i.icon-off

@@ -15,7 +15,7 @@ module.exports = new LocalStrategy({
     function(username, password, done) {
         process.nextTick(function () {
             /* Apply some filters on the username */
-            var filteredUsername = username.toString().toLowerCase().replace(" ", "");
+            var filteredUsername = username.toLowerCase().replace(" ", "");
 
             /* Find the user (entered username is either a email or the username of the user) */
             User.findOne({ $or:[{ username: filteredUsername }, { email: filteredUsername }] }).populate('profile.providers').exec(function (err, user) {

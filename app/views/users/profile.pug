@@ -56,12 +56,12 @@ block content
                     img(class="mugshot", src=provider.mugshot, alt="mugshot")
                     div(style="text-transform:capitalize;") #{provider.name}
                         br
-                        input(type="button", class="btn btn-primary", value=provider.display_name onclick="window.location.href=provider.url")
-                        &nbsp;
-                        input(type="button", class="btn btn-primary", value="Set as Mugshot" onclick="window.location.href='/profile/mugshot/' + provider.name")
-                        &nbsp;
-                        input(type="button", class="btn btn-primary", value="Disconnect" onclick="window.location.href='/profile/remove/' + provider.name")
+                        input(type="button", class="btn btn-primary", value=provider.display_name onclick="window.location.href='" + provider.url + "'")
+                        | &nbsp;
+                        input(type="button", class="btn btn-primary", value="Set as Mugshot" onclick="window.location.href='/profile/mugshot/" + provider.name + "'")
+                        | &nbsp;
+                        input(type="button", class="btn btn-primary", value="Disconnect" onclick="window.location.href='/profile/remove/" + provider.name + "'")
             div#oauths
                 each login in logins
-                    input(type="button", class="btn btn-primary", value="Connect " + login[0] onclick="window.location.href=login[1]")
+                    input(type="button", class="btn btn-primary", value="Connect " + login[0] onclick="window.location.href='" + login[1] + "'")
                     br
